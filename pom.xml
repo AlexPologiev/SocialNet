@@ -13,6 +13,7 @@
         <module>profile</module>
         <module>environment</module>
         <module>communication</module>
+        <module>lib</module>
     </modules>
 
     <properties>
@@ -30,6 +31,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.30</version>
         </dependency>
     </dependencies>
 
