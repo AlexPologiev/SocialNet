@@ -1,0 +1,27 @@
+stages:          
+  - build
+  - test
+  - deploy
+
+build-job:       
+  stage: build
+  script:
+    - sleep 10
+    - echo job_id is $CI_JOB_ID pipeline_id is $CI_PIPELINE_ID
+    - echo "Compile complete."
+
+unit-test-job:   
+  stage: test   
+  script:
+    - sleep 10
+    - echo job_id is $CI_JOB_ID pipeline_id is $CI_PIPELINE_ID
+    - echo "Tests complite."
+
+
+deploy-job:     
+  stage: deploy 
+  environment: production
+  script:
+    - sleep 10
+    - echo job_id is $CI_JOB_ID pipeline_id is $CI_PIPELINE_ID
+    - echo "Application successfully deployed."
