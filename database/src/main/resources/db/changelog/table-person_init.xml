@@ -1,0 +1,50 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet author="AlexanderILIN" id="create-table-person">
+
+        <createTable schemaName="socialnet" tableName="person" remarks="Пользователь социальной сети">
+
+            <column autoIncrement="true" name="id" type="BIGINT" remarks="ID пользователя">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="person_pkey"/>
+            </column>
+
+            <column name="first_name" type="VARCHAR(255)" remarks="Имя"/>
+
+            <column name="last_name" type="VARCHAR(255)" remarks="Фамилия"/>
+
+            <column name="reg_date" type="timestamp with time zone" remarks="Дата и время регистрации"/>
+
+            <column name="birth_date" type="DATE" remarks="Дата рождения"/>
+
+            <column name="e_mail" type="VARCHAR(254)" remarks="Электронная почта"/>
+
+            <column name="phone" type="VARCHAR(15)" remarks="Номер телефона"/>
+
+            <column name="password" type="VARCHAR(256)" remarks="Пароль"/>
+
+            <column name="photo" type="VARCHAR(2048)" remarks="Ссылка на изображение"/>
+
+            <column name="about" type="VARCHAR(1000)" remarks="Текст о себе"/>
+
+            <column name="town" type="VARCHAR(200)" remarks="Страна и город проживания"/>
+
+            <column name="confirmation_code" type="VARCHAR(256)" remarks="Код восстановления пароля / подтверждения регистрации"/>
+
+            <column name="is_approved" type="BOOLEAN" remarks="Подтверждена ли регистрация"/>
+
+            <column name="messages_permission" type="VARCHAR(10)" remarks="Разрешение на получение сообщений: ALL - от всех пользователей (кроме заблокированных), FRIENDS - только от друзей"/>
+
+            <column name="last_online_time" type="timestamp with time zone" remarks="Время последнего пребывания онлайн"/>
+
+            <column name="is_blocked" type="BOOLEAN" remarks="Блокировка пользователя модератором / администратором"/>
+
+        </createTable>
+
+    </changeSet>
+
+</databaseChangeLog>
