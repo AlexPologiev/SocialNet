@@ -19,6 +19,26 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
         </dependency>
+
+        <!-- jOOQ -->
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq</artifactId>
+            <version>3.18.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-meta</artifactId>
+            <version>3.18.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-codegen</artifactId>
+            <version>3.18.5</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -38,6 +58,48 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <!-- JOOQ Generator Plugin -->
+            <plugin>
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq-codegen-maven</artifactId>
+                <version>3.18.5</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- настройки базы данных-->
+                    <jdbc>
+                        <driver>org.postgresql.Driver</driver>
+                        <url>jdbc:postgresql://localhost:5432/team43</url>
+                        <user>skillbox43</user>
+                        <password>skillbox43</password>
+                    </jdbc>
+                    <generator>
+                        <database>
+                            <name>org.jooq.meta.postgres.PostgresDatabase</name> <!--jooq.generator.db.dialect-->//
+                            <includes>.*</includes>
+                            <inputSchema>team43</inputSchema> <!--your database schema / owner / name-->
+                        </database>
+                        <generate>
+                            <globalTableReferences>true</globalTableReferences>
+                            <globalUDTReferences>false</globalUDTReferences>
+                            <fluentSetters>true</fluentSetters>
+                            <javaTimeTypes>true</javaTimeTypes>
+                        </generate>
+                        <target>
+                            <packageName>org.socialnet.jooq.db</packageName>
+                            <!-- основная директория -->
+                            <directory>social-net-backend/database/main/java/socialnet/team43/jooq</directory>
+                        </target>
+                    </generator>
+                </configuration>
             </plugin>
 
         </plugins>
