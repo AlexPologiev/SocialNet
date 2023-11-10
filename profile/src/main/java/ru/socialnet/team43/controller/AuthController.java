@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.socialnet.team43.service.AuthService;
 
@@ -22,7 +21,7 @@ public class AuthController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/logout")
+    @GetMapping("/logout")
     public ResponseEntity<Void> logout() {
         authService.logout();
         return ResponseEntity.noContent().build();

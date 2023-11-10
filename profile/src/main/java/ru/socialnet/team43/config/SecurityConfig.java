@@ -40,7 +40,8 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(req -> req
-                        .requestMatchers("/login").permitAll())
+                        .requestMatchers("/**").permitAll()
+                        .requestMatchers("**/login").permitAll())
                 .formLogin(Customizer.withDefaults())
                 .logout(logout -> logout.logoutSuccessUrl("/logout")
                         .logoutUrl("/logout")
