@@ -82,21 +82,17 @@
                         <password>skillbox43</password>
                     </jdbc>
                     <generator>
+                        <name>org.jooq.codegen.JavaGenerator</name>
                         <database>
-                            <name>org.jooq.meta.postgres.PostgresDatabase</name> <!--jooq.generator.db.dialect-->//
+                            <name>org.jooq.meta.postgres.PostgresDatabase</name>
+                            <inputSchema>socialnet</inputSchema>
                             <includes>.*</includes>
-                            <inputSchema>team43</inputSchema> <!--your database schema / owner / name-->
+                            <excludes></excludes>
                         </database>
-                        <generate>
-                            <globalTableReferences>true</globalTableReferences>
-                            <globalUDTReferences>false</globalUDTReferences>
-                            <fluentSetters>true</fluentSetters>
-                            <javaTimeTypes>true</javaTimeTypes>
-                        </generate>
                         <target>
-                            <packageName>org.socialnet.jooq.db</packageName>
+                            <packageName>jooq.db</packageName>
                             <!-- основная директория -->
-                            <directory>social-net-backend/database/main/java/socialnet/team43/jooq</directory>
+                            <directory>team43</directory>
                         </target>
                     </generator>
                 </configuration>
