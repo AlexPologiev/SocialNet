@@ -1,13 +1,9 @@
 После установки приложения Docker в командной строке ввести команду:
 
-*docker pull skillboxteam32/front:latest*
+*docker run -d -p 8099:80 -v **path**:/etc/nginx/conf.d/ --name skillboxteam43-frontend alphateam35/frontend:local*
 
-Данная команда установит на локальный компьютер нужный образ из Docker-hub, и он появится во вкладке "Images" в приложении.
+где **path** - путь до файла server.conf, находящегося в директории .localdev\files проекта social-net-backend (например: *С\skillbox\social-net-backend\\.localdev\files*).
 
-Далее, вводим команду:
+После этого, Docker развернет локально контейнер с данным образом на порту 8099 с именем skillboxteam43-frontend и он отобразится в интерфейсе приложения.
 
-*docker run -d -p 8070:80 --name skillboxteam43-front skillboxteam32/front:latest*
-
-После этого, Docker развернет локально контейнер с данным образом на порту 8070 с именем skillboxteam43-front и он отобразится в интерфейсе приложения.
-
-Если после этого ввести в адресной строке браузера *localhost:8070*, то будет открыта страница с нужным нам фронтом.
+Если после этого ввести в адресной строке браузера *localhost:8099*, то будет открыта страница с нужным нам фронтом.
