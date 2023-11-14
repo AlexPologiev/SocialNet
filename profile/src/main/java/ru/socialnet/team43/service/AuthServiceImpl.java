@@ -24,6 +24,9 @@ public class AuthServiceImpl implements AuthService {
         log.info("Signed out");
     }
 
+
+
+
     @Override
     public CaptchaDto getCaptcha() {
        return captchaCreator.createCaptcha();

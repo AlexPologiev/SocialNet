@@ -1,9 +1,15 @@
 server:
-  port: 8070
+  port: 8080
 
 captcha:
   length: 3
   symbols: "abcdefghijklmnopqrstuvwxyz1234567890"
 
 database:
-  url: http:/database:8050
+  url: http://localhost:8050
+
+reg:
+  person:
+    isApproved: true
+    isBlocked: false
+    messagePermission: ALL

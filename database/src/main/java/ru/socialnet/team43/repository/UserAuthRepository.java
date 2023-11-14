@@ -6,8 +6,8 @@ import org.jooq.DSLContext;
 import org.jooq.Result;
 import org.springframework.stereotype.Repository;
 import ru.socialnet.team43.dto.UserAuthDto;
-import ru.socialnet.team43.jooq.db.Tables;
-import ru.socialnet.team43.jooq.db.tables.records.UserAuthRecord;
+import jooq.db.Tables;
+import jooq.db.tables.records.UserAuthRecord;
 
 import java.util.Optional;
 

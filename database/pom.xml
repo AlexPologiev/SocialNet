@@ -32,6 +32,7 @@
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
+            <version>4.20.0</version>
         </dependency>
 
         <dependency>
@@ -39,23 +40,10 @@
             <artifactId>postgresql</artifactId>
         </dependency>
 
-        <!-- jOOQ -->
         <dependency>
-            <groupId>org.jooq</groupId>
-            <artifactId>jooq</artifactId>
-            <version>3.18.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jooq</groupId>
-            <artifactId>jooq-meta</artifactId>
-            <version>3.18.5</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jooq</groupId>
-            <artifactId>jooq-codegen</artifactId>
-            <version>3.18.7</version>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>1.5.5.Final</version>
         </dependency>
 
         <dependency>
@@ -65,9 +53,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <version>1.6.0.Beta1</version>
+            <groupId>com.github.seratch</groupId>
+            <artifactId>java-time-backport</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 
@@ -76,7 +64,7 @@
             <plugin>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-maven-plugin</artifactId>
-                <version>${liquibase.version}</version>
+                <version>4.20.0</version>
                 <configuration>
                     <propertyFile>src/main/resources/application.yaml</propertyFile>
                 </configuration>
@@ -97,7 +85,7 @@
                 <version>3.18.5</version>
                 <executions>
                     <execution>
-                        <phase>compile</phase>
+                        <phase>generate-sources</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>
@@ -119,10 +107,13 @@
                             <includes>.*</includes>
                             <excludes></excludes>
                         </database>
+                        <generate>
+                            <pojos>true</pojos>
+                        </generate>
                         <target>
-                            <packageName>ru.socialnet.team43.jooq.db</packageName>
+                            <packageName>jooq.db</packageName>
                             <!-- основная директория -->
-                            <directory>src/main/java/</directory>
+                            <directory>target/generated-sources</directory>
                         </target>
                     </generator>
                 </configuration>
@@ -138,8 +129,18 @@
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.mapstruct</groupId>
-                            <artifactId>mapstruct</artifactId>
-                            <version>1.6.0.Beta1</version>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>1.5.5.Final</version>
+                        </path>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.30</version>
+                        </path>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok-mapstruct-binding</artifactId>
+                            <version>0.2.0</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
