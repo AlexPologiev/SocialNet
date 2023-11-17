@@ -1,2 +1,6 @@
 server:
   port: 8070
+
+captcha:
+  length: 3
+  symbols: "abcdefghijklmnopqrstuvwxyz1234567890"

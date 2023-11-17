@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import ru.socialnet.team43.dto.CaptchaDto;
 import ru.socialnet.team43.service.AuthService;
 
 @Controller
@@ -25,5 +26,10 @@ public class AuthController {
     public ResponseEntity<Void> logout() {
         authService.logout();
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/captcha")
+    public ResponseEntity<CaptchaDto> getCaptcha() {
+        return ResponseEntity.ok(authService.getCaptcha());
     }
 }
