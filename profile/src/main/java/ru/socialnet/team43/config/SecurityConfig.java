@@ -11,7 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import ru.socialnet.team43.dto.UserDto;
+import ru.socialnet.team43.dto.UserAuthDto;
 
 @Configuration
 @EnableWebSecurity
@@ -24,17 +24,16 @@ public class SecurityConfig {
 
     @Bean
     public InMemoryUserDetailsManager userDetailsManager(PasswordEncoder encoder) {
-        var user = UserDto.builder()
-                .login("user")
+        var user = UserAuthDto.builder()
+                .email("user")
                 .password("pass")
                 .build();
         UserDetails admin = User
-                .withUsername(user.getLogin())
+                .withUsername(user.getEmail())
                 .password(encoder.encode(user.getPassword()))
                 .build();
         return new InMemoryUserDetailsManager(admin);
     }
-
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

@@ -4,3 +4,6 @@ server:
 captcha:
   length: 3
   symbols: "abcdefghijklmnopqrstuvwxyz1234567890"
+
+database:
+  url: http:/database:8050
