@@ -1,6 +1,7 @@
 package ru.socialnet.team43.service;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.socialnet.team43.dto.CaptchaDto;
@@ -28,4 +29,3 @@ public class AuthServiceImpl implements AuthService {
        return captchaCreator.createCaptcha();
     }
 }
-

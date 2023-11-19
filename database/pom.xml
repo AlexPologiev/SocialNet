@@ -10,6 +10,13 @@
     <name>database</name>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jooq</artifactId>
+            <version>3.1.5</version>
+        </dependency>
+
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
@@ -36,9 +43,20 @@
         <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>jooq-codegen</artifactId>
-            <version>3.18.5</version>
+            <version>3.18.7</version>
         </dependency>
 
+        <dependency>
+            <groupId>ru.socialnet.team43</groupId>
+            <artifactId>lib</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>1.6.0.Beta1</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -67,7 +85,7 @@
                 <version>3.18.5</version>
                 <executions>
                     <execution>
-                        <phase>generate-sources</phase>
+                        <phase>compile</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>
@@ -90,14 +108,30 @@
                             <excludes></excludes>
                         </database>
                         <target>
-                            <packageName>jooq.db</packageName>
+                            <packageName>ru.socialnet.team43.jooq.db</packageName>
                             <!-- основная директория -->
-                            <directory>team43</directory>
+                            <directory>src/main/java/</directory>
                         </target>
                     </generator>
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct</artifactId>
+                            <version>1.6.0.Beta1</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
