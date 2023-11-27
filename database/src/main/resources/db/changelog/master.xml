@@ -8,5 +8,7 @@
     <include file="db/changelog/socialnet-schema-init.xml"/>
     <include file="db/changelog/table-person_init.xml"/>
     <include file="db/changelog/auth-user_init.xml"/>
+    <include file="db/changelog/table-country_init.xml"/>
+    <include file="db/changelog/table-city_init.xml"/>
 
 </databaseChangeLog>
