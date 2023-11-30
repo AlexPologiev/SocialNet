@@ -8,6 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserAuthDto {
+
+    private long id;
     private String email;
     private String password;
     private Roles role;

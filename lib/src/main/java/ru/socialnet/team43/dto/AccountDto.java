@@ -2,7 +2,7 @@ package ru.socialnet.team43.dto;
 
 import lombok.Builder;
 import lombok.Data;
-
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Builder
@@ -12,7 +12,7 @@ public class AccountDto {
     private boolean isDeleted;
     private String firstName;
     private String lastName;
-    private String eMail;
+    private String email;
     private String phone;
     private String photo;
     private String profileCover;
@@ -20,7 +20,7 @@ public class AccountDto {
     private String city;
     private String country;
     private String statusCode;
-    private LocalDateTime birthDate;
+    private LocalDate birthDate;
     private String messagePermission;
     private LocalDateTime lastOnlineTime;
     private boolean isOnline;

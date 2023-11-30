@@ -1,28 +1,20 @@
 package ru.socialnet.team43.repository;
 
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.jooq.DSLContext;
-import org.jooq.Result;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-import ru.socialnet.team43.dto.UserAuthDto;
-import jooq.db.Tables;
 import jooq.db.tables.records.UserAuthRecord;
-
+import ru.socialnet.team43.dto.AccountDto;
+import ru.socialnet.team43.dto.UserAuthDto;
 import java.util.Optional;
 
-@Repository
-@AllArgsConstructor
-@Slf4j
-public class UserAuthRepository {
+/**
+ * репозиторий для работы с таблицей user_auth
+ */
+public interface UserAuthRepository
+{
+    Optional<UserAuthDto> getUserByEmail(String email);
 
-    private DSLContext context;
+    int getUsersCountByEmail(String email);
 
-    public Optional<UserAuthDto> getUserByEmail(String email) {
-        Result<UserAuthRecord> user = context.selectFrom(Tables.USER_AUTH)
-                .where(Tables.USER_AUTH.EMAIL.eq(email))
-                .fetch();
-        return Optional.of((UserAuthDto) user);
-    }
+    Optional<UserAuthRecord> insertUserAuth(UserAuthRecord userAuthRecord);
+
+    Optional<AccountDto> getAccountInfo(String email);
 }

@@ -14,7 +14,7 @@ public class PersonDto {
     private String lastName;
     private OffsetDateTime regDate;
     private LocalDateTime birthDate;
-    private String EMail;
+    private String email;
     private String phone;
     private String password;
     private String photo;
@@ -25,6 +25,6 @@ public class PersonDto {
     private String messagesPermission;
     private OffsetDateTime lastOnlineTime;
     private Boolean isBlocked;
-
+    private Roles role;
 
 }
