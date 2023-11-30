@@ -7,7 +7,7 @@
 
     <changeSet author="Anton Garussky" id="create-table-user-auth">
 
-        <createTable schemaName="socialnet" tableName="user-auth" remarks="Данные пользователя для аутентификации">
+        <createTable schemaName="socialnet" tableName="user_auth" remarks="Данные пользователя для аутентификации">
 
             <column autoIncrement="true" name="id" type="BIGINT" remarks="ID пользователя">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="user_pkey"/>

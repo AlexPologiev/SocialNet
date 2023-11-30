@@ -9,7 +9,7 @@
 
         <createTable schemaName="socialnet" tableName="person" remarks="Пользователь социальной сети">
 
-            <column autoIncrement="true" name="id" type="BIGINT" remarks="ID пользователя">
+            <column name="id" type="BIGINT" remarks="ID пользователя">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="person_pkey"/>
             </column>
 
@@ -21,11 +21,7 @@
 
             <column name="birth_date" type="DATE" remarks="Дата рождения"/>
 
-            <column name="e_mail" type="VARCHAR(254)" remarks="Электронная почта"/>
-
             <column name="phone" type="VARCHAR(15)" remarks="Номер телефона"/>
-
-            <column name="password" type="VARCHAR(256)" remarks="Пароль"/>
 
             <column name="photo" type="VARCHAR(2048)" remarks="Ссылка на изображение"/>
 

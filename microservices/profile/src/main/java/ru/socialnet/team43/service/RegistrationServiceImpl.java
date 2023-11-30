@@ -6,10 +6,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.socialnet.team43.client.UserAuthClient;
+import ru.socialnet.team43.client.DatabaseClient;
 import ru.socialnet.team43.dto.PersonDto;
 import ru.socialnet.team43.dto.RegDto;
-
+import ru.socialnet.team43.dto.Roles;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
@@ -17,8 +17,7 @@ import java.time.OffsetDateTime;
 @Service
 @Slf4j
 public class RegistrationServiceImpl implements RegistrationService {
-    private final UserAuthClient authClient;
-    private final PasswordEncoder passwordEncoder;
+    private final DatabaseClient databaseClient;
     private final static String REG_PROCESS = "Registration process: ";
 
     @Value("${reg.person.isApproved}")
@@ -45,7 +44,7 @@ public class RegistrationServiceImpl implements RegistrationService {
                 && isPasswordsMatch(password1, password2)
                 && !isEmailExisted(email)) {
 
-            PersonDto personDto = regDtoToPersonDtoWithEncryptedPassword(regDto);
+            PersonDto personDto = regDtoToPersonDto(regDto, Roles.USER);
 
             return createPerson(personDto);
         }
@@ -77,7 +76,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     private boolean isEmailExisted(String email) {
-        HttpStatusCode statusCode = authClient.isEmailExist(email).getStatusCode();
+        HttpStatusCode statusCode = databaseClient.isEmailExist(email).getStatusCode();
 
         if (statusCode.is2xxSuccessful()){
             log.info(REG_PROCESS + "Person with email ({}) has already existed," +
@@ -89,7 +88,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     private boolean createPerson(PersonDto personDto) {
-        HttpStatusCode statusCode = authClient.createPerson(personDto).getStatusCode();
+        HttpStatusCode statusCode = databaseClient.createPerson(personDto).getStatusCode();
         if(statusCode.is2xxSuccessful()){
             log.info(REG_PROCESS + "Person has been registered");
             return true;
@@ -100,19 +99,19 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 
 
-    private PersonDto regDtoToPersonDtoWithEncryptedPassword(RegDto regDto){
-        String encryptedPassword = passwordEncoder.encode(regDto.getPassword1());
+    private PersonDto regDtoToPersonDto(RegDto regDto, Roles role){
         return PersonDto.builder()
                 .firstName(regDto.getFirstName())
                 .lastName(regDto.getLastName())
-                .EMail(regDto.getEmail())
-                .password(encryptedPassword)
+                .email(regDto.getEmail())
+                .password(regDto.getPassword1())
                 .lastOnlineTime(OffsetDateTime.now())
                 .birthDate(LocalDateTime.now())
                 .regDate(OffsetDateTime.now())
                 .isApproved(isApproved)
                 .isBlocked(isBlocked)
                 .messagesPermission(messagePermission)
+                .role(role)
                 .build();
     }
 

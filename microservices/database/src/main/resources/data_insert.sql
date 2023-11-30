@@ -3,9 +3,7 @@ INSERT INTO person (id,
                     last_name,
                     reg_date,
                     birth_date,
-                    e_mail,
                     phone,
-                    password,
                     photo,
                     about,
                     town,
@@ -20,9 +18,7 @@ VALUES
         'Cox',
         '2023-02-25 14:05',
         '2000-08-14',
-        'thuel@yahoo.com',
         '81(3)984-62-07',
-        '$2y$10$rNiP72mNfkanOxzvQ3AFGOh.BY5S5RszO/bK8qWH.vqFBPWbymcKG',
         NULL,
         NULL,
         'Japan Tokyo',
@@ -36,9 +32,7 @@ VALUES
         'Martin',
         '2023-03-11 11:15',
         '2005-06-12',
-        'bmetz@gmail.com',
         '61(28)752-56-71',
-        '$2y$10$rl5hkWRkzO38zCn9g0Uuy.dSU2eOocsqFfnmPhtxPAPMYE5sIho66',
         NULL,
         NULL,
         'Australia Sydney',
@@ -52,9 +46,7 @@ VALUES
         'Collier',
         '2023-10-13 23:26',
         '2011-11-25',
-        'shayne75@fay.com',
         '82(02)085-83-21',
-        '$2y$10$7l83xQG822sGjbg3jm8IXuaFFlqZD3wFEpKDusBKVMn6Gmxd30/tq',
         NULL,
         NULL,
         'South Korea Seoul',
@@ -68,9 +60,7 @@ VALUES
         'Evans',
         '2023-01-15 00:01',
         '2001-12-10',
-        'iblock@hotmail.com',
         '48(22)084-61-02',
-        '$2y$10$1vzzjF5v8Hzry4xrKAhw4udGjo/NQHjqm0ZGrVmD9yqOootLtgz0.',
         NULL,
         NULL,
         'Poland Warsaw',
@@ -84,9 +74,7 @@ VALUES
         'Barnes',
         '2023-10-18 02:05',
         '2003-03-09',
-        'ernie04@heller.biz',
         '39(02)731-32-45',
-        '$2y$10$as3PMelh7rVqR0yGdCYvjevvcMRaT4CpBHrC21reO6vNuTcTVdCBq',
         NULL,
         NULL,
         'Italy Milan',
@@ -100,9 +88,7 @@ VALUES
         'Hicks',
         '2023-09-19 18:45',
         '2004-09-18',
-        'beth.kunde@yahoo.com',
         '212(37)15-02-53',
-        '$2y$10$nTm4Oa9wYTLxCmNQJUCmkO4OV5LgtvlnItp/lxnFaU9SsE5dkeBX',
         NULL,
         NULL,
         'Morocco Rabat',
@@ -116,9 +102,7 @@ VALUES
         'Figueroa',
         '2023-11-01 16:41',
         '2008-08-02',
-        'toney39@berge.net',
         '351(21)318-73-1',
-        '$2y$10$vut8BFTK2Yn2Ipn71V2p2eL4AI0MnmM8aBgn8Cg731yMdAto/C6V6',
         NULL,
         NULL,
         'Portugal Lisbon',
@@ -132,9 +116,7 @@ VALUES
         'Jackson',
         '2023-10-12 20:26',
         '2012-05-30',
-        'yhickle@nikolaus.com',
         '20(02)546-96-19',
-        '$2y$10$H2gPuXyejuNWePJlr8WPjuHDYqUm/6vN0bbaL8CiJ0O1j4ploJqey',
         NULL,
         NULL,
         'Egypt Cairo',
@@ -148,9 +130,7 @@ VALUES
         'Ford',
         '2023-03-18 23:14',
         '1989-07-27',
-        'aufderhar.cary@harber.com',
         '1(343)243-08-50',
-        '$2y$10$pXfbpO0Rcts/e9oNbrenMu4OY0RHpLtXHDD9kTe3UYh4dZhDI0lHe',
         NULL,
         NULL,
         'Canada Ottawa',
@@ -164,9 +144,7 @@ VALUES
         'Rodgers',
         '2023-08-25 00:11',
         '1995-10-01',
-        'xwiegand@hotmail.com',
         '358(9)114-07-60',
-        '$2y$10$Pa1D0MxGcT9ADLIxkO//leMwvOYUJo2dRQh0zMHkZsmkmgTBIaDaC',
         NULL,
         NULL,
         'Finland Helsinki',
@@ -174,4 +152,56 @@ VALUES
         TRUE,
         'ALL',
         '2023-11-10 14:37',
-        FALSE)
+        FALSE);
+
+------------------
+
+INSERT INTO user_auth (id,
+                    email,
+                    password,
+                    role)
+VALUES
+        ('1000',
+        'thuel@yahoo.com',
+        '$2a$12$qWwPxV64wzABjhme6oi7Z.UllhoabxOKgzcqZuwobYl2Tm4RMv3vi', -- Qwerty1@
+        'USER'),
+        ('1001',
+        'bmetz@gmail.com',
+        '$2a$12$qWwPxV64wzABjhme6oi7Z.UllhoabxOKgzcqZuwobYl2Tm4RMv3vi', -- Qwerty1@
+        'USER'),
+        ('1002',
+        'shayne75@fay.com',
+        '$2a$12$qWwPxV64wzABjhme6oi7Z.UllhoabxOKgzcqZuwobYl2Tm4RMv3vi', -- Qwerty1@
+        'USER'),
+        ('1003',
+        'iblock@hotmail.com',
+        '$2a$12$qWwPxV64wzABjhme6oi7Z.UllhoabxOKgzcqZuwobYl2Tm4RMv3vi', -- Qwerty1@
+        'USER'),
+        ('1004',
+        'ernie04@heller.biz',
+        '$2a$12$qWwPxV64wzABjhme6oi7Z.UllhoabxOKgzcqZuwobYl2Tm4RMv3vi', -- Qwerty1@
+        'USER'),
+        ('1005',
+        'beth.kunde@yahoo.com',
+        '$2a$12$qWwPxV64wzABjhme6oi7Z.UllhoabxOKgzcqZuwobYl2Tm4RMv3vi', -- Qwerty1@
+        'USER'),
+        ('1006',
+        'toney39@berge.net',
+        '$2a$12$qWwPxV64wzABjhme6oi7Z.UllhoabxOKgzcqZuwobYl2Tm4RMv3vi', -- Qwerty1@
+        'ADMIN'),
+        ('1007',
+        'yhickle@nikolaus.com',
+        '$2a$12$qWwPxV64wzABjhme6oi7Z.UllhoabxOKgzcqZuwobYl2Tm4RMv3vi', -- Qwerty1@
+        'ADMIN'),
+        ('1008',
+        'aufderhar.cary@harber.com',
+        '$2a$12$qWwPxV64wzABjhme6oi7Z.UllhoabxOKgzcqZuwobYl2Tm4RMv3vi', -- Qwerty1@
+        'MODERATOR'),
+        ('1009',
+        'xwiegand@hotmail.com',
+        '$2a$12$qWwPxV64wzABjhme6oi7Z.UllhoabxOKgzcqZuwobYl2Tm4RMv3vi', -- Qwerty1@
+        'MODERATOR');
+
+-------
+
+COMMIT;
