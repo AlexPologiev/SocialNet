@@ -4,14 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.socialnet.team43.client.DatabaseClient;
-import ru.socialnet.team43.dto.PersonDto;
 import ru.socialnet.team43.dto.RegDto;
+import ru.socialnet.team43.dto.RegDtoDb;
 import ru.socialnet.team43.dto.Roles;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 
 @RequiredArgsConstructor
 @Service
@@ -31,8 +28,6 @@ public class RegistrationServiceImpl implements RegistrationService {
     public boolean registrationPerson(RegDto regDto) {
         String captchaCode = regDto.getCaptchaCode();
         String captchaSecret = regDto.getCaptchaSecret();
-        String password1 = regDto.getPassword1();
-        String password2 = regDto.getPassword2();
         String email = regDto.getEmail();
 
         if (email == null){
@@ -41,28 +36,16 @@ public class RegistrationServiceImpl implements RegistrationService {
         }
 
         if (isCaptchaCorrect(captchaCode, captchaSecret)
-                && isPasswordsMatch(password1, password2)
                 && !isEmailExisted(email)) {
 
-            PersonDto personDto = regDtoToPersonDto(regDto, Roles.USER);
+            RegDtoDb regDtoForDb = createRegDtoForDb(regDto, Roles.USER);
 
-            return createPerson(personDto);
+            return createPerson(regDtoForDb);
         }
 
         return false;
     }
 
-    private boolean isPasswordsMatch(String password1, String password2) {
-        if(password1 != null) {
-            if (password1.equals(password2)) {
-                log.info(REG_PROCESS + "password1 equals password2");
-                return true;
-            }
-        }
-        log.info(REG_PROCESS + "password1 does not equals password2");
-        return false;
-
-    }
 
     private boolean isCaptchaCorrect(String captchaCode, String captchaSecret) {
         if (captchaCode != null) {
@@ -87,8 +70,8 @@ public class RegistrationServiceImpl implements RegistrationService {
         return false;
     }
 
-    private boolean createPerson(PersonDto personDto) {
-        HttpStatusCode statusCode = databaseClient.createPerson(personDto).getStatusCode();
+    private boolean createPerson(RegDtoDb regDtoDb) {
+        HttpStatusCode statusCode = databaseClient.createPerson(regDtoDb).getStatusCode();
         if(statusCode.is2xxSuccessful()){
             log.info(REG_PROCESS + "Person has been registered");
             return true;
@@ -99,18 +82,12 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 
 
-    private PersonDto regDtoToPersonDto(RegDto regDto, Roles role){
-        return PersonDto.builder()
-                .firstName(regDto.getFirstName())
-                .lastName(regDto.getLastName())
+    private RegDtoDb createRegDtoForDb(RegDto regDto, Roles role){
+        return RegDtoDb.builder()
                 .email(regDto.getEmail())
                 .password(regDto.getPassword1())
-                .lastOnlineTime(OffsetDateTime.now())
-                .birthDate(LocalDateTime.now())
-                .regDate(OffsetDateTime.now())
-                .isApproved(isApproved)
-                .isBlocked(isBlocked)
-                .messagesPermission(messagePermission)
+                .firstName(regDto.getFirstName())
+                .lastName(regDto.getLastName())
                 .role(role)
                 .build();
     }

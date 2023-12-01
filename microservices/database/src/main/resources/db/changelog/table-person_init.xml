@@ -9,35 +9,51 @@
 
         <createTable schemaName="socialnet" tableName="person" remarks="Пользователь социальной сети">
 
-            <column name="id" type="BIGINT" remarks="ID пользователя">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="person_pkey"/>
+            <column name="id" autoIncrement="true" type="BIGINT" remarks="ID записи">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="user_id" type="BIGINT" remarks="ID пользователя">
+                <constraints nullable="false" unique="true" primaryKey="true" primaryKeyName="person_pkey"/>
             </column>
 
             <column name="first_name" type="VARCHAR(255)" remarks="Имя"/>
 
             <column name="last_name" type="VARCHAR(255)" remarks="Фамилия"/>
 
-            <column name="reg_date" type="timestamp with time zone" remarks="Дата и время регистрации"/>
-
-            <column name="birth_date" type="DATE" remarks="Дата рождения"/>
-
             <column name="phone" type="VARCHAR(15)" remarks="Номер телефона"/>
 
             <column name="photo" type="VARCHAR(2048)" remarks="Ссылка на изображение"/>
 
+            <column name="profile_cover" type="VARCHAR(2048)" remarks="Обложка профиля"/>
+
             <column name="about" type="VARCHAR(1000)" remarks="Текст о себе"/>
 
-            <column name="town" type="VARCHAR(200)" remarks="Страна и город проживания"/>
+            <column name="city" type="VARCHAR(200)" remarks="Город проживания"/>
 
-            <column name="confirmation_code" type="VARCHAR(256)" remarks="Код восстановления пароля / подтверждения регистрации"/>
+            <column name="country" type="VARCHAR(200)" remarks="Страна проживания"/>
 
-            <column name="is_approved" type="BOOLEAN" remarks="Подтверждена ли регистрация"/>
+            <column name="reg_date" type="timestamp" remarks="Дата и время регистрации"/>
+
+            <column name="status_code" type="VARCHAR(50)" remarks="Код статуса"/>
+
+            <column name="birth_date" type="timestamp" remarks="Дата рождения"/>
 
             <column name="messages_permission" type="VARCHAR(10)" remarks="Разрешение на получение сообщений: ALL - от всех пользователей (кроме заблокированных), FRIENDS - только от друзей"/>
 
-            <column name="last_online_time" type="timestamp with time zone" remarks="Время последнего пребывания онлайн"/>
+            <column name="last_online_time" type="timestamp" remarks="Время последнего пребывания онлайн"/>
+
+            <column name="is_online" type="BOOLEAN" remarks="Нахождение онлайн"/>
 
             <column name="is_blocked" type="BOOLEAN" remarks="Блокировка пользователя модератором / администратором"/>
+
+            <column name="emoji_status" type="VARCHAR(50)" remarks="Статус эмоджи"/>
+
+            <column name="deletion_timestamp" type="timestamp" remarks="Дата / время удаления аккаунта"/>
+
+            <column name="created_date" type="timestamp" remarks="Дата / время создания аккаунта"/>
+
+            <column name="last_modified_date" type="timestamp" remarks="Дата / время последнего обновления аккаунта"/>
 
         </createTable>
 

@@ -5,8 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.socialnet.team43.dto.AccountDto;
 import ru.socialnet.team43.dto.PersonDto;
+import ru.socialnet.team43.dto.RegDtoDb;
 import ru.socialnet.team43.dto.UserAuthDto;
 
 
@@ -20,8 +20,8 @@ public interface DatabaseClient {
     ResponseEntity<Void> isEmailExist(@RequestParam("email") String email);
 
     @PostMapping("/auth/register/create")
-    ResponseEntity<Void> createPerson(PersonDto personDto);
+    ResponseEntity<Void> createPerson(RegDtoDb regDtoDb);
 
     @GetMapping("/account/me")
-    ResponseEntity<AccountDto> getAccountInfo(@RequestParam("email") String email);
+    ResponseEntity<PersonDto> getAccountInfo(@RequestParam("email") String email);
 }

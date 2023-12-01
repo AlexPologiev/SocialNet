@@ -47,7 +47,12 @@ public class AuthController
     @PostMapping("/register")
     public ResponseEntity<Void> RegistrationPerson(@RequestBody RegDto regDto)
     {
-        return profileClient.RegistrationPerson(securityService.getRegDtoWithEncryptedPassword(regDto));
+        if(securityService.doPasswordsMatch(regDto)){
+            return profileClient.RegistrationPerson(securityService.getRegDtoWithEncryptedPassword(regDto));
+        }
+        else{
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/captcha")

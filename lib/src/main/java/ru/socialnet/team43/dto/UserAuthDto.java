@@ -1,17 +1,15 @@
 package ru.socialnet.team43.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
-@Getter
-@Setter
-public class UserAuthDto {
-
-    private long id;
+public class UserAuthDto
+{
+    private Long id;
     private String email;
     private String password;
     private Roles role;
-
 }

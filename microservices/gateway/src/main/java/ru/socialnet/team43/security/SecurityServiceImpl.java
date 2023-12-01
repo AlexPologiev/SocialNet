@@ -1,6 +1,7 @@
 package ru.socialnet.team43.security;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,6 +24,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SecurityServiceImpl implements SecurityService
 {
     private final AuthenticationManager authenticationManager;
@@ -105,20 +107,25 @@ public class SecurityServiceImpl implements SecurityService
     }
 
     @Override
-    public RegDto getRegDtoWithEncryptedPassword(RegDto inputDto)
+    public RegDto getRegDtoWithEncryptedPassword(RegDto regDto)
     {
-        RegDto regDtoWithEncryptedPassword = RegDto.builder()
-                .isDeleted(inputDto.isDeleted())
-                .email(inputDto.getEmail())
-                .password1(passwordEncoder.encode(inputDto.getPassword1()))
-                .password2(passwordEncoder.encode(inputDto.getPassword2()))
-                .firstName(inputDto.getFirstName())
-                .lastName(inputDto.getLastName())
-                .captchaCode(inputDto.getCaptchaCode())
-                .captchaSecret(inputDto.getCaptchaSecret())
-                .build();
+        regDto.setPassword1(passwordEncoder.encode(regDto.getPassword1()));
+        regDto.setPassword2(null);
 
-        return regDtoWithEncryptedPassword;
+        return regDto;
+    }
+
+    @Override
+    public boolean doPasswordsMatch(RegDto regDto) {
+        if(StringUtils.hasText(regDto.getPassword1())) {
+            if (regDto.getPassword1().equals(regDto.getPassword2())) {
+                log.info("password1 matches password2");
+                return true;
+            }
+        }
+        log.info("password1 doesn't match password2");
+
+        return false;
     }
 
     private JwtResponse generateJwtResponse(UserDetails userDetails)
