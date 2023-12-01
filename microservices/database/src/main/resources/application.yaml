@@ -7,11 +7,8 @@ spring:
     username: skillbox43
     password: skillbox43
     driver-class-name: org.postgresql.Driver
+
   liquibase:
     change-log: src/main/resources/db/changelog/master.xml
     changeLogFile: src/main/resources/db/changelog/master.xml
     enabled: false
-
-
-#liquibase:
-  #changeLogFile: src/main/resources/db/changelog/master.xml
