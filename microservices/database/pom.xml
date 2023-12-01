@@ -1,42 +1,37 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
-    <packaging>jar</packaging>
-
+    <parent>
+        <artifactId>Socialnet</artifactId>
+        <groupId>ru.socialnet.team43</groupId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
     <modelVersion>4.0.0</modelVersion>
-
     <artifactId>database</artifactId>
     <name>database</name>
-    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
-    <parent>
-        <groupId>ru.socialnet.team43</groupId>
-        <artifactId>microservices</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </parent>
+    <properties>
+        <env>develop</env>
+        <db.login>skillbox43</db.login>
+        <db.password>skillbox43</db.password>
+        <db.url>jdbc:postgresql://localhost:5432/team43</db.url>
+        <liquibase.changeLogFile>src/main/resources/db/changelog/master.xml</liquibase.changeLogFile>
+    </properties>
 
     <profiles>
         <profile>
             <id>dev</id>
-            <properties>
-                <env>develop</env>
-                <db.login>skillbox43</db.login>
-                <db.password>skillbox43</db.password>
-                <db.url>jdbc:postgresql://localhost:5432/team43</db.url>
-            </properties>
+
         </profile>
     </profiles>
 
     <dependencies>
+        <!--Драйвер БД-->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jooq</artifactId>
         </dependency>
     </dependencies>
 
@@ -51,7 +46,7 @@
                     <url>${db.url}</url>
                     <username>${db.login}</username>
                     <password>${db.password}</password>
-                    <changeLogFile>src/main/resources/db/changelog/master.xml</changeLogFile>
+                    <changeLogFile>${liquibase.changeLogFile}</changeLogFile>
                 </configuration>
                 <executions>
                     <execution>
@@ -98,7 +93,7 @@
                         <target>
                             <packageName>jooq.db</packageName>
                             <!-- основная директория -->
-                            <directory>jooq</directory>
+                            <directory>target/generated-sources</directory>
                         </target>
                     </generator>
                 </configuration>

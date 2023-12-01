@@ -5,10 +5,10 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
-        <include file="src/main/resources/db/changelog/socialnet-schema-init.xml"/>
-        <include file="src/main/resources/db/changelog/auth-user_init.xml"/>
-        <include file="src/main/resources/db/changelog/table-person_init.xml"/>
-        <include file="src/main/resources/db/changelog/table-country_init.xml"/>
-        <include file="src/main/resources/db/changelog/table-city_init.xml"/>
+        <include file="socialnet-schema-init.xml" relativeToChangelogFile="true"/>
+        <include file="table-person_init.xml" relativeToChangelogFile="true"/>
+        <include file="auth-user_init.xml" relativeToChangelogFile="true"/>
+        <include file="table-country_init.xml" relativeToChangelogFile="true"/>
+        <include file="table-city_init.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
