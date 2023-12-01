@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.socialnet.team43.client.ProfileClient;
-import ru.socialnet.team43.dto.AccountDto;
+import ru.socialnet.team43.dto.PersonDto;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,8 +19,9 @@ public class AccountController
     private final ProfileClient profileClient;
 
     @GetMapping("/me")
-    public ResponseEntity<AccountDto> getMyProfile(@AuthenticationPrincipal UserDetails userDetails)
+    public ResponseEntity<PersonDto> getMyProfile(@AuthenticationPrincipal UserDetails userDetails)
     {
-        return profileClient.getMyProfile(userDetails.getUsername());
+        ResponseEntity<PersonDto> personDtoResponseEntity = profileClient.getMyProfile(userDetails.getUsername());
+        return personDtoResponseEntity;
     }
 }

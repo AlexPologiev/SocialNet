@@ -6,12 +6,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class CaptchaDto {
-
-    private String captchaCode;
-    private String captchaSecret;
-
+public class RegDtoDb
+{
+    private String email;
+    private String password;
+    private String firstName;
+    private String lastName;
+    private Roles role;
 }

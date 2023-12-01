@@ -3,9 +3,10 @@ package ru.socialnet.team43.controller;
 import jooq.db.tables.records.PersonRecord;
 import jooq.db.tables.records.UserAuthRecord;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.socialnet.team43.dto.PersonDto;
+import ru.socialnet.team43.dto.RegDtoDb;
 import ru.socialnet.team43.dto.UserAuthDto;
 import ru.socialnet.team43.service.RegistrationService;
 import ru.socialnet.team43.service.UserAuthService;
@@ -13,25 +14,37 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
+@Slf4j
 @RequestMapping("/auth")
 public class UserAuthController {
     private final RegistrationService regService;
     private final UserAuthService userAuthService;
 
     @PostMapping("/register/create")
-    public ResponseEntity<PersonRecord> createPerson(@RequestBody PersonDto dto)
+    public ResponseEntity<PersonRecord> createPerson(@RequestBody RegDtoDb regDtoDb)
     {
         boolean isSuccessful = false;
 
-        Optional<UserAuthRecord> userAuthRecord = userAuthService.createUserAuth(dto);
+        Optional<UserAuthRecord> userAuthRecord = userAuthService.createUserAuth(regDtoDb);
 
         if(userAuthRecord.isPresent())
         {
             long userId = userAuthRecord.get().getId();
 
-            Optional<PersonRecord> person = regService.createPerson(dto, userId);
+            try
+            {
+                Optional<PersonRecord> person = regService.createPerson(regDtoDb, userId);
 
-            isSuccessful = person.isPresent();
+                isSuccessful = person.isPresent();
+            }
+            catch (Exception ex)
+            {
+                log.debug(ex.getMessage());
+            }
+
+            if(!isSuccessful){
+                userAuthService.deleteUserAuthById(userId);
+            }
         }
 
         return isSuccessful ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();

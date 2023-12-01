@@ -10,10 +10,12 @@
         <createTable schemaName="socialnet" tableName="user_auth" remarks="Данные пользователя для аутентификации">
 
             <column autoIncrement="true" name="id" type="BIGINT" remarks="ID пользователя">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="user_pkey"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="user_pkey" unique="true"/>
             </column>
 
-            <column name="email" type="VARCHAR(50)" remarks="Email"/>
+            <column name="email" type="VARCHAR(50)" remarks="Email">
+                <constraints nullable="false" unique="true"/>
+            </column>
 
             <column name="password" type="VARCHAR(255)" remarks="Пароль"/>
 

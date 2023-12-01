@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.socialnet.team43.client.DatabaseClient;
-import ru.socialnet.team43.dto.AccountDto;
+import ru.socialnet.team43.dto.PersonDto;
 
 @AllArgsConstructor
 @RestController
@@ -17,8 +17,9 @@ public class AccountController
     private final DatabaseClient databaseClient;
 
     @GetMapping("/me")
-    public ResponseEntity<AccountDto> getMyProfile(@RequestParam("email") String email)
+    public ResponseEntity<PersonDto> getMyProfile(@RequestParam("email") String email)
     {
-        return databaseClient.getAccountInfo(email);
+        ResponseEntity<PersonDto> personDtoResponseEntity = databaseClient.getAccountInfo(email);
+        return personDtoResponseEntity;
     }
 }

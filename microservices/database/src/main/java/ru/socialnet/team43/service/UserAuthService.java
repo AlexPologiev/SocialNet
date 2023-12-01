@@ -2,8 +2,8 @@ package ru.socialnet.team43.service;
 
 
 import jooq.db.tables.records.UserAuthRecord;
-import ru.socialnet.team43.dto.AccountDto;
 import ru.socialnet.team43.dto.PersonDto;
+import ru.socialnet.team43.dto.RegDtoDb;
 import ru.socialnet.team43.dto.UserAuthDto;
 import java.util.Optional;
 
@@ -12,11 +12,14 @@ import java.util.Optional;
  */
 public interface UserAuthService
 {
-    Optional<UserAuthRecord> createUserAuth (PersonDto dto);
+    Optional<UserAuthRecord> createUserAuth (RegDtoDb dto);
 
     Optional<UserAuthDto> getUserByEmail(String email);
 
     int getUsersCountByEmail(String email);
 
-    Optional<AccountDto> getAccountInfo(String email);
+    Optional<PersonDto> getAccountInfo(String email);
+
+    void deleteUserAuthById(Long id);
+
 }

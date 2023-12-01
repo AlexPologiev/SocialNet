@@ -1,7 +1,7 @@
 package ru.socialnet.team43.repository;
 
 import jooq.db.tables.records.UserAuthRecord;
-import ru.socialnet.team43.dto.AccountDto;
+import ru.socialnet.team43.dto.PersonDto;
 import ru.socialnet.team43.dto.UserAuthDto;
 import java.util.Optional;
 
@@ -16,5 +16,7 @@ public interface UserAuthRepository
 
     Optional<UserAuthRecord> insertUserAuth(UserAuthRecord userAuthRecord);
 
-    Optional<AccountDto> getAccountInfo(String email);
+    Optional<PersonDto> getAccountInfo(String email);
+
+    void deleteUserAuthById(Long id);
 }

@@ -15,4 +15,6 @@ public interface SecurityService
     SimpleResponse logout();
 
     RegDto getRegDtoWithEncryptedPassword(RegDto inputDto);
+
+    boolean doPasswordsMatch(RegDto regDto);
 }
