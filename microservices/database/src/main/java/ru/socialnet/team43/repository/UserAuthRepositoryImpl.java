@@ -1,6 +1,7 @@
 package ru.socialnet.team43.repository;
 
 import jooq.db.Tables;
+import jooq.db.tables.records.PersonRecord;
 import jooq.db.tables.records.UserAuthRecord;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,4 +66,8 @@ public class UserAuthRepositoryImpl implements UserAuthRepository
                             .where(Tables.USER_AUTH.ID.eq(id))
                             .execute();
     }
+
+
+
+
 }

@@ -20,7 +20,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<Void> RegistrationPerson(@RequestBody RegDto regDto) {
         boolean result = registrationService.registrationPerson(regDto);
-        return result ? ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
+        return result ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
 
     }
 

@@ -6,7 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.socialnet.team43.dto.RegDtoDb;
 import ru.socialnet.team43.repository.PersonRepo;
-import ru.socialnet.team43.repository.mapper.PersonDtoPersonRecordMapper;
+import ru.socialnet.team43.repository.mapper.RegDtoPersonRecordMapper;
+
 import java.util.Optional;
 
 @Service
@@ -15,7 +16,7 @@ import java.util.Optional;
 public class RegistrationService {
 
     private final PersonRepo personRepo;
-    private final PersonDtoPersonRecordMapper mapper;
+    private final RegDtoPersonRecordMapper mapper;
 
     public Optional<PersonRecord> createPerson(RegDtoDb regDtoDb, long id)
     {
