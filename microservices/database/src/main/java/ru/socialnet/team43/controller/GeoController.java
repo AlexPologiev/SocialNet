@@ -18,7 +18,7 @@ public class GeoController {
     private GeoServiceDB geoService;
 
     @GetMapping("/country")
-    public ResponseEntity<List<CountryDto>> getCountry() {
-        return ResponseEntity.ok(geoService.getCountries());
+    public List<CountryDto> getCountry() {
+        return geoService.getCountries();
     }
 }
