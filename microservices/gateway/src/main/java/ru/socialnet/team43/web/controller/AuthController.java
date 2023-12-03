@@ -7,6 +7,7 @@ import ru.socialnet.team43.client.ProfileClient;
 import ru.socialnet.team43.dto.CaptchaDto;
 import ru.socialnet.team43.dto.RegDto;
 import ru.socialnet.team43.security.SecurityService;
+import ru.socialnet.team43.util.ControllerUtil;
 import ru.socialnet.team43.web.model.AuthRequest;
 import ru.socialnet.team43.web.model.JwtResponse;
 import ru.socialnet.team43.web.model.RefreshRequest;
@@ -19,6 +20,7 @@ public class AuthController
 {
     private final SecurityService securityService;
     private final ProfileClient profileClient;
+    private final ControllerUtil controllerUtil;
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> signIn(@RequestBody AuthRequest authRequest)
@@ -37,18 +39,18 @@ public class AuthController
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<SimpleResponse> logout()
-    {
+    public ResponseEntity<SimpleResponse> logout() {
         SimpleResponse responseBody = securityService.logout();
 
         return ResponseEntity.ok(responseBody);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Void> RegistrationPerson(@RequestBody RegDto regDto)
-    {
+    public ResponseEntity<Void> RegistrationPerson(@RequestBody RegDto regDto) {
+
         if(securityService.doPasswordsMatch(regDto)){
-            return profileClient.RegistrationPerson(securityService.getRegDtoWithEncryptedPassword(regDto));
+            ResponseEntity<Void> inputResponseEntity = profileClient.RegistrationPerson(securityService.getRegDtoWithEncryptedPassword(regDto));
+            return controllerUtil.createNewResponseEntity(inputResponseEntity);
         }
         else{
             return ResponseEntity.badRequest().build();
@@ -56,8 +58,8 @@ public class AuthController
     }
 
     @GetMapping("/captcha")
-    public ResponseEntity<CaptchaDto> getCaptcha()
-    {
-        return profileClient.getCaptcha();
+    public ResponseEntity<CaptchaDto> getCaptcha() {
+        ResponseEntity<CaptchaDto> inputResponseEntity = profileClient.getCaptcha();
+        return controllerUtil.createNewResponseEntity(inputResponseEntity);
     }
 }

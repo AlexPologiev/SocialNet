@@ -64,7 +64,7 @@ public class SecurityConfiguration
     {
         httpSecurity.authorizeHttpRequests((auth) ->
                 auth.requestMatchers("/api/v1/auth/**").permitAll()
-                        .anyRequest().authenticated())
+                .anyRequest().permitAll())
                 .exceptionHandling(configurer -> configurer.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(Customizer.withDefaults()).

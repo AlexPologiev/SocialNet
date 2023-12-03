@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.socialnet.team43.client.ProfileClient;
 import ru.socialnet.team43.dto.PersonDto;
+import ru.socialnet.team43.util.ControllerUtil;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,11 +18,12 @@ import ru.socialnet.team43.dto.PersonDto;
 public class AccountController
 {
     private final ProfileClient profileClient;
+    private final ControllerUtil controllerUtil;
 
     @GetMapping("/me")
-    public ResponseEntity<PersonDto> getMyProfile(@AuthenticationPrincipal UserDetails userDetails)
-    {
-        ResponseEntity<PersonDto> personDtoResponseEntity = profileClient.getMyProfile(userDetails.getUsername());
-        return personDtoResponseEntity;
+    public ResponseEntity<PersonDto> getMyProfile(@AuthenticationPrincipal UserDetails userDetails) {
+
+        ResponseEntity<PersonDto> inputResponseEntity = profileClient.getMyProfile(userDetails.getUsername());
+        return controllerUtil.createNewResponseEntity(inputResponseEntity);
     }
 }
