@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.socialnet.team43.client.DatabaseClient;
 import ru.socialnet.team43.dto.PersonDto;
+import ru.socialnet.team43.util.ControllerUtil;
 
 @AllArgsConstructor
 @RestController
@@ -15,11 +16,12 @@ import ru.socialnet.team43.dto.PersonDto;
 public class AccountController
 {
     private final DatabaseClient databaseClient;
+    private final ControllerUtil controllerUtil;
 
     @GetMapping("/me")
     public ResponseEntity<PersonDto> getMyProfile(@RequestParam("email") String email)
     {
-        ResponseEntity<PersonDto> personDtoResponseEntity = databaseClient.getAccountInfo(email);
-        return personDtoResponseEntity;
+        ResponseEntity<PersonDto> inputResponseEntity = databaseClient.getAccountInfo(email);
+        return controllerUtil.createNewResponseEntity(inputResponseEntity);
     }
 }

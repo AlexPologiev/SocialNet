@@ -185,43 +185,43 @@ INSERT INTO user_auth (id,
 VALUES
         ('1000',
         'thuel@yahoo.com',
-        '$2a$12$qWwPxV64wzABjhme6oi7Z.UllhoabxOKgzcqZuwobYl2Tm4RMv3vi', -- Qwerty1@
+        '$2a$12$CxhZISH7nROqSPsUAqx2aueh4KnSV2syzKB4Sb4zKQ0SArQvJ31lu', -- 00000000
         'USER'),
         ('1001',
         'bmetz@gmail.com',
-        '$2a$12$qWwPxV64wzABjhme6oi7Z.UllhoabxOKgzcqZuwobYl2Tm4RMv3vi', -- Qwerty1@
+        '$2a$12$UE9CIvCIgZSGHe4yDDjaMuCqv4taZt9rkbt2Vxk0kjyeqS72ZAjWm', -- 11111111
         'USER'),
         ('1002',
         'shayne75@fay.com',
-        '$2a$12$qWwPxV64wzABjhme6oi7Z.UllhoabxOKgzcqZuwobYl2Tm4RMv3vi', -- Qwerty1@
+        '$2a$12$hGiyFH9VX4.WvayHHBlvEuDh7.YjVS3NvKNsKLe03rGEtsBVXpMNq', -- 22222222
         'USER'),
         ('1003',
         'iblock@hotmail.com',
-        '$2a$12$qWwPxV64wzABjhme6oi7Z.UllhoabxOKgzcqZuwobYl2Tm4RMv3vi', -- Qwerty1@
+        '$2a$12$Wu5qfAVjr48nYZHBOuaite.OVmyRx77hufx5yD/rQ40Rr6eTmYPtG', -- 33333333
         'USER'),
         ('1004',
         'ernie04@heller.biz',
-        '$2a$12$qWwPxV64wzABjhme6oi7Z.UllhoabxOKgzcqZuwobYl2Tm4RMv3vi', -- Qwerty1@
+        '$2a$12$byYX6T9xNt5lFqtwh4o9A.Tm980wwjvVHZK8cVNJmLdPjgLM3gANa', -- 44444444
         'USER'),
         ('1005',
         'beth.kunde@yahoo.com',
-        '$2a$12$qWwPxV64wzABjhme6oi7Z.UllhoabxOKgzcqZuwobYl2Tm4RMv3vi', -- Qwerty1@
+        '$2a$12$2jtDLy0gr1svGAmU3tFAhu8qab8qegIGdWpYIyWsF5hre3LdMwBcW', -- 55555555
         'USER'),
         ('1006',
         'toney39@berge.net',
-        '$2a$12$qWwPxV64wzABjhme6oi7Z.UllhoabxOKgzcqZuwobYl2Tm4RMv3vi', -- Qwerty1@
+        '$2a$12$6lbWnnBJVmlIoG38VV.CPO5NnETHGX5/lPQG4JXCHUkF8SBHhup6.', -- 66666666
         'ADMIN'),
         ('1007',
         'yhickle@nikolaus.com',
-        '$2a$12$qWwPxV64wzABjhme6oi7Z.UllhoabxOKgzcqZuwobYl2Tm4RMv3vi', -- Qwerty1@
+        '$2a$12$phNfh3pM8yaXoGgn9as3WOHvv7YwE5fmWCxpWjfH5V7hc5ADm4SmW', -- 77777777
         'ADMIN'),
         ('1008',
         'aufderhar.cary@harber.com',
-        '$2a$12$qWwPxV64wzABjhme6oi7Z.UllhoabxOKgzcqZuwobYl2Tm4RMv3vi', -- Qwerty1@
+        '$2a$12$P.dlsHFXFOOC2qNHVnYOP.vgid0gLfO/JfvihhLOksAevkDz/1baK', -- 88888888
         'MODERATOR'),
         ('1009',
         'xwiegand@hotmail.com',
-        '$2a$12$qWwPxV64wzABjhme6oi7Z.UllhoabxOKgzcqZuwobYl2Tm4RMv3vi', -- Qwerty1@
+        '$2a$12$gyEVpo94MvHO0FpH3JMCMe5zva3GNse6b/jqu1Roj/5yIKCQxU9fS', -- 99999999
         'MODERATOR');
 
 -------
