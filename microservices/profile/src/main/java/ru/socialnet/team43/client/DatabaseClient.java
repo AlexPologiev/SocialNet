@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.socialnet.team43.dto.PersonDto;
 import ru.socialnet.team43.dto.RegDtoDb;
 import ru.socialnet.team43.dto.UserAuthDto;
+import ru.socialnet.team43.dto.storage.StorageDto;
 
 
 @FeignClient(name = "databaseClient", dismiss404 = true, url = "${database.url}")
@@ -31,4 +32,7 @@ public interface DatabaseClient {
     ResponseEntity<PersonDto> updateMyProfile(@RequestBody PersonDto dto);
     @GetMapping("/account/{id}")
     ResponseEntity<PersonDto> getProfileById(@PathVariable Long id);
+
+    @PostMapping(path = "/storage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    ResponseEntity<StorageDto> getStorage(@RequestBody MultipartFile file);
 }

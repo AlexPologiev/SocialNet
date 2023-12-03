@@ -7,6 +7,10 @@ spring:
     username: skillbox43
     password: skillbox43
     driver-class-name: org.postgresql.Driver
+  servlet:
+    multipart:
+      max-file-size: 1MB
+      max-request-size: 1MB
 
 captcha:
   length: 3

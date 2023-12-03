@@ -1,13 +1,17 @@
 package ru.socialnet.team43.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import ru.socialnet.team43.dto.CaptchaDto;
 import ru.socialnet.team43.dto.PersonDto;
 import ru.socialnet.team43.dto.RegDto;
 import ru.socialnet.team43.dto.geo.CityDto;
 import ru.socialnet.team43.dto.geo.CountryDto;
+import ru.socialnet.team43.dto.storage.StorageDto;
 
 import java.util.List;
 
@@ -36,4 +40,7 @@ public interface ProfileClient {
     ResponseEntity<List<CityDto>> getCitiesByCountryId(@PathVariable Long countryId);
     @GetMapping("/account/{id}")
     ResponseEntity<PersonDto> getProfileById(@PathVariable Long id);
+
+    @PostMapping(path = "/storage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    ResponseEntity<StorageDto> getStorage(@RequestBody MultipartFile file);
 }
