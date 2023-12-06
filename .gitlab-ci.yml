@@ -3,25 +3,34 @@ stages:
   - test
   - deploy
 
-build-job:       
+build:
+  image: maven:3.9.5
+  services:
+    - postgres:16
+  variables:
+    MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+    MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version"
+    POSTGRES_USER: $db_user
+    POSTGRES_PASSWORD: $db_password
+    POSTGRES_DB: $db_name
+    POSTGRES_HOST_AUTH_METHOD: trust
+  cache:
+    paths:
+      - .m2/repository
   stage: build
   script:
-    - sleep 10
-    - echo job_id is $CI_JOB_ID pipeline_id is $CI_PIPELINE_ID
-    - echo "Compile complete."
+    - mvn $MAVEN_CLI_OPTS clean install
+    - echo "$CI_JOB_STAGE was successful"
+    - echo "build number $CI_PIPELINE_ID"
 
-unit-test-job:   
+.test:
   stage: test   
   script:
-    - sleep 10
-    - echo job_id is $CI_JOB_ID pipeline_id is $CI_PIPELINE_ID
-    - echo "Tests complite."
+    - echo "Not yet implemented. Skip this stage"
 
-
-deploy-job:     
-  stage: deploy 
-  environment: production
+.deploy:
+  stage: deploy
   script:
-    - sleep 10
-    - echo job_id is $CI_JOB_ID pipeline_id is $CI_PIPELINE_ID
-    - echo "Application successfully deployed."
+    - echo "Not yet implemented. Skip this stage"
+  only:
+    - master
