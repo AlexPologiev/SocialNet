@@ -34,12 +34,13 @@ public class CaptchaCreator {
             .addNoise(new StraightLineNoiseProducer())
             .gimp(new FishEyeGimpyRenderer())
             .build();
-        try {
-            String secret = UUID.randomUUID().toString();
-        String captchaCode = DatatypeConverter.printBase64Binary(imageToByteArray(captcha.getImage()));
+    try {
+        String secret = UUID.randomUUID().toString();
+        String captchaCode = "data:image/png;base64," +
+                DatatypeConverter.printBase64Binary(imageToByteArray(captcha.getImage()));
         CaptchaDto captchaDto = CaptchaDto.builder()
-                .captchaCode(captchaCode)
-                .captchaSecret(secret)
+                .image(captchaCode)
+                .secret(secret)
                 .build();
         captchaList.put(secret, captcha.getAnswer());
         log.info("New captcha added in captchaList");
