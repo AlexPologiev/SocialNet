@@ -1,0 +1,6 @@
+FROM openjdk:21
+
+ARG JAR_FILE=microservices/communication/target/communication-1.0-SNAPSHOT.jar
+COPY ${JAR_FILE} communication.jar
+EXPOSE 8081
+ENTRYPOINT ["java","-jar","/communication.jar"]
