@@ -1,0 +1,6 @@
+FROM openjdk:21
+
+ARG JAR_FILE=microservices/environment/target/environment-1.0-SNAPSHOT.jar
+COPY ${JAR_FILE} environment.jar
+EXPOSE 8082
+ENTRYPOINT ["java","-jar","/environment.jar"]

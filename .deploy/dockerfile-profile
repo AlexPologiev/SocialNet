@@ -1,0 +1,6 @@
+FROM openjdk:21
+
+ARG JAR_FILE=microservices/profile/target/profile-1.0-SNAPSHOT.jar
+COPY ${JAR_FILE} profile.jar
+EXPOSE 8080
+ENTRYPOINT ["java","-jar","/profile.jar"]

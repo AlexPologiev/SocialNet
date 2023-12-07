@@ -1,0 +1,6 @@
+FROM openjdk:21
+
+ARG JAR_FILE=microservices/database/target/database-1.0-SNAPSHOT.jar
+COPY ${JAR_FILE} database.jar
+EXPOSE 8050
+ENTRYPOINT ["java","-jar","/database.jar"]

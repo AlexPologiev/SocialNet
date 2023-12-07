@@ -1,0 +1,37 @@
+version: '3'
+
+name: team43-socialnet-backend
+services:
+  gateway:
+    image: skillbox43/social-net-backend:gateway
+    container_name: "gateway"
+    ports:
+      - 8030:8030
+
+  communication:
+    image: skillbox43/social-net-backend:communication
+    container_name: "communication"
+    networks:
+      - "social-net"
+
+  database:
+    image: skillbox43/social-net-backend:database
+    container_name: "database"
+    networks:
+      - "social-net"
+
+  environment:
+    image: skillbox43/social-net-backend:environment
+    container_name: "environment"
+    networks:
+      - "social-net"
+
+  profile:
+    image: skillbox43/social-net-backend:profile
+    container_name: "profile"
+    networks:
+      - "social-net"
+
+networks:
+  social-net:
+    driver: "bridge"

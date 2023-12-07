@@ -1,0 +1,6 @@
+FROM openjdk:21
+
+ARG JAR_FILE=microservices/gateway/target/gateway-1.0-SNAPSHOT.jar
+COPY ${JAR_FILE} gateway.jar
+EXPOSE 8030
+ENTRYPOINT ["java","-jar","/gateway.jar"]
