@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ru.socialnet.team43.dto.CaptchaDto;
 import ru.socialnet.team43.dto.PersonDto;
 import ru.socialnet.team43.dto.RegDto;
+import ru.socialnet.team43.dto.geo.CountryDto;
+
+import java.util.List;
 
 @FeignClient(name = "profileClient",
         dismiss404 = true,
@@ -24,5 +27,8 @@ public interface ProfileClient
 
     @GetMapping("/account/me")
     ResponseEntity<PersonDto> getMyProfile(@RequestParam("email") String email);
+
+    @GetMapping("/geo/country")
+    ResponseEntity<List<CountryDto>> getCountry();
 
 }
