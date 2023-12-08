@@ -1,6 +1,9 @@
 package ru.socialnet.team43.web.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.socialnet.team43.client.ProfileClient;
@@ -13,6 +16,7 @@ import ru.socialnet.team43.web.model.JwtResponse;
 import ru.socialnet.team43.web.model.RefreshRequest;
 import ru.socialnet.team43.web.model.SimpleResponse;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
@@ -50,6 +54,12 @@ public class AuthController
 
         if(securityService.doPasswordsMatch(regDto)){
             ResponseEntity<Void> inputResponseEntity = profileClient.RegistrationPerson(securityService.getRegDtoWithEncryptedPassword(regDto));
+            HttpStatusCode statusCode = inputResponseEntity.getStatusCode();
+
+            if (statusCode.isSameCodeAs(HttpStatusCode.valueOf(404))) {
+                return ResponseEntity.badRequest().build();
+            }
+
             return controllerUtil.createNewResponseEntity(inputResponseEntity);
         }
         else{

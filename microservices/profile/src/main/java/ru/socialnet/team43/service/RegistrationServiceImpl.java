@@ -9,13 +9,17 @@ import ru.socialnet.team43.client.DatabaseClient;
 import ru.socialnet.team43.dto.RegDto;
 import ru.socialnet.team43.dto.RegDtoDb;
 import ru.socialnet.team43.dto.Roles;
+import ru.socialnet.team43.util.CaptchaCreator;
 
 @RequiredArgsConstructor
 @Service
 @Slf4j
 public class RegistrationServiceImpl implements RegistrationService {
     private final DatabaseClient databaseClient;
+
+    private final CaptchaCreator captchaCreator;
     private final static String REG_PROCESS = "Registration process: ";
+
 
     @Value("${reg.person.isApproved}")
     private boolean isApproved;
@@ -30,7 +34,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         String captchaSecret = regDto.getCaptchaSecret();
         String email = regDto.getEmail();
 
-        if (email == null){
+        if (email == null) {
             log.info(REG_PROCESS + "email is null");
             return false;
         }
@@ -49,7 +53,10 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     private boolean isCaptchaCorrect(String captchaCode, String captchaSecret) {
         if (captchaCode != null) {
-            if (captchaCode.equals(captchaSecret)) {
+
+            String captchaAnswer = captchaCreator.getCaptchaList().get(captchaSecret);
+
+            if (captchaCode.equals(captchaAnswer)) {
                 log.info(REG_PROCESS + "Captcha is correct");
                 return true;
             }
@@ -61,9 +68,9 @@ public class RegistrationServiceImpl implements RegistrationService {
     private boolean isEmailExisted(String email) {
         HttpStatusCode statusCode = databaseClient.isEmailExist(email).getStatusCode();
 
-        if (statusCode.is2xxSuccessful()){
+        if (statusCode.is2xxSuccessful()) {
             log.info(REG_PROCESS + "Person with email ({}) has already existed," +
-                    "registration failed",email);
+                    "registration failed", email);
             return true;
         }
         log.info(REG_PROCESS + "email is unique");
@@ -72,7 +79,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     private boolean createPerson(RegDtoDb regDtoDb) {
         HttpStatusCode statusCode = databaseClient.createPerson(regDtoDb).getStatusCode();
-        if(statusCode.is2xxSuccessful()){
+        if (statusCode.is2xxSuccessful()) {
             log.info(REG_PROCESS + "Person has been registered");
             return true;
         }
@@ -81,8 +88,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
 
-
-    private RegDtoDb createRegDtoForDb(RegDto regDto, Roles role){
+    private RegDtoDb createRegDtoForDb(RegDto regDto, Roles role) {
         return RegDtoDb.builder()
                 .email(regDto.getEmail())
                 .password(regDto.getPassword1())

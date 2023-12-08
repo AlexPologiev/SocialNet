@@ -19,6 +19,10 @@ public interface UserAuthService
     int getUsersCountByEmail(String email);
 
     Optional<PersonDto> getAccountInfo(String email);
+    Optional<PersonDto> updateAccount(PersonDto dto);
+
+    int deleteAccount(String email);
+
 
     void deleteUserAuthById(Long id);
 

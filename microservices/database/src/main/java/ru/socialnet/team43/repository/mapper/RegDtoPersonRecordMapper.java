@@ -6,7 +6,7 @@ import ru.socialnet.team43.dto.RegDtoDb;
 
 
 @Mapper(componentModel = "spring")
-public interface PersonDtoPersonRecordMapper {
+public interface RegDtoPersonRecordMapper {
 
     PersonRecord regDtoDbToPersonRecord(RegDtoDb regDto);
 }
