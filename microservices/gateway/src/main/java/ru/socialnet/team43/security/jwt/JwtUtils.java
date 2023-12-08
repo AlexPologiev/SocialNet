@@ -9,60 +9,41 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+
 import javax.crypto.SecretKey;
 import java.time.Duration;
 import java.util.Date;
 
 @Component
 @Slf4j
-public class JwtUtils
-{
-    private String accessSecret;
-    private String refreshSecret;
-
+public class JwtUtils {
+    @Value("${app.jwt.accessTokenLifeTime}")
     private Duration accessTokenLifetime;
+
+    @Value("${app.jwt.refreshTokenLifeTime}")
     private Duration refreshTokenLifetime;
 
-    private final SecretKey accessKey;
-    private final SecretKey refreshKey;
+    private SecretKey accessKey;
+    private SecretKey refreshKey;
 
-    public JwtUtils(@Value("${app.jwt.accessSecret}") String accessSecret,
-                    @Value("${app.jwt.refreshSecret}") String refreshSecret,
-                    @Value("${app.jwt.accessTokenLifeTime}") Duration accessTokenLifetime,
-                    @Value("${app.jwt.accessTokenLifeTime}") Duration refreshTokenLifetime)
-    {
-        this.accessSecret = accessSecret;
-        this.refreshSecret = refreshSecret;
-        this.accessTokenLifetime = accessTokenLifetime;
-        this.refreshTokenLifetime = refreshTokenLifetime;
-        this.accessKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(accessSecret));
-        this.refreshKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(refreshSecret));
-    }
-
-    public String generateAccessToken(UserDetails userDetails)
-    {
-        JwtBuilder tokenBuilder = tokenCommonDataBuilder(userDetails);
+    public String generateAccessToken(UserDetails userDetails) {
+        JwtBuilder tokenBuilder = tokenCommonDataBuilder(userDetails, accessTokenLifetime);
 
         return tokenBuilder
                 .claim("roles", userDetails.getAuthorities())
-                .signWith(accessKey)
+                .signWith(getAccessKey())
                 .compact();
     }
 
-    public String generateRefreshToken(UserDetails userDetails)
-    {
-        JwtBuilder tokenBuilder = tokenCommonDataBuilder(userDetails);
+    public String generateRefreshToken(UserDetails userDetails) {
+        JwtBuilder tokenBuilder = tokenCommonDataBuilder(userDetails, refreshTokenLifetime);
 
-        return tokenBuilder
-                .signWith(refreshKey)
-                .compact();
+        return tokenBuilder.signWith(getRefreshKey()).compact();
     }
 
-
-    private JwtBuilder tokenCommonDataBuilder(UserDetails userDetails)
-    {
+    private JwtBuilder tokenCommonDataBuilder(UserDetails userDetails, Duration lifetime) {
         Date issueTime = new Date();
-        Date expirationTime = new Date(issueTime.getTime() + accessTokenLifetime.toMillis());
+        Date expirationTime = new Date(issueTime.getTime() + lifetime.toMillis());
 
         return Jwts.builder()
                 .header()
@@ -74,40 +55,30 @@ public class JwtUtils
                 .expiration(expirationTime);
     }
 
-
-
-    public boolean isAccessTokenValid(String accessToken)
-    {
+    public boolean isAccessTokenValid(String accessToken) {
         boolean isAccessTokenValid = false;
-        try
-        {
-            isAccessTokenValid = isTokenValid(accessToken, accessKey);
-        }
-        catch (Exception ex)
-        {
+        try {
+            isAccessTokenValid = isTokenValid(accessToken, getAccessKey());
+        } catch (Exception ex) {
             logTokenExceptionMessage(ex);
         }
 
         return isAccessTokenValid;
     }
 
-    public boolean isRefreshTokenValid(String refreshToken) throws Exception
-    {
-        return isTokenValid(refreshToken, refreshKey);
+    public boolean isRefreshTokenValid(String refreshToken) throws Exception {
+        return isTokenValid(refreshToken, getRefreshKey());
     }
 
-    public String getUserNameFromAccessToken(String accessToken)
-    {
-        return getUserNameFromToken(accessToken, accessKey);
+    public String getUserNameFromAccessToken(String accessToken) {
+        return getUserNameFromToken(accessToken, getAccessKey());
     }
 
-    public String getUserNameFromRefreshToken(String refreshToken)
-    {
-        return getUserNameFromToken(refreshToken, refreshKey);
+    public String getUserNameFromRefreshToken(String refreshToken) {
+        return getUserNameFromToken(refreshToken, getRefreshKey());
     }
 
-    private String getUserNameFromToken(String token, SecretKey secretKey)
-    {
+    private String getUserNameFromToken(String token, SecretKey secretKey) {
         return Jwts.parser()
                 .verifyWith(secretKey)
                 .build()
@@ -116,42 +87,26 @@ public class JwtUtils
                 .getSubject();
     }
 
-    private boolean isTokenValid(String token, SecretKey secretKey) throws Exception
-    {
-        Jwts.parser()
-                .verifyWith(secretKey)
-                .build()
-                .parseSignedClaims(token);
+    private boolean isTokenValid(String token, SecretKey secretKey) throws Exception {
+        Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token);
 
         return true;
     }
 
-    public String logTokenExceptionMessage(Exception ex)
-    {
+    public String logTokenExceptionMessage(Exception ex) {
         String returningMessage = "";
         String logMessageSuffix = ": {}";
-        if(ex instanceof SignatureException)
-        {
+        if (ex instanceof SignatureException) {
             returningMessage = "Invalid signature";
-        }
-        else if(ex instanceof MalformedJwtException)
-        {
+        } else if (ex instanceof MalformedJwtException) {
             returningMessage = "Invalid token";
-        }
-        else if(ex instanceof ExpiredJwtException)
-        {
+        } else if (ex instanceof ExpiredJwtException) {
             returningMessage = "Token is expired";
-        }
-        else if(ex instanceof UnsupportedJwtException)
-        {
+        } else if (ex instanceof UnsupportedJwtException) {
             returningMessage = "Token is unsupported";
-        }
-        else if(ex instanceof IllegalArgumentException)
-        {
+        } else if (ex instanceof IllegalArgumentException) {
             returningMessage = "Claims string is empty";
-        }
-        else
-        {
+        } else {
             logMessageSuffix = "";
         }
 
@@ -160,14 +115,29 @@ public class JwtUtils
         return returningMessage;
     }
 
-    public void generateKeys()
-    {
-        String[] keyNames = new String[] {"accessKey", "refreshKey"};
-        for(String keyName : keyNames)
-        {
-            SecretKey key = Jwts.SIG.HS512.key().build();
-            String secretString = Encoders.BASE64.encode(key.getEncoded());
-            System.out.println(keyName + " : " + secretString);
+    public SecretKey generateKey(String secretName) {
+        SecretKey key = Jwts.SIG.HS512.key().build();
+        String secretString = Encoders.BASE64.encode(key.getEncoded());
+        log.debug(secretName + " : " + secretString);
+
+        key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretString));
+
+        return key;
+    }
+
+    private SecretKey getAccessKey() {
+        if (null == accessKey) {
+            accessKey = generateKey("Access secret");
         }
+
+        return accessKey;
+    }
+
+    private SecretKey getRefreshKey() {
+        if (null == refreshKey) {
+            refreshKey = generateKey("Refresh secret");
+        }
+
+        return refreshKey;
     }
 }

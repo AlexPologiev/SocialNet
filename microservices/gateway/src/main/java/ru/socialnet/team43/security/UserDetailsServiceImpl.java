@@ -10,15 +10,18 @@ import ru.socialnet.team43.service.UserService;
 
 @Service
 @RequiredArgsConstructor
-public class UserDetailsServiceImpl implements UserDetailsService
-{
+public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserService userService;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
-    {
-        UserAuthDto authData = userService.findUserByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found. Username is: " + username));
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserAuthDto authData =
+                userService
+                        .findUserByEmail(username)
+                        .orElseThrow(
+                                () ->
+                                        new UsernameNotFoundException(
+                                                "User not found. Username is: " + username));
 
         return new AppUserDetails(authData);
     }

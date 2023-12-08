@@ -25,8 +25,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class SecurityServiceImpl implements SecurityService
-{
+public class SecurityServiceImpl implements SecurityService {
     private final AuthenticationManager authenticationManager;
 
     private final JwtUtils jwtUtils;
@@ -35,13 +34,14 @@ public class SecurityServiceImpl implements SecurityService
 
     private final PasswordEncoder passwordEncoder;
 
-    private Map<String, String> refreshTokenCache = new HashMap<>();
+    private final Map<String, String> refreshTokenCache = new HashMap<>();
 
     @Override
-    public JwtResponse authenticateUser(AuthRequest authRequest)
-    {
-        Authentication authentication = authenticationManager.
-                authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
+    public JwtResponse authenticateUser(AuthRequest authRequest) {
+        Authentication authentication =
+                authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(
+                                authRequest.getEmail(), authRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -51,36 +51,27 @@ public class SecurityServiceImpl implements SecurityService
     }
 
     @Override
-    public JwtResponse refreshToken(RefreshRequest refreshRequest) throws RefreshTokenException
-    {
+    public JwtResponse refreshToken(RefreshRequest refreshRequest) throws RefreshTokenException {
         String refreshToken = refreshRequest.getRefreshToken();
 
-        try
-        {
-            if(StringUtils.hasText(refreshToken) && jwtUtils.isRefreshTokenValid(refreshToken))
-            {
+        try {
+            if (StringUtils.hasText(refreshToken) && jwtUtils.isRefreshTokenValid(refreshToken)) {
                 String userName = jwtUtils.getUserNameFromRefreshToken(refreshToken);
 
                 String savedRefreshToken = refreshTokenCache.get(userName);
 
-                if(StringUtils.hasText(savedRefreshToken) && savedRefreshToken.equals(refreshToken))
-                {
+                if (StringUtils.hasText(savedRefreshToken)
+                        && savedRefreshToken.equals(refreshToken)) {
                     UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
 
                     return generateJwtResponse(userDetails);
-                }
-                else
-                {
+                } else {
                     throw new RefreshTokenException(refreshToken, "Refresh token not found");
                 }
-            }
-            else
-            {
+            } else {
                 throw new RefreshTokenException(refreshToken, "Token is not valid");
             }
-        }
-        catch(Exception ex)
-        {
+        } catch (Exception ex) {
             String tokenExceptionMessage = jwtUtils.logTokenExceptionMessage(ex);
 
             throw new RefreshTokenException(refreshToken, tokenExceptionMessage);
@@ -88,27 +79,15 @@ public class SecurityServiceImpl implements SecurityService
     }
 
     @Override
-    public SimpleResponse logout()
-    {
-        Object currentPrincipal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public SimpleResponse logout(String userName) {
 
-        if(currentPrincipal instanceof AppUserDetails)
-        {
-            UserDetails userDetails = (UserDetails) currentPrincipal;
+        refreshTokenCache.remove(userName);
 
-            String userName = userDetails.getUsername();
-
-            refreshTokenCache.remove(userName);
-
-            return new SimpleResponse("User " + userName + " has been logged out!");
-        }
-
-        return new SimpleResponse("Not managed to logout!");
+        return new SimpleResponse("User " + userName + " has been logged out!");
     }
 
     @Override
-    public RegDto getRegDtoWithEncryptedPassword(RegDto regDto)
-    {
+    public RegDto getRegDtoWithEncryptedPassword(RegDto regDto) {
         regDto.setPassword1(passwordEncoder.encode(regDto.getPassword1()));
         regDto.setPassword2(null);
 
@@ -117,7 +96,7 @@ public class SecurityServiceImpl implements SecurityService
 
     @Override
     public boolean doPasswordsMatch(RegDto regDto) {
-        if(StringUtils.hasText(regDto.getPassword1())) {
+        if (StringUtils.hasText(regDto.getPassword1())) {
             if (regDto.getPassword1().equals(regDto.getPassword2())) {
                 log.info("password1 matches password2");
                 return true;
@@ -128,20 +107,16 @@ public class SecurityServiceImpl implements SecurityService
         return false;
     }
 
-    private JwtResponse generateJwtResponse(UserDetails userDetails)
-    {
+    private JwtResponse generateJwtResponse(UserDetails userDetails) {
         String accessToken = jwtUtils.generateAccessToken(userDetails);
 
         String refreshToken = jwtUtils.generateRefreshToken(userDetails);
 
         refreshTokenCache.put(userDetails.getUsername(), refreshToken);
 
-        JwtResponse jwtResponse = JwtResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken).build();
+        JwtResponse jwtResponse =
+                JwtResponse.builder().accessToken(accessToken).refreshToken(refreshToken).build();
 
         return jwtResponse;
     }
-
-
 }

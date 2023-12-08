@@ -23,8 +23,7 @@ import ru.socialnet.team43.security.jwt.JwtFilter;
 @Configuration
 @EnableMethodSecurity
 @RequiredArgsConstructor
-public class SecurityConfiguration
-{
+public class SecurityConfiguration {
     private final UserDetailsService userDetailsService;
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
@@ -35,14 +34,12 @@ public class SecurityConfiguration
     private int passwordStrength;
 
     @Bean
-    public PasswordEncoder passwordEncoder()
-    {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(passwordStrength);
     }
 
     @Bean
-    public DaoAuthenticationProvider authenticationProvider()
-    {
+    public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
 
         authenticationProvider.setUserDetailsService(userDetailsService);
@@ -52,23 +49,30 @@ public class SecurityConfiguration
         return authenticationProvider;
     }
 
-
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception
-    {
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception
-    {
-        httpSecurity.authorizeHttpRequests((auth) ->
-                auth.requestMatchers("/api/v1/auth/**").permitAll()
-                .anyRequest().permitAll())
-                .exceptionHandling(configurer -> configurer.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity
+                .authorizeHttpRequests(
+                        (auth) ->
+                                auth.requestMatchers("/api/v1/auth/**")
+                                        .permitAll()
+                                        .anyRequest()
+                                        .permitAll())
+                .exceptionHandling(
+                        configurer ->
+                                configurer.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .csrf(AbstractHttpConfigurer::disable)
-                .httpBasic(Customizer.withDefaults()).
-                sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .httpBasic(Customizer.withDefaults())
+                .sessionManagement(
+                        httpSecuritySessionManagementConfigurer ->
+                                httpSecuritySessionManagementConfigurer.sessionCreationPolicy(
+                                        SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 

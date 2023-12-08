@@ -3,10 +3,8 @@ server:
 
 app:
   jwt:
-    accessSecret: "lPe3yPuSbhxNZDu69agqpG0K8dYvFI5nFQBnb5C+uAENVWBT0LpZ0Qw5cUqPIturca4v4FpgDoVUt/O5l0IwEQ=="
-    refreshSecret: "rtf5wCZIcY3BNYSNlsJx3rq00fTQUPfzGgnBan2RgNKRn6UNi1eb6ooMX4q2qi++95mtjs3M4wGaP44thuI8CA=="
-    accessTokenLifeTime: 3m
-    refreshTokenLifeTime: 30m
+    accessTokenLifeTime: 20m
+    refreshTokenLifeTime: 2h
     authScheme: Bearer
   security:
     passwordStrength: 12

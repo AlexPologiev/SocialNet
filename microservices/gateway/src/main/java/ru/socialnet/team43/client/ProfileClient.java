@@ -10,11 +10,8 @@ import ru.socialnet.team43.dto.geo.CountryDto;
 
 import java.util.List;
 
-@FeignClient(name = "profileClient",
-        dismiss404 = true,
-        url = "${profile.url}" + "/api/v1")
-public interface ProfileClient
-{
+@FeignClient(name = "profileClient", dismiss404 = true, url = "${profile.url}" + "/api/v1")
+public interface ProfileClient {
 
     @PostMapping("/auth/register")
     ResponseEntity<Void> RegistrationPerson(@RequestBody RegDto regDto);
@@ -33,5 +30,4 @@ public interface ProfileClient
 
     @GetMapping("/geo/country")
     ResponseEntity<List<CountryDto>> getCountry();
-
 }
