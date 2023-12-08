@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ErrorResponseBody
-{
+public class ErrorResponseBody {
     private String message;
     private String description;
 }

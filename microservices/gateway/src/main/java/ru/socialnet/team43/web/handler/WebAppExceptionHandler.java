@@ -8,20 +8,20 @@ import org.springframework.web.context.request.WebRequest;
 import ru.socialnet.team43.exception.RefreshTokenException;
 
 @RestControllerAdvice
-public class WebAppExceptionHandler
-{
+public class WebAppExceptionHandler {
     @ExceptionHandler(value = RefreshTokenException.class)
-    public ResponseEntity<ErrorResponseBody> refreshTokenExceptionHandler(RefreshTokenException exception, WebRequest webRequest)
-    {
+    public ResponseEntity<ErrorResponseBody> refreshTokenExceptionHandler(
+            RefreshTokenException exception, WebRequest webRequest) {
         return buildResponse(HttpStatus.FORBIDDEN, exception, webRequest);
     }
 
-    private ResponseEntity<ErrorResponseBody> buildResponse(HttpStatus httpStatus, Exception exception, WebRequest webRequest)
-    {
+    private ResponseEntity<ErrorResponseBody> buildResponse(
+            HttpStatus httpStatus, Exception exception, WebRequest webRequest) {
         return ResponseEntity.status(httpStatus)
-                .body(ErrorResponseBody.builder()
-                        .message(exception.getMessage())
-                        .description(webRequest.getDescription(false))
-                        .build());
+                .body(
+                        ErrorResponseBody.builder()
+                                .message(exception.getMessage())
+                                .description(webRequest.getDescription(false))
+                                .build());
     }
 }
