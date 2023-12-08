@@ -1,4 +1,4 @@
-package ru.socialnet.team43.dto;
+package ru.socialnet.team43.dto.enums;
 
 public enum Roles {
 

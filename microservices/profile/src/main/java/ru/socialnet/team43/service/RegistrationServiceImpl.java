@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.socialnet.team43.client.DatabaseClient;
 import ru.socialnet.team43.dto.RegDto;
 import ru.socialnet.team43.dto.RegDtoDb;
-import ru.socialnet.team43.dto.Roles;
+import ru.socialnet.team43.dto.enums.Roles;
 import ru.socialnet.team43.util.CaptchaCreator;
 
 @RequiredArgsConstructor

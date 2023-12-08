@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.socialnet.team43.dto.enums.StatusCode;
 
 import java.time.LocalDateTime;
 
@@ -11,8 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PersonDto
-{
+public class PersonDto {
     private String firstName;
     private String lastName;
     private String email;
@@ -34,5 +34,4 @@ public class PersonDto
     private LocalDateTime deletionTimestamp;
     private LocalDateTime createdDate;
     private LocalDateTime lastModifiedDate;
-
 }

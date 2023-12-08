@@ -3,13 +3,16 @@ package ru.socialnet.team43.repository;
 import jooq.db.Tables;
 import jooq.db.tables.records.PersonRecord;
 import jooq.db.tables.records.UserAuthRecord;
-import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
+import ru.socialnet.team43.dto.enums.FriendshipStatus;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+
+import static java.util.Optional.ofNullable;
 
 @RequiredArgsConstructor
 @Repository
@@ -55,9 +58,7 @@ public class PersonRepo {
                     .returning()
                     .fetchOptional();
         }
-
         return Optional.empty();
-
     }
 
     public Long findUserIdByEmail(String email) {
@@ -67,6 +68,15 @@ public class PersonRepo {
                 .map(UserAuthRecord::getId)
                 .orElse(0L);
     }
+
+    public int getFriendsCount(Long id) {
+        Optional<Integer> count = ofNullable(dslContext.selectCount().from(Tables.FRIENDSHIP)
+                .where(Tables.FRIENDSHIP.SRC_PERSON_ID.eq(id))
+                .and(Tables.FRIENDSHIP.FRIENDSHIPSTATUS.eq(FriendshipStatus.FRIEND.name()))
+                .fetchOne(0, int.class));
+        return count.orElse(0);
+    }
+
 
     private void fillAccount(PersonRecord dest, PersonRecord src) {
         dest.setRegDate(src.getRegDate());

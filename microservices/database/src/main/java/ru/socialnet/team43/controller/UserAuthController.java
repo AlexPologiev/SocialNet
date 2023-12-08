@@ -6,10 +6,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.socialnet.team43.dto.PersonDto;
 import ru.socialnet.team43.dto.RegDtoDb;
 import ru.socialnet.team43.dto.UserAuthDto;
 import ru.socialnet.team43.service.RegistrationService;
 import ru.socialnet.team43.service.UserAuthService;
+
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -21,7 +23,7 @@ public class UserAuthController {
     private final UserAuthService userAuthService;
 
     @PostMapping("/register/create")
-    public ResponseEntity<PersonRecord> createPerson(@RequestBody RegDtoDb regDtoDb)
+    public ResponseEntity<PersonDto> createPerson(@RequestBody RegDtoDb regDtoDb)
     {
         boolean isSuccessful = false;
 

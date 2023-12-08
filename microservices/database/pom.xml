@@ -108,7 +108,7 @@
                         <target>
                             <packageName>jooq.db</packageName>
                             <!-- основная директория -->
-                            <directory>target/generated-sources</directory>
+                            <directory>target/generated-sources/generated</directory>
                         </target>
                     </generator>
                 </configuration>

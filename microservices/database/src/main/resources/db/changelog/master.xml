@@ -11,5 +11,6 @@
         <include file="table-country_init.xml" relativeToChangelogFile="true"/>
         <include file="table-city_init.xml" relativeToChangelogFile="true"/>
         <include file="add_is_deleted_to_person.xml" relativeToChangelogFile="true"/>
+        <include file="friendship_init.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
