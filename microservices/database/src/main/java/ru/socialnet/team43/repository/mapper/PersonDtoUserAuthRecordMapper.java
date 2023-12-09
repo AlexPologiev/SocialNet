@@ -5,7 +5,6 @@ import org.mapstruct.Mapper;
 import ru.socialnet.team43.dto.RegDtoDb;
 
 @Mapper(componentModel = "spring")
-public interface PersonDtoUserAuthRecordMapper
-{
+public interface PersonDtoUserAuthRecordMapper {
     UserAuthRecord regDtoDbToUserAuthRecord(RegDtoDb regDto);
 }
