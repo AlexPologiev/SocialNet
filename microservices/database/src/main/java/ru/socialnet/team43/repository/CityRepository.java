@@ -21,4 +21,11 @@ public class CityRepository {
                 .fetchInto(CityDto.class);
     }
 
+    public List<CityDto> getCitiesByCountryId(Long countryId) {
+        return context.selectFrom(Tables.CITY)
+                .where(Tables.CITY.COUNTRY_ID.eq(countryId))
+                .and(Tables.CITY.IS_DELETED.eq(false))
+                .fetchInto(CityDto.class);
+    }
+
 }

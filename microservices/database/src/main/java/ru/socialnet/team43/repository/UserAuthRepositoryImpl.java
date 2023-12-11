@@ -56,7 +56,7 @@ public class UserAuthRepositoryImpl implements UserAuthRepository
                         .select().
                         from(Tables.USER_AUTH.leftOuterJoin(Tables.PERSON).on(Tables.USER_AUTH.ID.eq(Tables.PERSON.USER_ID)))
                         .where(Tables.USER_AUTH.EMAIL.eq(email))
-                        .fetchOptional(personDtoPersonInfoMapper);
+                        .fetchOptionalInto(PersonDto.class);
     }
 
     @Override

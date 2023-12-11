@@ -1,6 +1,8 @@
 package ru.socialnet.team43.controller;
 
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import ru.socialnet.team43.dto.geo.CityDto;
 import ru.socialnet.team43.dto.geo.CountryDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,5 +22,10 @@ public class GeoController {
     @GetMapping("/country")
     public ResponseEntity<List<CountryDto>> getCountry() {
         return ResponseEntity.ok(geoService.getCountry());
+    }
+
+    @GetMapping("/country/{countryId}/city")
+    ResponseEntity<List<CityDto>> getCitiesByCountryId(@PathVariable Long countryId) {
+        return ResponseEntity.ok(geoService.getCitiesByCountryId(countryId));
     }
 }

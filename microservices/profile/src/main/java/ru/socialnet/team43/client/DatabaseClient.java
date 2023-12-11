@@ -1,8 +1,10 @@
 package ru.socialnet.team43.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.socialnet.team43.dto.PersonDto;
 import ru.socialnet.team43.dto.RegDtoDb;
 import ru.socialnet.team43.dto.UserAuthDto;
