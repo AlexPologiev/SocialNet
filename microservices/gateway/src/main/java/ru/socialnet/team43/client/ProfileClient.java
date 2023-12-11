@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.socialnet.team43.dto.CaptchaDto;
 import ru.socialnet.team43.dto.PersonDto;
 import ru.socialnet.team43.dto.RegDto;
+import ru.socialnet.team43.dto.geo.CityDto;
 import ru.socialnet.team43.dto.geo.CountryDto;
 
 import java.util.List;
@@ -30,4 +31,8 @@ public interface ProfileClient {
 
     @GetMapping("/geo/country")
     ResponseEntity<List<CountryDto>> getCountry();
+
+    @GetMapping("geo/country/{countryId}/city")
+    ResponseEntity<List<CityDto>> getCitiesByCountryId(@PathVariable Long countryId);
+
 }

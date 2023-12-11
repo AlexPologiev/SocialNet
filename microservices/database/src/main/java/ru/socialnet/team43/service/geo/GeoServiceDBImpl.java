@@ -19,6 +19,7 @@ public class GeoServiceDBImpl implements GeoServiceDB {
     private final CountryRepository countryRepo;
     private final CityRepository cityRepo;
 
+    @Override
     public List<CountryDto> getCountries() {
         List<CountryRecord> countries = countryRepo.getCountries();
         List<CityDto> cities = cityRepo.getCitiesByCountriesId(
@@ -46,4 +47,10 @@ public class GeoServiceDBImpl implements GeoServiceDB {
 
         return countryDtoList;
     }
+
+    @Override
+    public List<CityDto> getCitiesByCountryId(Long countryId) {
+        return cityRepo.getCitiesByCountryId(countryId);
+    }
+
 }
