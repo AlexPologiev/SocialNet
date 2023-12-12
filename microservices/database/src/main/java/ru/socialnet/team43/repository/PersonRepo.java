@@ -76,7 +76,12 @@ public class PersonRepo {
                 .fetchOne(0, int.class));
         return count.orElse(0);
     }
+    public Optional<PersonRecord> getPersonById(Long id) {
+        return dslContext.selectFrom(Tables.PERSON)
+                .where(Tables.PERSON.ID.eq(id))
+                .fetchOptional();
 
+    }
 
     private void fillAccount(PersonRecord dest, PersonRecord src) {
         dest.setRegDate(src.getRegDate());
@@ -89,4 +94,6 @@ public class PersonRepo {
         dest.setIsOnline(true);
         dest.setLastModifiedDate(LocalDateTime.now());
     }
+
+
 }

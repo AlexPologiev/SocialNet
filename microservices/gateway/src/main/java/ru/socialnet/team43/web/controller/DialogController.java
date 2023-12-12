@@ -13,7 +13,7 @@ import ru.socialnet.team43.dto.UnreadCountDto;
 @RequestMapping("/api/v1/dialogs")
 public class DialogController {
 
-    @GetMapping("/count")
+    @GetMapping("/unread")
     public ResponseEntity<UnreadCountDto> getCountUnreadDialogs(){
         log.info("getCountUnreadDialogs");
         return ResponseEntity.ok(new UnreadCountDto(0));

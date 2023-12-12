@@ -29,4 +29,6 @@ public interface DatabaseClient {
 
     @PutMapping("/account/me")
     ResponseEntity<PersonDto> updateMyProfile(@RequestBody PersonDto dto);
+    @GetMapping("/account/{id}")
+    ResponseEntity<PersonDto> getProfileById(@PathVariable Long id);
 }

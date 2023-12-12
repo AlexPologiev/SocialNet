@@ -8,7 +8,7 @@ import ru.socialnet.team43.client.DatabaseClient;
 import ru.socialnet.team43.dto.PersonDto;
 import ru.socialnet.team43.util.ControllerUtil;
 
-
+@Slf4j
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/v1/account")
@@ -19,6 +19,12 @@ public class AccountController {
     @GetMapping("/me")
     public ResponseEntity<PersonDto> getMyProfile(@RequestParam("email") String email) {
         ResponseEntity<PersonDto> inputResponseEntity = databaseClient.getAccountInfo(email);
+        return controllerUtil.createNewResponseEntity(inputResponseEntity);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PersonDto> getProfileById(@PathVariable Long id){
+        ResponseEntity<PersonDto> inputResponseEntity = databaseClient.getProfileById(id);
         return controllerUtil.createNewResponseEntity(inputResponseEntity);
     }
 
