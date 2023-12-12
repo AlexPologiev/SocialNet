@@ -8,6 +8,7 @@ import ru.socialnet.team43.dto.RegDtoDb;
 import ru.socialnet.team43.repository.PersonRepo;
 import ru.socialnet.team43.repository.mapper.RegDtoPersonRecordMapper;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -21,8 +22,18 @@ public class RegistrationService {
     public Optional<PersonRecord> createPerson(RegDtoDb regDtoDb, long id)
     {
         PersonRecord recordToSave = mapper.regDtoDbToPersonRecord(regDtoDb);
+        fillPersonDefaultValues(recordToSave);
         recordToSave.setUserId(id);
         return personRepo.insertPerson(recordToSave);
     }
 
+    private void fillPersonDefaultValues(PersonRecord record){
+        record.setIsOnline(true);
+        record.setIsDeleted(false);
+        record.setIsBlocked(false);
+        record.setLastOnlineTime(LocalDateTime.now());
+        record.setLastModifiedDate(LocalDateTime.now());
+        record.setRegDate(LocalDateTime.now());
+        record.setCreatedDate(LocalDateTime.now());
+    }
 }

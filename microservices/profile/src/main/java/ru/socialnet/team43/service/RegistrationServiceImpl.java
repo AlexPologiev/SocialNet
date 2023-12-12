@@ -16,17 +16,8 @@ import ru.socialnet.team43.util.CaptchaCreator;
 @Slf4j
 public class RegistrationServiceImpl implements RegistrationService {
     private final DatabaseClient databaseClient;
-
     private final CaptchaCreator captchaCreator;
     private final static String REG_PROCESS = "Registration process: ";
-
-
-    @Value("${reg.person.isApproved}")
-    private boolean isApproved;
-    @Value("${reg.person.isBlocked}")
-    private boolean isBlocked;
-    @Value("${reg.person.messagePermission}")
-    private String messagePermission;
 
     @Override
     public boolean registrationPerson(RegDto regDto) {
