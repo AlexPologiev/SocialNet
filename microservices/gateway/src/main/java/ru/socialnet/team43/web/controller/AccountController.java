@@ -61,4 +61,16 @@ public class AccountController {
 
         return ResponseEntity.status(statusCode).build();
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PersonDto> getProfileById(@PathVariable Long id) {
+        log.info("get profile by id: {}",id);
+        ResponseEntity<PersonDto> inputResponseEntity = profileClient.getProfileById(id);
+        HttpStatusCode statusCode = inputResponseEntity.getStatusCode();
+
+        if (statusCode.isSameCodeAs(HttpStatusCode.valueOf(404))) {
+            return ResponseEntity.badRequest().build();
+        }
+        return controllerUtil.createNewResponseEntity(inputResponseEntity);
+    }
 }

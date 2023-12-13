@@ -34,5 +34,6 @@ public interface ProfileClient {
 
     @GetMapping("geo/country/{countryId}/city")
     ResponseEntity<List<CityDto>> getCitiesByCountryId(@PathVariable Long countryId);
-
+    @GetMapping("/account/{id}")
+    ResponseEntity<PersonDto> getProfileById(@PathVariable Long id);
 }

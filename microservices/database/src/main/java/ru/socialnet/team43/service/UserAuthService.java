@@ -26,4 +26,5 @@ public interface UserAuthService
 
     void deleteUserAuthById(Long id);
 
+    Optional<PersonDto> getAccountById(Long id);
 }

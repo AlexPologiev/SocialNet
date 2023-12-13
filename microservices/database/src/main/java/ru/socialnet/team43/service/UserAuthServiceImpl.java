@@ -65,4 +65,11 @@ public class UserAuthServiceImpl implements UserAuthService {
     public void deleteUserAuthById(Long id) {
         userAuthRepository.deleteUserAuthById(id);
     }
+
+    @Override
+    public Optional<PersonDto> getAccountById(Long id) {
+        Optional<PersonRecord> resultRecord = personRepo.getPersonById(id);
+        log.info("get person by id: {}", id);
+        return resultRecord.map(personMapper::PersonRecordToPersonDto);
+    }
 }
