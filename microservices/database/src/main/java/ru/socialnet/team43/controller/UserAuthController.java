@@ -2,6 +2,7 @@ package ru.socialnet.team43.controller;
 
 import jooq.db.tables.records.PersonRecord;
 import jooq.db.tables.records.UserAuthRecord;
+import jooq.db.tables.records.NotificationSettingRecord;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import ru.socialnet.team43.dto.RegDtoDb;
 import ru.socialnet.team43.dto.UserAuthDto;
 import ru.socialnet.team43.service.RegistrationService;
 import ru.socialnet.team43.service.UserAuthService;
+import ru.socialnet.team43.service.notifications.NotificationSettingDBService;
 
 import java.util.Optional;
 
@@ -21,26 +23,23 @@ import java.util.Optional;
 public class UserAuthController {
     private final RegistrationService regService;
     private final UserAuthService userAuthService;
+    private final NotificationSettingDBService settingDBService;
 
     @PostMapping("/register/create")
-    public ResponseEntity<PersonDto> createPerson(@RequestBody RegDtoDb regDtoDb)
-    {
+    public ResponseEntity<PersonDto> createPerson(@RequestBody RegDtoDb regDtoDb) {
         boolean isSuccessful = false;
 
         Optional<UserAuthRecord> userAuthRecord = userAuthService.createUserAuth(regDtoDb);
 
-        if(userAuthRecord.isPresent())
-        {
+        if (userAuthRecord.isPresent()) {
             long userId = userAuthRecord.get().getId();
 
-            try
-            {
+            try {
                 Optional<PersonRecord> person = regService.createPerson(regDtoDb, userId);
+                Optional<NotificationSettingRecord> settingRecord = settingDBService.createSetting(userId);
 
-                isSuccessful = person.isPresent();
-            }
-            catch (Exception ex)
-            {
+                isSuccessful = person.isPresent() & settingRecord.isPresent();
+            } catch (Exception ex) {
                 log.debug(ex.getMessage());
             }
 
