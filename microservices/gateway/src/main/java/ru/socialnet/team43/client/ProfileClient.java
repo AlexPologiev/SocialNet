@@ -11,6 +11,10 @@ import ru.socialnet.team43.dto.PersonDto;
 import ru.socialnet.team43.dto.RegDto;
 import ru.socialnet.team43.dto.geo.CityDto;
 import ru.socialnet.team43.dto.geo.CountryDto;
+import ru.socialnet.team43.dto.notifications.NotificationSettingDto;
+import ru.socialnet.team43.dto.notifications.NotificationUpdateDto;
+import ru.socialnet.team43.dto.notifications.NotificationSettingDto;
+import ru.socialnet.team43.dto.notifications.NotificationUpdateDto;
 import ru.socialnet.team43.dto.storage.StorageDto;
 
 import java.util.List;
@@ -43,4 +47,15 @@ public interface ProfileClient {
 
     @PostMapping(path = "/storage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<StorageDto> getStorage(@RequestBody MultipartFile file);
+
+    @GetMapping("/notifications/settings")
+    ResponseEntity<NotificationSettingDto> getSettings(@RequestParam("email") String email);
+
+    @PutMapping("/notifications/settings")
+    ResponseEntity<NotificationSettingDto> updateSetting(
+            @RequestBody NotificationUpdateDto notificationUpdateDto,
+            @RequestParam("email") String email);
+
+    @PostMapping("/notifications/settings{id}")
+    ResponseEntity<NotificationSettingDto> createSettings(@PathVariable Long id);
 }
