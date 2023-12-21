@@ -28,7 +28,7 @@ public class JwtUtils {
 
     public String generateAccessToken(UserDetails userDetails) {
         JwtBuilder tokenBuilder = tokenCommonDataBuilder(userDetails, accessTokenLifetime);
-
+        
         return tokenBuilder
                 .claim("roles", userDetails.getAuthorities())
                 .signWith(getAccessKey())

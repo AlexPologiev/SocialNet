@@ -18,5 +18,4 @@ public class RegDto {
     private String lastName;
     private String captchaCode;
     private String captchaSecret;
-
 }

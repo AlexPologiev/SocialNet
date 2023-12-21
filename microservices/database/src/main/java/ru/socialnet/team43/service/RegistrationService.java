@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.socialnet.team43.dto.RegDtoDb;
-import ru.socialnet.team43.repository.PersonRepo;
+import ru.socialnet.team43.repository.PersonRepository;
 import ru.socialnet.team43.repository.mapper.RegDtoPersonRecordMapper;
 
 import java.time.LocalDateTime;
@@ -16,7 +16,7 @@ import java.util.Optional;
 @Slf4j
 public class RegistrationService {
 
-    private final PersonRepo personRepo;
+    private final PersonRepository personRepo;
     private final RegDtoPersonRecordMapper mapper;
 
     public Optional<PersonRecord> createPerson(RegDtoDb regDtoDb, long id)

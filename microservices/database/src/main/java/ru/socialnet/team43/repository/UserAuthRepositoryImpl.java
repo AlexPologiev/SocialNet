@@ -88,6 +88,16 @@ public class UserAuthRepositoryImpl implements UserAuthRepository {
         return selectConditionStep;
     }
 
+    @Override
+    public Optional<UserAuthRecord> setNewPassword(String password, String email) {
+
+        return dslContext.update(Tables.USER_AUTH)
+                .set(Tables.USER_AUTH.PASSWORD,password)
+                .where(Tables.USER_AUTH.EMAIL.eq(email))
+                .returning()
+                .fetchOptional();
+    }
+
     /**
      * создание условий поиска профилей пользователей
      *
@@ -187,4 +197,5 @@ public class UserAuthRepositoryImpl implements UserAuthRepository {
 
         return foundAccounts;
     }
+
 }

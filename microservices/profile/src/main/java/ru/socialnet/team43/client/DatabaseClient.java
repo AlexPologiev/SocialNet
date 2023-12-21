@@ -41,4 +41,8 @@ public interface DatabaseClient {
     @GetMapping("/account/accountsSearch")
     ResponseEntity<Page<PersonDto>> getAccountsSearchResult(
             @RequestParam("searchDto") String searchDtoStr, Pageable pageableStr);
+
+    @PutMapping("/auth/change-password")
+    ResponseEntity<UserAuthDto> setNewPassword(@RequestParam("password") String password,
+                        @RequestParam("email") String email);
 }

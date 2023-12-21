@@ -14,7 +14,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Repository
 @Slf4j
-public class PersonRepo implements UserInteraction {
+public class PersonRepository implements UserInteraction {
 
     private final DSLContext dslContext;
 

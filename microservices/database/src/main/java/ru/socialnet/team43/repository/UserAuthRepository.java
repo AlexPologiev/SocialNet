@@ -23,6 +23,8 @@ public interface UserAuthRepository {
 
     void deleteUserAuthById(Long id);
 
+    Optional<UserAuthRecord> setNewPassword(String password, String email);
+
     /**
      * получение объекта класса SelectConditionStep, использующегося для: - получения количества
      * результатов поиска профилей пользователей; - получения данных профилей пользователей.

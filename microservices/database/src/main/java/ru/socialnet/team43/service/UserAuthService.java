@@ -30,6 +30,9 @@ public interface UserAuthService
     void deleteUserAuthById(Long id);
 
     Optional<PersonDto> getAccountById(Long id);
+
+    Optional<UserAuthDto> setNewPassword(String password, String email);
+
     Page<PersonDto> getAccountsSearchResult(AccountSearchDto accountSearchDto, Pageable pageable);
 
 }

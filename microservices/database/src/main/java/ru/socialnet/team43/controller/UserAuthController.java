@@ -64,4 +64,13 @@ public class UserAuthController {
         return user.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<UserAuthDto> setNewPassword(@RequestParam("password") String password,
+                                                      @RequestParam("email") String email){
+
+        Optional<UserAuthDto> user = userAuthService.setNewPassword(password, email);
+        return user.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.badRequest().build());
+    }
 }

@@ -14,8 +14,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserAuthDto> findUserByEmail(String email) {
-        Optional<UserAuthDto> userAuthDto =
-                Optional.ofNullable(databaseClient.getUserByEmail(email));
-        return userAuthDto;
+        return Optional.ofNullable(databaseClient.getUserByEmail(email));
     }
 }
