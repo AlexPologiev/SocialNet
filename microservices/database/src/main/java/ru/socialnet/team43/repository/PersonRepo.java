@@ -7,20 +7,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
-import ru.socialnet.team43.dto.enums.FriendshipStatus;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static java.util.Optional.ofNullable;
-
 @RequiredArgsConstructor
 @Repository
 @Slf4j
-public class PersonRepo {
+public class PersonRepo implements UserInteraction {
 
     private final DSLContext dslContext;
-    private final UserAuthRepository userRepo;
 
     public Optional<PersonRecord> insertPerson(PersonRecord personRecord) {
         return dslContext.insertInto(Tables.PERSON)
@@ -69,13 +65,6 @@ public class PersonRepo {
                 .orElse(0L);
     }
 
-    public int getFriendsCount(Long id) {
-        Optional<Integer> count = ofNullable(dslContext.selectCount().from(Tables.FRIENDSHIP)
-                .where(Tables.FRIENDSHIP.SRC_PERSON_ID.eq(id))
-                .and(Tables.FRIENDSHIP.FRIENDSHIPSTATUS.eq(FriendshipStatus.FRIEND.name()))
-                .fetchOne(0, int.class));
-        return count.orElse(0);
-    }
     public Optional<PersonRecord> getPersonById(Long id) {
         return dslContext.selectFrom(Tables.PERSON)
                 .where(Tables.PERSON.ID.eq(id))
@@ -94,6 +83,4 @@ public class PersonRepo {
         dest.setIsOnline(true);
         dest.setLastModifiedDate(LocalDateTime.now());
     }
-
-
 }

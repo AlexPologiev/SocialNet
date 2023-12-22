@@ -21,7 +21,7 @@
     <modules>
         <module>communication</module>
         <module>database</module>
-        <module>environment</module>
+        <module>friendship</module>
         <module>gateway</module>
         <module>profile</module>
     </modules>
