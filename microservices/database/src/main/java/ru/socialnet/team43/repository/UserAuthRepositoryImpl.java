@@ -10,21 +10,18 @@ import org.springframework.stereotype.Repository;
 import ru.socialnet.team43.dto.PersonDto;
 import ru.socialnet.team43.dto.UserAuthDto;
 import ru.socialnet.team43.repository.mapper.PersonDtoPersonInfoMapper;
+
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
 @Slf4j
-public class UserAuthRepositoryImpl implements UserAuthRepository
-{
+public class UserAuthRepositoryImpl implements UserAuthRepository {
     private final DSLContext dslContext;
 
-    private final PersonDtoPersonInfoMapper personDtoPersonInfoMapper;
-
     @Override
-    public Optional<UserAuthDto> getUserByEmail(String email)
-    {
+    public Optional<UserAuthDto> getUserByEmail(String email) {
         List<UserAuthDto> userList = dslContext.selectFrom(Tables.USER_AUTH)
                 .where(Tables.USER_AUTH.EMAIL.eq(email))
                 .fetchInto(UserAuthDto.class);
@@ -50,24 +47,20 @@ public class UserAuthRepositoryImpl implements UserAuthRepository
     }
 
     @Override
-    public Optional<PersonDto> getAccountInfo(String email)
-    {
+    public Optional<PersonDto> getAccountInfo(String email) {
         return dslContext
-                        .select().
-                        from(Tables.USER_AUTH.leftOuterJoin(Tables.PERSON).on(Tables.USER_AUTH.ID.eq(Tables.PERSON.USER_ID)))
-                        .where(Tables.USER_AUTH.EMAIL.eq(email))
-                        .fetchOptionalInto(PersonDto.class);
+                .select().
+                from(Tables.USER_AUTH.leftOuterJoin(Tables.PERSON)
+                        .on(Tables.USER_AUTH.ID.eq(Tables.PERSON.USER_ID)))
+                .where(Tables.USER_AUTH.EMAIL.eq(email))
+                .fetchOptionalInto(PersonDto.class);
     }
 
     @Override
     public void deleteUserAuthById(Long id) {
         int result = dslContext
-                            .deleteFrom(Tables.USER_AUTH)
-                            .where(Tables.USER_AUTH.ID.eq(id))
-                            .execute();
+                .deleteFrom(Tables.USER_AUTH)
+                .where(Tables.USER_AUTH.ID.eq(id))
+                .execute();
     }
-
-
-
-
 }
