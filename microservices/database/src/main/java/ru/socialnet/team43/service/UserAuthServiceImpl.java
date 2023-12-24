@@ -4,15 +4,23 @@ import jooq.db.tables.records.PersonRecord;
 import jooq.db.tables.records.UserAuthRecord;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jooq.Record;
+import org.jooq.SelectConditionStep;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.socialnet.team43.dto.PersonDto;
 import ru.socialnet.team43.dto.RegDtoDb;
+import ru.socialnet.team43.dto.AccountSearchDto;
 import ru.socialnet.team43.dto.UserAuthDto;
 import ru.socialnet.team43.repository.PersonRepo;
 import ru.socialnet.team43.repository.UserAuthRepository;
 import ru.socialnet.team43.repository.mapper.PersonDtoPersonRecordMapping;
 import ru.socialnet.team43.repository.mapper.PersonDtoUserAuthRecordMapper;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -71,5 +79,27 @@ public class UserAuthServiceImpl implements UserAuthService {
         Optional<PersonRecord> resultRecord = personRepo.getPersonById(id);
         log.info("get person by id: {}", id);
         return resultRecord.map(personMapper::PersonRecordToPersonDto);
+    }
+
+    @Override
+    public Page<PersonDto> getAccountsSearchResult(AccountSearchDto accountSearchDto, Pageable pageable)
+    {
+        Page<PersonDto> searchResult;
+
+        SelectConditionStep<Record> selectConditionStep = userAuthRepository.getSearchSelectConditionStep(accountSearchDto);
+
+        int resultsQty = userAuthRepository.getAccountSearchResultsQty(selectConditionStep);
+
+        if(0 != resultsQty)
+        {
+            List<PersonDto> resultsList = userAuthRepository.getAccountSearchResultsList(selectConditionStep, pageable);
+            searchResult = new PageImpl<>(resultsList, pageable, resultsQty);
+        }
+        else
+        {
+            searchResult = new PageImpl<>(Collections.emptyList());
+        }
+
+        return searchResult;
     }
 }

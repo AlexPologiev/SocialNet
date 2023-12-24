@@ -1,13 +1,11 @@
 package ru.socialnet.team43.service.geo;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import ru.socialnet.team43.client.GeoFeignClient;
 import ru.socialnet.team43.client.LoadGeoClient;
 import ru.socialnet.team43.dto.geo.CityDto;
@@ -15,14 +13,15 @@ import ru.socialnet.team43.dto.geo.CountryDto;
 import ru.socialnet.team43.util.MapperGeoJson;
 
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Service
 @AllArgsConstructor
 public class GeoServiceImpl implements GeoService {
 
-    private GeoFeignClient feignClient;
-    private LoadGeoClient loadGeoClient;
+    private final GeoFeignClient feignClient;
+    private final LoadGeoClient loadGeoClient;
 
     @Override
     public List<CountryDto> getCountry() {
@@ -49,5 +48,21 @@ public class GeoServiceImpl implements GeoService {
             log.warn("{} cannot read the received object", mapper.getClass().getName(), ex);
             return ResponseEntity.status(422).build();
         }
+    }
+
+    @Override
+    public List<String> getCountriesTitlesByPossibleTitles(Set<String> possibleTitles)
+            throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        return feignClient.getCountriesTitlesByPossibleTitles(
+                mapper.writeValueAsString(possibleTitles));
+    }
+
+    @Override
+    public List<String> getCitiesTitlesByPossibleTitles(Set<String> possibleTitles)
+            throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        return feignClient.getCitiesTitlesByPossibleTitles(
+                mapper.writeValueAsString(possibleTitles));
     }
 }

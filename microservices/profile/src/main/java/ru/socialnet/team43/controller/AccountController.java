@@ -2,10 +2,13 @@ package ru.socialnet.team43.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.socialnet.team43.client.DatabaseClient;
 import ru.socialnet.team43.dto.PersonDto;
+import ru.socialnet.team43.service.ProfileService;
 import ru.socialnet.team43.util.ControllerUtil;
 
 @Slf4j
@@ -15,6 +18,7 @@ import ru.socialnet.team43.util.ControllerUtil;
 public class AccountController {
     private final DatabaseClient databaseClient;
     private final ControllerUtil controllerUtil;
+    private final ProfileService profileService;
 
     @GetMapping("/me")
     public ResponseEntity<PersonDto> getMyProfile(@RequestParam("email") String email) {
@@ -37,5 +41,30 @@ public class AccountController {
     @DeleteMapping("/me")
     public ResponseEntity<Void> deleteMyProfile(@RequestParam("email") String email) {
         return databaseClient.deleteMyProfile(email);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<PersonDto>> searchAccounts(
+            @RequestParam String author,
+            @RequestParam String firstName,
+            @RequestParam String lastName,
+            @RequestParam String city,
+            @RequestParam String country,
+            @RequestParam Boolean isDeleted,
+            @RequestParam Integer ageTo,
+            @RequestParam Integer ageFrom,
+            @RequestParam String ids,
+            Pageable pageable) {
+
+        try {
+            ResponseEntity<Page<PersonDto>> inputResponseEntity =
+                    profileService.proceedSearch(
+                            author, firstName, lastName, city, country, isDeleted, ageTo, ageFrom,
+                            ids, pageable);
+            return controllerUtil.createNewResponseEntity(inputResponseEntity);
+        } catch (Exception ex) {
+            log.error(AccountController.class.getCanonicalName(), ex);
+            return ResponseEntity.badRequest().build();
+        }
     }
 }
