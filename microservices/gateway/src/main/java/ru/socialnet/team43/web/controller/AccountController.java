@@ -2,6 +2,9 @@ package ru.socialnet.team43.web.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,15 +25,16 @@ public class AccountController {
     @GetMapping("/me")
     public ResponseEntity<PersonDto> getMyProfile(
             @AuthenticationPrincipal UserDetails userDetails) {
-        log.debug("/api/v1/account/me");
-        if (null != userDetails) {
+        log.info("/api/v1/account/me");
+        if (userDetails != null) {
 
-            log.debug(userDetails.getUsername());
+            log.info(userDetails.getUsername());
+            ResponseEntity<PersonDto> inputResponseEntity =
+                    profileClient.getMyProfile(userDetails.getUsername());
+            return controllerUtil.createNewResponseEntity(inputResponseEntity);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-
-        ResponseEntity<PersonDto> inputResponseEntity =
-                profileClient.getMyProfile(userDetails.getUsername());
-        return controllerUtil.createNewResponseEntity(inputResponseEntity);
     }
 
     @PutMapping("/me")
@@ -64,13 +68,47 @@ public class AccountController {
 
     @GetMapping("/{id}")
     public ResponseEntity<PersonDto> getProfileById(@PathVariable Long id) {
-        log.info("get profile by id: {}",id);
+        log.info("get profile by id: {}", id);
         ResponseEntity<PersonDto> inputResponseEntity = profileClient.getProfileById(id);
         HttpStatusCode statusCode = inputResponseEntity.getStatusCode();
 
         if (statusCode.isSameCodeAs(HttpStatusCode.valueOf(404))) {
             return ResponseEntity.badRequest().build();
         }
+        return controllerUtil.createNewResponseEntity(inputResponseEntity);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<PersonDto>> searchAccounts(
+            @RequestParam(defaultValue = "") String author,
+            @RequestParam(defaultValue = "") String firstName,
+            @RequestParam(defaultValue = "") String lastName,
+            @RequestParam(defaultValue = "") String city,
+            @RequestParam(defaultValue = "") String country,
+            @RequestParam(defaultValue = "false") Boolean isDeleted,
+            @RequestParam(defaultValue = "0") Integer ageTo,
+            @RequestParam(defaultValue = "0") Integer ageFrom,
+            @RequestParam(defaultValue = "") String ids,
+            Pageable pageable) {
+        log.info(
+                "/api/v1/account/search\n"
+                        + "author: {}, firstName: {}, lastName: {}, city: {}, country: {}, "
+                        + "isDeleted: {}, ageTo: {}, ageFrom: {}, ids: {}",
+                author,
+                firstName,
+                lastName,
+                city,
+                country,
+                isDeleted,
+                ageTo,
+                ageFrom,
+                ids);
+
+        ResponseEntity<Page<PersonDto>> inputResponseEntity =
+                profileClient.searchAccounts(
+                        author, firstName, lastName, city, country, isDeleted, ageTo, ageFrom, ids,
+                        pageable);
+
         return controllerUtil.createNewResponseEntity(inputResponseEntity);
     }
 }

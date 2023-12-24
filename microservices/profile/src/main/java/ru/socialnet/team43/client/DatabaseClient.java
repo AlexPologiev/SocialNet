@@ -1,6 +1,8 @@
 package ru.socialnet.team43.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,7 +11,6 @@ import ru.socialnet.team43.dto.PersonDto;
 import ru.socialnet.team43.dto.RegDtoDb;
 import ru.socialnet.team43.dto.UserAuthDto;
 import ru.socialnet.team43.dto.storage.StorageDto;
-
 
 @FeignClient(name = "databaseClient", dismiss404 = true, url = "${database.url}")
 public interface DatabaseClient {
@@ -25,6 +26,7 @@ public interface DatabaseClient {
 
     @GetMapping("/account/me")
     ResponseEntity<PersonDto> getAccountInfo(@RequestParam("email") String email);
+
     @DeleteMapping("/account/me")
     ResponseEntity<Void> deleteMyProfile(@RequestParam("email") String email);
 
@@ -35,4 +37,8 @@ public interface DatabaseClient {
 
     @PostMapping(path = "/storage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<StorageDto> getStorage(@RequestBody MultipartFile file);
+
+    @GetMapping("/account/accountsSearch")
+    ResponseEntity<Page<PersonDto>> getAccountsSearchResult(
+            @RequestParam("searchDto") String searchDtoStr, Pageable pageableStr);
 }

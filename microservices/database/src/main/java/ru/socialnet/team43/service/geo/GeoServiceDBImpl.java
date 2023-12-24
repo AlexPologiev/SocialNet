@@ -16,6 +16,7 @@ import ru.socialnet.team43.repository.mapper.CountryMapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -82,4 +83,14 @@ public class GeoServiceDBImpl implements GeoServiceDB {
     public boolean checkEmpty() {
         return countryRepo.getCountCountries() == 0 || cityRepo.getCountCities() == 0;
     }
+    @Override
+    public List<String> getCountriesTitlesByPossibleTitles(Set<String> possibleTitles) throws Exception {
+        return countryRepo.getCountriesTitlesByPossibleTitles(possibleTitles);
+    }
+
+    @Override
+    public List<String> getCitiesTitlesByPossibleTitles(Set<String> possibleTitles) throws Exception {
+        return cityRepo.getCitiesTitlesByPossibleTitles(possibleTitles);
+    }
+
 }

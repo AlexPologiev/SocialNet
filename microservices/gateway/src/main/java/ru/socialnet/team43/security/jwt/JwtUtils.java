@@ -126,7 +126,7 @@ public class JwtUtils {
     }
 
     private SecretKey getAccessKey() {
-        if (null == accessKey) {
+        if (accessKey == null) {
             accessKey = generateKey("Access secret");
         }
 
@@ -134,7 +134,7 @@ public class JwtUtils {
     }
 
     private SecretKey getRefreshKey() {
-        if (null == refreshKey) {
+        if (refreshKey == null) {
             refreshKey = generateKey("Refresh secret");
         }
 

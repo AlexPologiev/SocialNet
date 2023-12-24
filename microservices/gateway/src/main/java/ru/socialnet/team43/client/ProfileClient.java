@@ -2,6 +2,8 @@ package ru.socialnet.team43.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -60,4 +62,16 @@ public interface ProfileClient {
 
     @PostMapping("/notifications/settings{id}")
     ResponseEntity<NotificationSettingDto> createSettings(@PathVariable Long id);
+    @GetMapping("/account/search")
+    ResponseEntity<Page<PersonDto>> searchAccounts(
+            @RequestParam String author,
+            @RequestParam String firstName,
+            @RequestParam String lastName,
+            @RequestParam String city,
+            @RequestParam String country,
+            @RequestParam Boolean isDeleted,
+            @RequestParam Integer ageTo,
+            @RequestParam Integer ageFrom,
+            @RequestParam String ids,
+            Pageable pageable);
 }
