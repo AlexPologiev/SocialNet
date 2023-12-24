@@ -13,8 +13,6 @@ import ru.socialnet.team43.dto.geo.CityDto;
 import ru.socialnet.team43.dto.geo.CountryDto;
 import ru.socialnet.team43.dto.notifications.NotificationSettingDto;
 import ru.socialnet.team43.dto.notifications.NotificationUpdateDto;
-import ru.socialnet.team43.dto.notifications.NotificationSettingDto;
-import ru.socialnet.team43.dto.notifications.NotificationUpdateDto;
 import ru.socialnet.team43.dto.storage.StorageDto;
 
 import java.util.List;
@@ -37,13 +35,17 @@ public interface ProfileClient {
     @DeleteMapping("/account/me")
     ResponseEntity<Void> deleteMyProfile(@RequestParam("email") String email);
 
+    @GetMapping("/account/{id}")
+    ResponseEntity<PersonDto> getProfileById(@PathVariable Long id);
+
     @GetMapping("/geo/country")
     ResponseEntity<List<CountryDto>> getCountry();
 
-    @GetMapping("geo/country/{countryId}/city")
+    @GetMapping("/geo/country/{countryId}/city")
     ResponseEntity<List<CityDto>> getCitiesByCountryId(@PathVariable Long countryId);
-    @GetMapping("/account/{id}")
-    ResponseEntity<PersonDto> getProfileById(@PathVariable Long id);
+
+    @PutMapping("/geo/load")
+    ResponseEntity<Void> load();
 
     @PostMapping(path = "/storage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<StorageDto> getStorage(@RequestBody MultipartFile file);

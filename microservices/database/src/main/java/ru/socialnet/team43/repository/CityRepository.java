@@ -1,10 +1,14 @@
 package ru.socialnet.team43.repository;
 
-import ru.socialnet.team43.dto.geo.CityDto;
+import jooq.db.Tables;
+import jooq.db.tables.records.CityRecord;
+
 import lombok.AllArgsConstructor;
+
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
-import jooq.db.Tables;
+
+import ru.socialnet.team43.dto.geo.CityDto;
 
 import java.util.List;
 
@@ -28,4 +32,15 @@ public class CityRepository {
                 .fetchInto(CityDto.class);
     }
 
+    public void truncateCity() {
+        context.truncate(Tables.CITY).execute();
+    }
+
+    public void insertCities(List<CityRecord> cities) {
+        context.batchInsert(cities).execute();
+    }
+
+    public Long getCountCities() {
+        return context.selectCount().from(Tables.CITY).fetchOne(0, Long.class);
+    }
 }

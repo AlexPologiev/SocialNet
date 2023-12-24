@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CityDto {
     private Long id;
-    private boolean isDelete;
+    private Boolean isDeleted;
     private String title;
     private Long countryId;
 }

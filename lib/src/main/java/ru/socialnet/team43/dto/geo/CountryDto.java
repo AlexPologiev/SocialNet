@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CountryDto {
     private Long id;
-    private boolean isDeleted;
+    private Boolean isDeleted;
     private String title;
     private List<CityDto> cities;
 }
