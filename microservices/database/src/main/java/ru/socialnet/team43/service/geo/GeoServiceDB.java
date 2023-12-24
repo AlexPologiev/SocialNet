@@ -9,4 +9,8 @@ public interface GeoServiceDB {
     List<CountryDto> getCountries();
 
     List<CityDto> getCitiesByCountryId(Long countryId);
+
+    boolean load(List<CountryDto> countries);
+
+    boolean checkEmpty();
 }

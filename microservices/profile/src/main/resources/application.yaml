@@ -19,6 +19,9 @@ captcha:
 database:
   url: http://localhost:8050
 
+loader-geo:
+  url: https://api.hh.ru
+
 reg:
   person:
     isApproved: true
@@ -28,3 +31,7 @@ reg:
 app:
   security:
     passwordStrength: 12
+
+geo-check:
+  activated: true          # Отключить проверку таблиц. Если таблицы пустые запускает полную загрузку.
+  initial-delay-sec: 40   # Время через которое запустится проверки таблиц CITY и COUNTRY 
