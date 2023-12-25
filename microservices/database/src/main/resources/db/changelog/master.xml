@@ -13,5 +13,6 @@
         <include file="add_is_deleted_to_person.xml" relativeToChangelogFile="true"/>
         <include file="friendship_init.xml" relativeToChangelogFile="true"/>
         <include file="table-notification-setting_init.xml" relativeToChangelogFile="true"/>
+        <include file="table-post_init.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
