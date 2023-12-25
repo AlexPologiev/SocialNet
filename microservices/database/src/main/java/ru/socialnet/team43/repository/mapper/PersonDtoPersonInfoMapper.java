@@ -11,3 +11,4 @@ public interface PersonDtoPersonInfoMapper extends RecordMapper<Record, PersonDt
     @Override
     PersonDto map(Record record);
 }
+
