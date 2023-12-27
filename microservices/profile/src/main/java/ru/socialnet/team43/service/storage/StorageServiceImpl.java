@@ -22,7 +22,7 @@ public class StorageServiceImpl implements StorageService {
     @Override
     public ResponseEntity<StorageDto> getStorage(MultipartFile file) {
         if (file.isEmpty()
-                || !Objects.requireNonNull(file.getContentType()).matches("^image/(png|jpg)")) {
+                || !Objects.requireNonNull(file.getContentType()).matches("^image/(png|jpg|jpeg)")) {
             log.warn(
                     "File {} has the non-correct type {}. Correct type is image/png or image/jpg",
                     file.getOriginalFilename(),
