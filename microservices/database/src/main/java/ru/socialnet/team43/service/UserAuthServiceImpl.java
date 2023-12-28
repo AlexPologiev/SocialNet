@@ -14,10 +14,11 @@ import ru.socialnet.team43.dto.PersonDto;
 import ru.socialnet.team43.dto.RegDtoDb;
 import ru.socialnet.team43.dto.AccountSearchDto;
 import ru.socialnet.team43.dto.UserAuthDto;
-import ru.socialnet.team43.repository.PersonRepo;
+import ru.socialnet.team43.repository.PersonRepository;
 import ru.socialnet.team43.repository.UserAuthRepository;
 import ru.socialnet.team43.repository.mapper.PersonDtoPersonRecordMapping;
 import ru.socialnet.team43.repository.mapper.PersonDtoUserAuthRecordMapper;
+import ru.socialnet.team43.repository.mapper.UserAuthMapper;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,29 +28,31 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class UserAuthServiceImpl implements UserAuthService {
-    private final UserAuthRepository userAuthRepository;
-    private final PersonRepo personRepo;
+    private final UserAuthRepository userAuthRepo;
+    private final PersonRepository personRepo;
     private final PersonDtoUserAuthRecordMapper mapper;
     private final PersonDtoPersonRecordMapping personMapper;
 
+    private final UserAuthMapper userAuthMapper;
+
     @Override
     public Optional<UserAuthRecord> createUserAuth(RegDtoDb regDtoDb) {
-        return userAuthRepository.insertUserAuth(mapper.regDtoDbToUserAuthRecord(regDtoDb));
+        return userAuthRepo.insertUserAuth(mapper.regDtoDbToUserAuthRecord(regDtoDb));
     }
 
     @Override
     public Optional<UserAuthDto> getUserByEmail(String email) {
-        return userAuthRepository.getUserByEmail(email);
+        return userAuthRepo.getUserByEmail(email);
     }
 
     @Override
     public int getUsersCountByEmail(String email) {
-        return userAuthRepository.getUsersCountByEmail(email);
+        return userAuthRepo.getUsersCountByEmail(email);
     }
 
     @Override
     public Optional<PersonDto> getAccountInfo(String email) {
-        return userAuthRepository.getAccountInfo(email);
+        return userAuthRepo.getAccountInfo(email);
     }
 
     @Override
@@ -71,7 +74,7 @@ public class UserAuthServiceImpl implements UserAuthService {
 
     @Override
     public void deleteUserAuthById(Long id) {
-        userAuthRepository.deleteUserAuthById(id);
+        userAuthRepo.deleteUserAuthById(id);
     }
 
     @Override
@@ -82,17 +85,24 @@ public class UserAuthServiceImpl implements UserAuthService {
     }
 
     @Override
+    public Optional<UserAuthDto> setNewPassword(String password, String email) {
+       Optional<UserAuthRecord> resultRecord = userAuthRepo.setNewPassword(password,email);
+        log.info("set new password for email: {}", email);
+        return resultRecord.map(userAuthMapper::userRecordToDtoMapper);
+    }
+
+    @Override
     public Page<PersonDto> getAccountsSearchResult(AccountSearchDto accountSearchDto, Pageable pageable)
     {
         Page<PersonDto> searchResult;
 
-        SelectConditionStep<Record> selectConditionStep = userAuthRepository.getSearchSelectConditionStep(accountSearchDto);
+        SelectConditionStep<Record> selectConditionStep = userAuthRepo.getSearchSelectConditionStep(accountSearchDto);
 
-        int resultsQty = userAuthRepository.getAccountSearchResultsQty(selectConditionStep);
+        int resultsQty = userAuthRepo.getAccountSearchResultsQty(selectConditionStep);
 
         if(0 != resultsQty)
         {
-            List<PersonDto> resultsList = userAuthRepository.getAccountSearchResultsList(selectConditionStep, pageable);
+            List<PersonDto> resultsList = userAuthRepo.getAccountSearchResultsList(selectConditionStep, pageable);
             searchResult = new PageImpl<>(resultsList, pageable, resultsQty);
         }
         else
@@ -102,4 +112,5 @@ public class UserAuthServiceImpl implements UserAuthService {
 
         return searchResult;
     }
+
 }

@@ -28,6 +28,13 @@ public interface ProfileClient {
     @GetMapping("/auth/captcha")
     ResponseEntity<CaptchaDto> getCaptcha();
 
+    @PostMapping("/auth/password/recovery/")
+    ResponseEntity<Void> sendEmailRecovery(@RequestParam("email") String email);
+
+    @PostMapping("/auth/password/recovery/{token}")
+    ResponseEntity<Void> resetForgotPassword(@PathVariable("token") String token,
+                                             @RequestParam("password") String password);
+
     @GetMapping("/account/me")
     ResponseEntity<PersonDto> getMyProfile(@RequestParam("email") String email);
 

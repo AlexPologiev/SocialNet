@@ -19,6 +19,9 @@ captcha:
 database:
   url: http://localhost:8050
 
+frontend:
+  url: http://localhost:8099
+
 loader-geo:
   url: https://api.hh.ru
 
@@ -32,6 +35,21 @@ app:
   security:
     passwordStrength: 12
 
+mail:
+  host: smtp.gmail.com
+  port: 587
+  username: socialnetteam43@gmail.com
+  password: qtnysionqgadoyhp
+  protocol: smtp
+  smtpAuth: true
+  smtpStartTlsEnable: true
+  debugEnable: true
+  subject: Password recovery
+  mailText: Hello!
+
+emailToken:
+  lifeTime: 5
+
 geo-check:
   activated: true          # Отключить проверку таблиц. Если таблицы пустые запускает полную загрузку.
-  initial-delay-sec: 40   # Время через которое запустится проверки таблиц CITY и COUNTRY 
+  initial-delay-sec: 40   # Время через которое запустится проверки таблиц CITY и COUNTRY

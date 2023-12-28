@@ -1,21 +1,28 @@
 package ru.socialnet.team43.web.controller;
 
+import feign.FeignException;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import ru.socialnet.team43.client.ProfileClient;
-import ru.socialnet.team43.dto.CaptchaDto;
-import ru.socialnet.team43.dto.RegDto;
+import ru.socialnet.team43.dto.*;
 import ru.socialnet.team43.security.SecurityService;
+import ru.socialnet.team43.service.UserService;
 import ru.socialnet.team43.util.ControllerUtil;
 import ru.socialnet.team43.web.model.AuthRequest;
 import ru.socialnet.team43.web.model.JwtResponse;
 import ru.socialnet.team43.web.model.RefreshRequest;
 import ru.socialnet.team43.web.model.SimpleResponse;
+
+import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -25,6 +32,10 @@ public class AuthController {
     private final SecurityService securityService;
     private final ProfileClient profileClient;
     private final ControllerUtil controllerUtil;
+
+    private final PasswordEncoder passwordEncoder;
+
+    private final UserService userService;
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> signIn(@RequestBody AuthRequest authRequest) {
@@ -87,4 +98,40 @@ public class AuthController {
         ResponseEntity<CaptchaDto> inputResponseEntity = profileClient.getCaptcha();
         return controllerUtil.createNewResponseEntity(inputResponseEntity);
     }
+
+    @PostMapping("/password/recovery/")
+    public ResponseEntity<Void> sendEmail(@RequestBody PasswordRecoveryDto dto) {
+        String email = dto.getEmail();
+        log.info("/password/recovery/ for email: {}",email);
+
+        if((email == null) || userService.findUserByEmail(email).isEmpty()){
+            log.info("user not found with email: {}",email);
+            return ResponseEntity.badRequest().build();
+        }
+
+        ResponseEntity<Void> inputResponseEntity = profileClient.sendEmailRecovery(email);
+        return controllerUtil.createNewResponseEntity(inputResponseEntity);
+    }
+    @PostMapping("/password/recovery/{token}")
+    public ResponseEntity<Void> resetForgotPassword(@PathVariable("token") String token,
+                                                    @RequestBody NewPasswordDto dto){
+
+        log.info("Token {}, dto: {}",token, dto);
+
+        if(token == null || dto == null || dto.getPassword() == null ){
+            return ResponseEntity.badRequest().build();
+        }
+
+        String encodePassword = passwordEncoder.encode(dto.getPassword());
+        ResponseEntity<Void> inputResponseEntity = profileClient.resetForgotPassword(token, encodePassword);
+
+        return ResponseEntity.ok().build();
+    }
+    @ExceptionHandler(FeignException.class)
+    private ResponseEntity<Void> handler(FeignException ex) {
+        log.warn("Error in the gateway {}", ex.getMessage());
+        return ResponseEntity.status(ex.status()).build();
+    }
+
+
 }
