@@ -13,7 +13,6 @@ import ru.socialnet.team43.client.DatabaseClient;
 import ru.socialnet.team43.dto.AccountSearchDto;
 import ru.socialnet.team43.dto.PersonDto;
 import ru.socialnet.team43.service.geo.GeoService;
-import ru.socialnet.team43.util.ControllerUtil;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -119,13 +118,14 @@ public class ProfileServiceImpl implements ProfileService {
 
     private AccountSearchDto generateSearchDtoFromSingleField(String author, Boolean isDeleted)
             throws Exception {
-        if (!StringUtils.hasText(author)) {
-            return null;
-        }
 
         AccountSearchDto.AccountSearchDtoBuilder dtoBuilder = AccountSearchDto.builder();
 
         dtoBuilder.isDeleted(isDeleted);
+
+        if (!StringUtils.hasText(author)) {
+            return dtoBuilder.build();
+        }
 
         String[] searchStringFragmentsArr = author.split("\\s+");
         Set<String> searchStringFragments = new HashSet<>();
