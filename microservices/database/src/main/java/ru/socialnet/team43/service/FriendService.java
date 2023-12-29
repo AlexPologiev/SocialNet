@@ -11,7 +11,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FriendService {
 
-    private FriendRepository repository;
+    private final FriendRepository repository;
 
     public long getFriendsCount(String email) {
         return repository.getFriendsCount(email);
