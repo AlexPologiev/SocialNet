@@ -16,16 +16,3 @@ app:
     authScheme: Bearer
   security:
     passwordStrength: 12
-  frontend: http://localhost:8099
-
-database:
-  url: http://localhost:8050
-
-profile:
-  url: http://localhost:8080
-
-communication:
-  url: http://localhost:8081
-
-environment:
-  url: http://localhost:8082
