@@ -11,7 +11,7 @@ import java.io.IOException;
 @Component
 public class CorsFilter implements Filter {
 
-    @Value("${app.frontend}")
+    @Value("${frontend.url}")
     private String frontend;
 
     @Override

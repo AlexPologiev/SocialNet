@@ -2,11 +2,6 @@ server:
   port: 8050
 
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/team43
-    username: skillbox43
-    password: skillbox43
-    driver-class-name: org.postgresql.Driver
 
   servlet:
     multipart:

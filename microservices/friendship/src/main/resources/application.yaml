@@ -4,6 +4,3 @@ server:
 spring:
   application:
     name: environment
-
-database:
-  url: http://localhost:8050

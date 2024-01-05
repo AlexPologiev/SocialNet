@@ -22,6 +22,7 @@
         <db.password>${db_password}</db.password>
         <db.database>${db_name}</db.database>
         <db.url>jdbc:postgresql://${db.host}/${db.database}</db.url>
+        <start-class>ru.socialnet.team43.DatabaseApplication</start-class>
     </properties>
 
     <profiles>
@@ -29,6 +30,18 @@
             <id>dev</id>
             <properties>
                 <env>develop</env>
+                <db.host>localhost</db.host>
+                <db.login>skillbox43</db.login>
+                <db.password>skillbox43</db.password>
+                <db.database>team43</db.database>
+                <db.url>jdbc:postgresql://${db.host}:5432/${db.database}</db.url>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>docker</id>
+            <properties>
+                <env>docker</env>
                 <db.host>localhost</db.host>
                 <db.login>skillbox43</db.login>
                 <db.password>skillbox43</db.password>
@@ -146,6 +159,21 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.6.15</version>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 

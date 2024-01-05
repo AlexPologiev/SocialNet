@@ -4,6 +4,3 @@ server:
 spring:
   application:
     name: communication
-
-database:
-  url: http://localhost:8050/api/v1

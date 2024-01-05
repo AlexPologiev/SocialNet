@@ -16,12 +16,6 @@ captcha:
   length: 3
   symbols: "abcdefghijklmnopqrstuvwxyz1234567890"
 
-database:
-  url: http://localhost:8050
-
-frontend:
-  url: http://localhost:8099
-
 loader-geo:
   url: https://api.hh.ru
 
