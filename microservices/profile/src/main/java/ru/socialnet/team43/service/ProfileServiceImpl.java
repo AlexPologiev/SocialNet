@@ -51,7 +51,8 @@ public class ProfileServiceImpl implements ProfileService {
                         country.toLowerCase(),
                         isDeleted,
                         ageTo,
-                        ageFrom);
+                        ageFrom,
+                        ids);
 
         if (accountSearchDto == null) {
             accountSearchDto = generateSearchDtoFromSingleField(author.toLowerCase(), isDeleted);
@@ -75,7 +76,8 @@ public class ProfileServiceImpl implements ProfileService {
             String country,
             Boolean isDeleted,
             Integer ageTo,
-            Integer ageFrom) {
+            Integer ageFrom,
+            String ids) {
         boolean isDtoGenerated = false;
         AccountSearchDto.AccountSearchDtoBuilder dtoBuilder = AccountSearchDto.builder();
 
@@ -111,6 +113,16 @@ public class ProfileServiceImpl implements ProfileService {
             isDtoGenerated = true;
         }
 
+        if (StringUtils.hasText(ids)) {
+            Set<String> idsStrSet =
+                    Arrays.stream(ids.split("\\s*,\\s*")).collect(Collectors.toSet());
+            Set<Long> idsSet = segregateLongValues(idsStrSet);
+            if (!idsSet.isEmpty()) {
+                dtoBuilder.ids(idsSet);
+                isDtoGenerated = true;
+            }
+        }
+
         AccountSearchDto accountSearchDto = isDtoGenerated ? dtoBuilder.build() : null;
 
         return accountSearchDto;
@@ -139,8 +151,8 @@ public class ProfileServiceImpl implements ProfileService {
         if (!possibleEmails.isEmpty()) {
             dtoBuilder.author(possibleEmails);
         } else {
-            Set<Integer> intValues = segregateIntValues(searchStringFragments);
-            fillSearchedAge(dtoBuilder, intValues);
+            Set<Long> longValues = segregateLongValues(searchStringFragments);
+            fillSearchedAge(dtoBuilder, longValues);
             fillSearchedLocations(dtoBuilder, searchStringFragments);
             dtoBuilder.firstName(searchStringFragments);
             dtoBuilder.lastName(searchStringFragments);
@@ -173,34 +185,34 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     private void fillSearchedAge(
-            AccountSearchDto.AccountSearchDtoBuilder dtoBuilder, Set<Integer> intValues) {
-        if (!intValues.isEmpty()) {
-            int age =
-                    intValues.stream()
+            AccountSearchDto.AccountSearchDtoBuilder dtoBuilder, Set<Long> longValues) {
+        if (!longValues.isEmpty()) {
+            long age =
+                    longValues.stream()
                             .filter(intVal -> intVal > 0 && intVal < 150)
                             .findFirst()
                             .get();
             if (age != 0) {
-                dtoBuilder.ageFrom(age - 1);
-                dtoBuilder.ageTo(age + 1);
+                dtoBuilder.ageFrom((int) age - 1);
+                dtoBuilder.ageTo((int) age + 1);
             }
         }
     }
 
-    private Set<Integer> segregateIntValues(Set<String> searchStringFragments) {
-        Map<String, Integer> intValues = new HashMap<>();
+    private Set<Long> segregateLongValues(Set<String> searchStringFragments) {
+        Map<String, Long> longValues = new HashMap<>();
 
         for (String fragment : searchStringFragments) {
             try {
-                Integer intVal = Integer.parseInt(fragment);
-                intValues.put(fragment, intVal);
+                Long longVal = Long.parseLong(fragment);
+                longValues.put(fragment, longVal);
             } catch (NumberFormatException ex) {
                 log.info("\"" + fragment + "\" is not a number");
             }
         }
 
-        searchStringFragments.removeAll(intValues.keySet());
+        searchStringFragments.removeAll(longValues.keySet());
 
-        return new HashSet<>(intValues.values());
+        return new HashSet<>(longValues.values());
     }
 }
