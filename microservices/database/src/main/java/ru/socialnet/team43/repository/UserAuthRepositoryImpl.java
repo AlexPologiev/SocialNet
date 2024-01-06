@@ -91,8 +91,9 @@ public class UserAuthRepositoryImpl implements UserAuthRepository {
     @Override
     public Optional<UserAuthRecord> setNewPassword(String password, String email) {
 
-        return dslContext.update(Tables.USER_AUTH)
-                .set(Tables.USER_AUTH.PASSWORD,password)
+        return dslContext
+                .update(Tables.USER_AUTH)
+                .set(Tables.USER_AUTH.PASSWORD, password)
                 .where(Tables.USER_AUTH.EMAIL.eq(email))
                 .returning()
                 .fetchOptional();
@@ -111,6 +112,10 @@ public class UserAuthRepositoryImpl implements UserAuthRepository {
         if (accountSearchDto.getAuthor() != null && !accountSearchDto.getAuthor().isEmpty()) {
             condition =
                     condition.and(lower(Tables.USER_AUTH.EMAIL).in(accountSearchDto.getAuthor()));
+        }
+
+        if (accountSearchDto.getIds() != null && !accountSearchDto.getIds().isEmpty()) {
+            condition = condition.and(Tables.PERSON.ID.in(accountSearchDto.getIds()));
         }
 
         boolean isFirstNameFilled =
@@ -197,5 +202,4 @@ public class UserAuthRepositoryImpl implements UserAuthRepository {
 
         return foundAccounts;
     }
-
 }

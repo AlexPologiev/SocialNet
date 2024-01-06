@@ -15,7 +15,7 @@ import java.util.Set;
 public class AccountSearchDto {
     private String id;
     private Boolean isDeleted;
-    private List<String> ids;
+    private Set<Long> ids;
     private List<String> blockedByIds;
     private Set<String> author;
     private Set<String> firstName;
