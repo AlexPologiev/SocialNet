@@ -22,21 +22,12 @@ public class EmailServiceImpl implements EmailService {
     private final MailProperties properties;
 
     @Override
-    public void sendMessageWithTemplate(String to, String link) throws MessagingException {
+    public void sendMessageWithTemplate(String to, String content) throws MessagingException {
 
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message,
                 MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
                 StandardCharsets.UTF_8.name());
-
-       String content = "<!DOCTYPE HTML> <html>\n" +
-               " <head>\n" +
-               "  <meta charset=\"utf-8\">\n" +
-               " </head>\n" +
-               " <body>\n" +"<p>Ссылка действительна в течении 5 минут</p>\n" +
-               "  <a href=\""+ link + "\">Нажмите для восстановления пароля</a>\n" +
-               " </body>\n" +
-               "</html>";
 
         mimeMessageHelper.setTo(to);
         mimeMessageHelper.setSubject(properties.getSubject());

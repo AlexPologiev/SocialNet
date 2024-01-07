@@ -1,5 +1,6 @@
 package ru.socialnet.team43.service;
 
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,8 +16,13 @@ import ru.socialnet.team43.util.CaptchaCreator;
 @Service
 @Slf4j
 public class RegistrationServiceImpl implements RegistrationService {
+
+    @Value("${frontend.url}")
+    private String hostUrl;
     private final DatabaseClient databaseClient;
     private final CaptchaCreator captchaCreator;
+
+    private final EmailService emailService;
     private final static String REG_PROCESS = "Registration process: ";
 
     @Override
@@ -35,7 +41,12 @@ public class RegistrationServiceImpl implements RegistrationService {
 
             RegDtoDb regDtoForDb = createRegDtoForDb(regDto, Roles.USER);
 
-            return createPerson(regDtoForDb);
+            boolean resultRegistration = createPerson(regDtoForDb);
+
+            if (resultRegistration){
+                sendConfirmationLetter(email,hostUrl);
+                return true;
+            }
         }
 
         return false;
@@ -66,6 +77,24 @@ public class RegistrationServiceImpl implements RegistrationService {
         }
         log.info(REG_PROCESS + "email is unique");
         return false;
+    }
+
+    private void sendConfirmationLetter(String to, String link){
+
+        String content = "<!DOCTYPE HTML> <html>\n" +
+                " <head>\n" +
+                "  <meta charset=\"utf-8\">\n" +
+                " </head>\n" +
+                " <body>\n" +"<p>Поздравляем! Вы были успешно зарегистированы на сайте:</p>\n" +
+                "  <a href=\""+ link + "\">Социальная сеть</a>\n" +
+                " </body>\n" +
+                "</html>";
+
+        try {
+            emailService.sendMessageWithTemplate(to,content);
+        } catch (MessagingException e){
+            e.printStackTrace();
+        }
     }
 
     private boolean createPerson(RegDtoDb regDtoDb) {

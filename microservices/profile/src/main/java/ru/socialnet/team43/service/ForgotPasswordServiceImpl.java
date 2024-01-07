@@ -38,7 +38,16 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
         storageToken.put(emailToken.getToken(), emailToken);
         String recoveryLink = createLink(emailToken.getToken());
 
-        emailService.sendMessageWithTemplate(email,recoveryLink);
+        String content = "<!DOCTYPE HTML> <html>\n" +
+                " <head>\n" +
+                "  <meta charset=\"utf-8\">\n" +
+                " </head>\n" +
+                " <body>\n" +"<p>Ссылка действительна в течении 5 минут</p>\n" +
+                "  <a href=\""+ recoveryLink + "\">Нажмите для восстановления пароля</a>\n" +
+                " </body>\n" +
+                "</html>";
+
+        emailService.sendMessageWithTemplate(email,content);
     }
 
     @Override

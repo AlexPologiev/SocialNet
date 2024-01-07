@@ -5,5 +5,5 @@ import jakarta.mail.internet.AddressException;
 
 public interface EmailService {
 
-    void sendMessageWithTemplate(String to, String link) throws MessagingException;
+    void sendMessageWithTemplate(String to, String content) throws MessagingException;
 }
