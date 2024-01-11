@@ -1,6 +1,7 @@
-stages:          
+stages:
   - build
   - test
+  - publish
   - deploy
 
 build:
@@ -27,6 +28,45 @@ build:
   stage: test   
   script:
     - echo "Not yet implemented. Skip this stage"
+
+publish_project:
+  stage: publish
+  image: docker:24.0.7-alpine3.19
+  services:
+    - postgres:16
+  variables:
+    MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+    MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version"
+    POSTGRES_USER: $db_user
+    POSTGRES_PASSWORD: $db_password
+    POSTGRES_DB: $db_name
+    POSTGRES_HOST_AUTH_METHOD: trust
+  cache:
+    paths:
+      - .m2/repository
+  before_script:
+    - apk update
+    - apk add maven
+    - docker logout
+    - docker logout registry-1.docker.io
+    - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD
+  script:
+    - mvn $MAVEN_CLI_OPTS clean install
+    - docker build -f .deploy/dockerfile-communication -t skillbox43/social-net-backend:communication .
+    - docker push skillbox43/social-net-backend:communication
+    - docker build -f .deploy/dockerfile-database -t skillbox43/social-net-backend:database .
+    - docker push skillbox43/social-net-backend:database
+    - docker build -f .deploy/dockerfile-friendship -t skillbox43/social-net-backend:friendship .
+    - docker push skillbox43/social-net-backend:friendship
+    - docker build -f .deploy/dockerfile-gateway -t skillbox43/social-net-backend:gateway .
+    - docker push skillbox43/social-net-backend:gateway
+    - docker build -f .deploy/dockerfile-profile -t skillbox43/social-net-backend:profile .
+    - docker push skillbox43/social-net-backend:profile
+    - echo "$CI_JOB_STAGE was successful"
+    - echo "deploy number $CI_PIPELINE_ID"
+  only:
+    - develop
+    - master
 
 .deploy:
   stage: deploy
