@@ -38,7 +38,7 @@ mail:
   smtpAuth: true
   smtpStartTlsEnable: true
   debugEnable: true
-  subject: Password recovery
+  subject: Social network
   mailText: Hello!
 
 emailToken:
