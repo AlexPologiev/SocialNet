@@ -6,7 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
 import jooq.db.tables.records.NotificationSettingRecord;
+import ru.socialnet.team43.dto.enums.NotificationType;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -46,5 +49,38 @@ public class NotificationSettingRepository {
                 .set(notificationSettingRecord)
                 .returning()
                 .fetchOptional();
+    }
+
+    public List<Integer> getListNotificationType(Long userId) {
+        List<Integer> list = new ArrayList<>(0);
+        Optional<NotificationSettingRecord> record = getNotificationSettingById(userId);
+
+        if (record.isPresent()) {
+            if (record.get().getEnableLike()) {
+                list.add(NotificationType.LIKE.getId());
+            }
+            if (record.get().getEnablePost()) {
+                list.add(NotificationType.POST.getId());
+            }
+            if (record.get().getEnablePostComment()) {
+                list.add(NotificationType.POST_COMMENT.getId());
+            }
+            if (record.get().getEnableMessage()) {
+                list.add(NotificationType.MESSAGE.getId());
+            }
+            if (record.get().getEnableCommentComment()) {
+                list.add(NotificationType.COMMENT_COMMENT.getId());
+            }
+            if (record.get().getEnableFriendRequest()) {
+                list.add(NotificationType.FRIEND_REQUEST.getId());
+            }
+            if (record.get().getEnableFriendBirthday()) {
+                list.add(NotificationType.FRIEND_BIRTHDAY.getId());
+            }
+            if (record.get().getEnableSendEmailMessage()) {
+                list.add(NotificationType.SEND_EMAIL_MESSAGE.getId());
+            }
+        }
+        return list;
     }
 }
