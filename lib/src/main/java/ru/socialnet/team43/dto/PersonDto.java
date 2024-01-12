@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class PersonDto {
+    private Long id;
     private String firstName;
     private String lastName;
     private String email;

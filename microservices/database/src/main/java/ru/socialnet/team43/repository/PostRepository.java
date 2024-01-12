@@ -1,6 +1,7 @@
 package ru.socialnet.team43.repository;
 
 import jooq.db.Tables;
+import jooq.db.tables.records.PostRecord;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Condition;
@@ -8,10 +9,12 @@ import org.jooq.DSLContext;
 import org.jooq.OrderField;
 import org.springframework.stereotype.Repository;
 import ru.socialnet.team43.dto.PostDto;
+import ru.socialnet.team43.dto.enums.PostType;
 
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static org.jooq.impl.DSL.*;
 
@@ -35,7 +38,7 @@ public class PostRepository {
                 .fetchInto(PostDto.class);
     }
 
-    public Condition getAllPostCondition(List<Long> ids, List<Long> accountsId,
+    public Condition getAllPostCondition(List<Long> ids, List<Long> accountIds,
                                          List<Long> blockedIds, String author,
                                          String text, Boolean withFriends,
                                          Boolean isBlocked, Boolean isDeleted,
@@ -46,8 +49,8 @@ public class PostRepository {
         if (ids != null) {
             condition = condition.and(Tables.POST.ID.in(ids));
         }
-        if (accountsId != null) {
-            condition = condition.and(Tables.POST.AUTHOR_ID.in(accountsId));
+        if (accountIds != null) {
+            condition = condition.and(Tables.POST.AUTHOR_ID.in(accountIds));
         }
         if (blockedIds != null) {
             condition = condition.and(Tables.POST.AUTHOR_ID.in(blockedIds));
@@ -87,6 +90,45 @@ public class PostRepository {
             }
         }
         return sortField;
+    }
+
+    public Optional<PostRecord> getPostById(Long id) {
+        return context.selectFrom(Tables.POST)
+                .where(Tables.POST.ID.eq(id))
+                .and(Tables.POST.IS_DELETED.eq(false))
+                .and(Tables.POST.IS_BLOCKED.eq(false))
+                .and(Tables.POST.PUBLISH_DATE.lessOrEqual(OffsetDateTime.now()))
+                .fetchOptional();
+    }
+
+    public Optional<PostRecord> addNewPost(PostRecord postRecord) {
+        return context.insertInto(Tables.POST)
+                .set(postRecord)
+                .returning()
+                .fetchOptional();
+    }
+
+    public void publishQueuedPost(PostRecord postRecord) {
+        context.update(Tables.POST)
+                .set(Tables.POST.TYPE, PostType.POSTED.name())
+                .where(Tables.POST.ID.eq(postRecord.getId()))
+                .execute();
+    }
+
+    public void editPost(PostRecord postRecord) {
+        context.update(Tables.POST)
+                .set(Tables.POST.POST_TEXT, postRecord.getPostText())
+                .set(Tables.POST.TITLE, postRecord.getTitle())
+                .set(Tables.POST.TIME_CHANGED, OffsetDateTime.now())
+                .where(Tables.POST.ID.eq(postRecord.getId()))
+                .execute();
+    }
+
+    public void deletePostById(Long id) {
+        context.update(Tables.POST)
+                .set(Tables.POST.IS_DELETED, true)
+                .where(Tables.POST.ID.eq(id))
+                .execute();
     }
 
 }

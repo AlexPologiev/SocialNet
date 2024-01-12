@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class PostDto {
 
+    private Long id;
     private OffsetDateTime time;
     private OffsetDateTime timeChanged;
     private Long authorId;
@@ -22,11 +23,13 @@ public class PostDto {
     private PostType type;
     private String postText;
     private Boolean isBlocked;
+    private Boolean isDeleted;
     private Integer commentsCount;
     private String reactionType;
     private String myReaction;
     private Integer likeAmount;
     private Boolean myLike;
+    private OffsetDateTime publishDate;
     private List<String> imagesPaths;
     private List<TagDto> tags;
 
