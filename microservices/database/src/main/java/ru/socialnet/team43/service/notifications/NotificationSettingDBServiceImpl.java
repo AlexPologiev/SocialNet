@@ -64,6 +64,8 @@ public class NotificationSettingDBServiceImpl implements NotificationSettingDBSe
             case FRIEND_BIRTHDAY -> Tables.NOTIFICATION_SETTING.ENABLE_FRIEND_BIRTHDAY;
             case FRIEND_REQUEST -> Tables.NOTIFICATION_SETTING.ENABLE_FRIEND_REQUEST;
             case SEND_EMAIL_MESSAGE -> Tables.NOTIFICATION_SETTING.ENABLE_SEND_EMAIL_MESSAGE;
+            case FRIEND_APPROVE, FRIEND_BLOCKED, FRIEND_UNBLOCKED,
+                    FRIEND_SUBSCRIBE, USER_BIRTHDAY -> null;
         };
     }
 

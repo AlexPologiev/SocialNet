@@ -8,13 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import ru.socialnet.team43.dto.CaptchaDto;
-import ru.socialnet.team43.dto.PersonDto;
-import ru.socialnet.team43.dto.RegDto;
+import ru.socialnet.team43.dto.*;
 import ru.socialnet.team43.dto.geo.CityDto;
 import ru.socialnet.team43.dto.geo.CountryDto;
-import ru.socialnet.team43.dto.notifications.NotificationSettingDto;
-import ru.socialnet.team43.dto.notifications.NotificationUpdateDto;
+import ru.socialnet.team43.dto.notifications.*;
 import ru.socialnet.team43.dto.storage.StorageDto;
 
 import java.util.List;
@@ -69,6 +66,15 @@ public interface ProfileClient {
 
     @PostMapping("/notifications/settings{id}")
     ResponseEntity<NotificationSettingDto> createSettings(@PathVariable Long id);
+
+    @GetMapping("/notifications")
+    ResponseEntity<Page<NotificationsDto>> getAll(
+            @RequestParam("email") String email,
+            Pageable pageable);
+
+    @GetMapping("/notifications/count")
+    ResponseEntity<CountDto> getNotificationCount(@RequestParam("email") String email);
+
     @GetMapping("/account/search")
     ResponseEntity<Page<PersonDto>> searchAccounts(
             @RequestParam String author,

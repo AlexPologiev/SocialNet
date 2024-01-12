@@ -1,7 +1,9 @@
 package ru.socialnet.team43.web.controller;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -9,30 +11,24 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import ru.socialnet.team43.client.ProfileClient;
 import ru.socialnet.team43.dto.CountDto;
-import ru.socialnet.team43.dto.DataCount;
-import ru.socialnet.team43.dto.notifications.NotificationSettingDto;
-import ru.socialnet.team43.dto.notifications.NotificationUpdateDto;
+import ru.socialnet.team43.dto.notifications.*;
 import ru.socialnet.team43.util.ControllerUtil;
-
-import java.time.LocalDateTime;
 
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/notifications")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class NotificationGWController {
     private final ProfileClient profileClient;
     private final ControllerUtil controllerUtil;
 
     @GetMapping("/count")
-    public ResponseEntity<CountDto> getNotificationCount() {
-        CountDto dto = CountDto.builder()
-                .data(new DataCount(0))
-                .timeStamp(LocalDateTime.now())
-                .build();
-        log.info("getNotificationsCount {}", dto);
-        return ResponseEntity.ok(dto);
-
+    public ResponseEntity<CountDto> getNotificationCount(
+            @AuthenticationPrincipal UserDetails userDetails) {
+        String email = userDetails.getUsername();
+        log.info("Count notifications for the user: {}", email);
+        return controllerUtil.createNewResponseEntity(
+                profileClient.getNotificationCount(email));
     }
 
     @GetMapping("/settings")
@@ -68,5 +64,23 @@ public class NotificationGWController {
     public ResponseEntity<NotificationSettingDto> createSettings(@PathVariable Long id) {
         log.info("create a notification setting for the user: {}", id);
         return controllerUtil.createNewResponseEntity(profileClient.createSettings(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<NotificationsDto>> getAll(
+            @AuthenticationPrincipal UserDetails userDetails,
+            Pageable pageable
+    ) {
+        String email = userDetails.getUsername();
+        log.info("receiving all notifications for the user: {}; pageable: {}; pageable: first {}; getOffset {}; getPageSize {};" +
+                        " getSort {}; getPageNumber {}; hasPrevious {}; " +
+                        " isPage {}; isUnpaged {}; next {}; " +
+                        " previousOrFirst {};",
+                email, pageable, pageable.first(), pageable.getOffset(), pageable.getPageSize(),
+                pageable.getSort(), pageable.getPageNumber(), pageable.hasPrevious(),
+                pageable.isPaged(), pageable.isUnpaged(), pageable.next(),
+                pageable.previousOrFirst());
+        return controllerUtil.createNewResponseEntity(
+                profileClient.getAll(email, pageable));
     }
 }
