@@ -14,5 +14,6 @@
         <include file="friendship_init.xml" relativeToChangelogFile="true"/>
         <include file="table-notification-setting_init.xml" relativeToChangelogFile="true"/>
         <include file="table-post_init.xml" relativeToChangelogFile="true"/>
+        <include file="add_publish_date_and_edit_time_in_post_table.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
