@@ -74,4 +74,10 @@ public class NotificationPRServiceImpl implements NotificationPRService {
         log.info("Count notifications for the user: {}", email);
         return client.getNotificationCount(email);
     }
+
+    @Override
+    public void setIsRead(String email){
+        client.setIsRead(email);
+        log.info("all notifications for user: {} are marked as read", email);
+    }
 }

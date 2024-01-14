@@ -75,6 +75,9 @@ public interface ProfileClient {
     @GetMapping("/notifications/count")
     ResponseEntity<CountDto> getNotificationCount(@RequestParam("email") String email);
 
+    @PutMapping("/notifications/readed")
+    ResponseEntity<String> setIsRead(@RequestParam("email") String email);
+
     @GetMapping("/account/search")
     ResponseEntity<Page<PersonDto>> searchAccounts(
             @RequestParam String author,

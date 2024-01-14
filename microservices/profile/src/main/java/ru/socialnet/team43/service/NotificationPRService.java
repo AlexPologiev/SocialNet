@@ -15,4 +15,6 @@ public interface NotificationPRService {
     Page<NotificationsDto> getAll(String email, String sort, int page, int size, Pageable pageable);
 
     CountDto getNotificationCount(String email);
+
+    void setIsRead(String email);
 }

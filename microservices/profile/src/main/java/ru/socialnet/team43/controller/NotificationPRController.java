@@ -3,6 +3,7 @@ package ru.socialnet.team43.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.socialnet.team43.dto.CountDto;
@@ -53,5 +54,13 @@ public class NotificationPRController {
             @RequestParam("email") String email) {
         //description: Получить счетчик количества событий
         return ResponseEntity.ok(service.getNotificationCount(email));
+    }
+
+    @PutMapping("/readed")
+    public ResponseEntity<String> setIsRead(
+            @RequestParam("email") String email) {
+        //description: Отметить все события, как прочитанные
+        service.setIsRead(email);
+        return ResponseEntity.ok().build();
     }
 }

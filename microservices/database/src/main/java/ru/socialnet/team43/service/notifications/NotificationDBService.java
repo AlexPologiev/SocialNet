@@ -11,4 +11,6 @@ public interface NotificationDBService {
     List<NotificationsDto> findByPersonId(String email, Pageable pageable);
 
     CountDto getNotificationCount(String email);
+
+    void setIsRead(String email);
 }

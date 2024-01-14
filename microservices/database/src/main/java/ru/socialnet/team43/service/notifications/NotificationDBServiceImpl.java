@@ -56,4 +56,14 @@ public class NotificationDBServiceImpl implements NotificationDBService {
         log.info("Count notifications for the user: {} - {}", email, countDto.getData().getCount());
         return countDto;
     }
+
+    public void setIsRead(String email){
+        Long userId = personRepository.findUserIdByEmail(email);
+        Long personId = notificationRepository.getPersonRecordByUserId(userId)
+                .map(PersonRecord::getId)
+                .orElse(0L);
+        List<Integer> list = settingRepository.getListNotificationType(userId);
+        int result = notificationRepository.setIsRead(personId, list);
+        log.info("all notifications for user: {} - personId {} are marked as read {}", email, personId, result);
+    }
 }

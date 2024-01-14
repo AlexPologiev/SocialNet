@@ -83,4 +83,12 @@ public class NotificationGWController {
         return controllerUtil.createNewResponseEntity(
                 profileClient.getAll(email, pageable));
     }
+
+    @PutMapping("/readed")
+    public ResponseEntity<String> setIsRead(
+            @AuthenticationPrincipal UserDetails userDetails){
+        String email = userDetails.getUsername();
+        log.info("all notifications for user: {} are marked as read", email);
+        return controllerUtil.createNewResponseEntity(profileClient.setIsRead(email));
+    }
 }
