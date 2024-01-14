@@ -28,4 +28,7 @@ public interface NotificationsClient {
 
     @GetMapping("/count")
     CountDto getNotificationCount(@RequestParam("email") String email);
+
+    @PutMapping("/readed")
+    void setIsRead(@RequestParam("email") String email);
 }

@@ -80,4 +80,17 @@ public class NotificationDBController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
+
+    @PutMapping("/readed")
+    public ResponseEntity<String> setIsRead(
+            @RequestParam("email") String email) {
+        //description: Отметить все события, как прочитанные
+        try {
+            notificationDBService.setIsRead(email);
+            return ResponseEntity.ok().build();
+        } catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+    }
 }

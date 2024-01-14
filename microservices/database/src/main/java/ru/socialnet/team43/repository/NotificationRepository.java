@@ -51,6 +51,17 @@ public class NotificationRepository {
         return convertQueryResultsToModelObjects(personId, queryResults);
     }
 
+    public int setIsRead(Long personId, List<Integer> list) {
+        return dsl
+                .update(Tables.NOTIFICATION)
+                .set(Tables.NOTIFICATION.IS_READ, true)
+                .where(Tables.NOTIFICATION.PERSON_ID.eq(personId)
+                        .and(Tables.NOTIFICATION.TYPE_ID.in(list))
+                        .and(Tables.NOTIFICATION.IS_READ.eq(false)))
+                .returning()
+                .execute();
+    }
+
     private Collection<SortField<?>> getSortFields(Sort sortSpecification) {
         Collection<SortField<?>> querySortFields = new ArrayList<>();
 
@@ -158,7 +169,7 @@ public class NotificationRepository {
                         .authorId(postRecord.getAuthorId())
                         .receiverId(personId)
                         .notificationType(NotificationType.POST)
-                        .content(postRecord.getPostText())
+                        .content(postRecord.getPostText().replaceAll("<[^>]*>", ""))
                         .sentTime(postRecord.getTime().toLocalDateTime())
                         .build()).orElse(null);
     }
