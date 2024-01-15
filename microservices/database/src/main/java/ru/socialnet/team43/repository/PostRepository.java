@@ -101,17 +101,19 @@ public class PostRepository {
                 .fetchOptional();
     }
 
-    public Optional<PostRecord> addNewPost(PostRecord postRecord) {
+    public Long addNewPost(PostRecord postRecord) {
         return context.insertInto(Tables.POST)
                 .set(postRecord)
                 .returning()
-                .fetchOptional();
+                .fetchOptional()
+                .map(PostRecord::getId)
+                .orElse(0L);
     }
 
-    public void publishQueuedPost(PostRecord postRecord) {
+    public void publishQueuedPost(Long id) {
         context.update(Tables.POST)
                 .set(Tables.POST.TYPE, PostType.POSTED.name())
-                .where(Tables.POST.ID.eq(postRecord.getId()))
+                .where(Tables.POST.ID.eq(id))
                 .execute();
     }
 

@@ -16,5 +16,7 @@
         <include file="table-post_init.xml" relativeToChangelogFile="true"/>
         <include file="add_publish_date_and_edit_time_in_post_table.xml" relativeToChangelogFile="true"/>
         <include file="table-notification_init.xml" relativeToChangelogFile="true"/>
+        <include file="table-tag_init.xml" relativeToChangelogFile="true"/>
+        <include file="table-post2tag_init.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

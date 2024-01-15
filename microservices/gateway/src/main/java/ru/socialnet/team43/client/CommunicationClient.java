@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.socialnet.team43.dto.PostDto;
+import ru.socialnet.team43.dto.TagDto;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -40,4 +41,7 @@ public interface CommunicationClient {
 
     @DeleteMapping("post/{id}")
     ResponseEntity<Long> deletePost(@PathVariable Long id);
+
+    @GetMapping("/tag")
+    ResponseEntity<List<TagDto>> getByName(@RequestParam String name);
 }
