@@ -65,6 +65,18 @@ public class PersonRepository implements UserInteraction {
                 .orElse(0L);
     }
 
+    public Long getPersonIdByEmail(String email) {
+        return dslContext.selectFrom(Tables.PERSON)
+                .where(Tables.PERSON.USER_ID.eq(
+                        dslContext.select(Tables.USER_AUTH.ID)
+                        .from(Tables.USER_AUTH)
+                        .where(Tables.USER_AUTH.EMAIL.eq(email))
+                ))
+                .fetchOptional()
+                .map(PersonRecord::getId)
+                .orElse(null);
+    }
+
     public Optional<PersonRecord> getPersonById(Long id) {
         return dslContext.selectFrom(Tables.PERSON)
                 .where(Tables.PERSON.ID.eq(id))

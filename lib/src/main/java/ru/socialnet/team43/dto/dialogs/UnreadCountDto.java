@@ -1,15 +1,12 @@
-package ru.socialnet.team43.dto;
-
+package ru.socialnet.team43.dto.dialogs;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@AllArgsConstructor
 public class UnreadCountDto {
     private Integer count;
 }

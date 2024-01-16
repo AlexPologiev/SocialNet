@@ -18,5 +18,7 @@
         <include file="table-notification_init.xml" relativeToChangelogFile="true"/>
         <include file="table-tag_init.xml" relativeToChangelogFile="true"/>
         <include file="table-post2tag_init.xml" relativeToChangelogFile="true"/>
+        <include file="table-dialog_init.xml" relativeToChangelogFile="true"/>
+        <include file="table-message_init.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
