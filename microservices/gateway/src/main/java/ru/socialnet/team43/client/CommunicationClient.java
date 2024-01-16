@@ -5,8 +5,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.socialnet.team43.dto.PostDto;
 import ru.socialnet.team43.dto.TagDto;
+import ru.socialnet.team43.dto.dialogs.DialogDto;
+import ru.socialnet.team43.dto.dialogs.UnreadCountDto;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -44,4 +49,10 @@ public interface CommunicationClient {
 
     @GetMapping("/tag")
     ResponseEntity<List<TagDto>> getByName(@RequestParam String name);
+
+    @GetMapping("/dialogs")
+    ResponseEntity<Page<DialogDto>> getDialogs(@RequestParam String email, Pageable page);
+
+    @GetMapping("/dialogs/unread")
+    ResponseEntity<UnreadCountDto> getCountUnreadDialogs(@RequestParam String email);
 }
