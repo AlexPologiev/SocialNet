@@ -6,11 +6,13 @@ import lombok.ToString;
 @ToString
 public enum FriendshipStatus {
 
-    REQUEST("Запрос на добавление в друзья"),
+    REQUEST_FROM("Запрос на подписку"),
+    REQUEST_TO("Запрос на добавление в друзья"),
     FRIEND("Друг"),
     BLOCKED("Пользователь в черном списке"),
-    DECLINED("Запрос на добавление в друзья отклонен"),
-    SUBSCRIBED("Подписан");
+    SUBSCRIBED("Подписан"),
+    WATCHING("Проссматривал Вас"),
+    NONE("Нет статуса");
 
     @Getter
     private final String description;

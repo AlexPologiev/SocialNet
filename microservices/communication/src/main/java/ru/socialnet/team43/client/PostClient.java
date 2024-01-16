@@ -8,7 +8,7 @@ import ru.socialnet.team43.dto.PostDto;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-@FeignClient(name = "databaseClient", dismiss404 = true, url = "${database.url}" + "/api/v1/post")
+@FeignClient(name = "databasePostClient", dismiss404 = true, url = "${database.url}" + "/api/v1/post")
 public interface PostClient {
 
     @GetMapping
