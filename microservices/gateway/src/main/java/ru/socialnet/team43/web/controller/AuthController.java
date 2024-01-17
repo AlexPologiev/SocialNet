@@ -1,9 +1,7 @@
 package ru.socialnet.team43.web.controller;
 
 import feign.FeignException;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import lombok.RequiredArgsConstructor;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -21,12 +19,10 @@ import ru.socialnet.team43.web.model.JwtResponse;
 import ru.socialnet.team43.web.model.RefreshRequest;
 import ru.socialnet.team43.web.model.SimpleResponse;
 
-import java.util.Optional;
-import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
 public class AuthController {
     private final SecurityService securityService;
@@ -36,6 +32,16 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
 
     private final UserService userService;
+    private AtomicInteger usersCount;
+
+    public AuthController(SecurityService securityService, ProfileClient profileClient, ControllerUtil controllerUtil, PasswordEncoder passwordEncoder, UserService userService, MeterRegistry meterRegistry) {
+        this.securityService = securityService;
+        this.profileClient = profileClient;
+        this.controllerUtil = controllerUtil;
+        this.passwordEncoder = passwordEncoder;
+        this.userService = userService;
+        meterRegistry.gauge("users_count", usersCount);
+    }
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> signIn(@RequestBody AuthRequest authRequest) {
@@ -71,13 +77,13 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Void> RegistrationPerson(@RequestBody RegDto regDto) {
+    public ResponseEntity<Void> registrationPerson(@RequestBody RegDto regDto) {
         log.debug("/api/v1/auth/register");
         log.debug(regDto.toString());
 
         if (securityService.doPasswordsMatch(regDto)) {
             ResponseEntity<Void> inputResponseEntity =
-                    profileClient.RegistrationPerson(
+                    profileClient.registrationPerson(
                             securityService.getRegDtoWithEncryptedPassword(regDto));
             HttpStatusCode statusCode = inputResponseEntity.getStatusCode();
 
@@ -102,23 +108,24 @@ public class AuthController {
     @PostMapping("/password/recovery/")
     public ResponseEntity<Void> sendEmail(@RequestBody PasswordRecoveryDto dto) {
         String email = dto.getEmail();
-        log.info("/password/recovery/ for email: {}",email);
+        log.info("/password/recovery/ for email: {}", email);
 
-        if((email == null) || userService.findUserByEmail(email).isEmpty()){
-            log.info("user not found with email: {}",email);
+        if ((email == null) || userService.findUserByEmail(email).isEmpty()) {
+            log.info("user not found with email: {}", email);
             return ResponseEntity.badRequest().build();
         }
 
         ResponseEntity<Void> inputResponseEntity = profileClient.sendEmailRecovery(email);
         return controllerUtil.createNewResponseEntity(inputResponseEntity);
     }
+
     @PostMapping("/password/recovery/{token}")
     public ResponseEntity<Void> resetForgotPassword(@PathVariable("token") String token,
-                                                    @RequestBody NewPasswordDto dto){
+                                                    @RequestBody NewPasswordDto dto) {
 
-        log.info("Token {}, dto: {}",token, dto);
+        log.info("Token {}, dto: {}", token, dto);
 
-        if(token == null || dto == null || dto.getPassword() == null ){
+        if (token == null || dto == null || dto.getPassword() == null) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -127,6 +134,7 @@ public class AuthController {
 
         return ResponseEntity.ok().build();
     }
+
     @ExceptionHandler(FeignException.class)
     private ResponseEntity<Void> handler(FeignException ex) {
         log.warn("Error in the gateway {}", ex.getMessage());

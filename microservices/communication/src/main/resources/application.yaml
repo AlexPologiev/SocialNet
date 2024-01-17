@@ -4,3 +4,17 @@ server:
 spring:
   application:
     name: communication
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, communication, prometheus
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true

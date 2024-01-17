@@ -4,3 +4,20 @@ server:
 spring:
   application:
     name: environment
+
+database:
+  url: http://localhost:8050
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,friendship,prometheus
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true

@@ -20,7 +20,7 @@ import java.util.List;
 public interface ProfileClient {
 
     @PostMapping("/auth/register")
-    ResponseEntity<Void> RegistrationPerson(@RequestBody RegDto regDto);
+    ResponseEntity<Void> registrationPerson(@RequestBody RegDto regDto);
 
     @GetMapping("/auth/captcha")
     ResponseEntity<CaptchaDto> getCaptcha();

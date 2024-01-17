@@ -47,3 +47,17 @@ emailToken:
 geo-check:
   activated: true          # Отключить проверку таблиц. Если таблицы пустые запускает полную загрузку.
   initial-delay-sec: 40   # Время через которое запустится проверки таблиц CITY и COUNTRY
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,profile,prometheus
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true

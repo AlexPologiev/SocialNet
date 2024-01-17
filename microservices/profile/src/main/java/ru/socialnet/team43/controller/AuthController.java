@@ -1,7 +1,6 @@
 package ru.socialnet.team43.controller;
 
 import feign.FeignException;
-import jakarta.mail.internet.AddressException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.socialnet.team43.dto.RegDto;
 import ru.socialnet.team43.dto.CaptchaDto;
 import ru.socialnet.team43.service.AuthService;
-import ru.socialnet.team43.service.EmailService;
 import ru.socialnet.team43.service.ForgotPasswordService;
 import ru.socialnet.team43.service.RegistrationService;
 
@@ -26,7 +24,7 @@ public class AuthController {
     private final ForgotPasswordService forgotPasswordService;
 
     @PostMapping("/register")
-    public ResponseEntity<Void> RegistrationPerson(@RequestBody RegDto regDto) {
+    public ResponseEntity<Void> registrationPerson(@RequestBody RegDto regDto) {
         boolean result = registrationService.registrationPerson(regDto);
         return result ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
 
