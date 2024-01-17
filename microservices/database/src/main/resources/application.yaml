@@ -19,3 +19,17 @@ cloudinary:
     api_key: 885654915398544
     api_secret: yNc-utCrfPNjDFDXiN2X75ZcSfg
     secure: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,database,prometheus
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true

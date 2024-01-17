@@ -6,8 +6,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @EnableFeignClients
 @SpringBootApplication
-public class EnvironmentApplication {
+public class FriendshipApplication {
     public static void main(String[] args) {
-        SpringApplication.run(EnvironmentApplication.class, args);
+        SpringApplication.run(FriendshipApplication.class, args);
     }
 }

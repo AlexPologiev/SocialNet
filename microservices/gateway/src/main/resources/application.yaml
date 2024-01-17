@@ -16,3 +16,17 @@ app:
     authScheme: Bearer
   security:
     passwordStrength: 12
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,gateway,prometheus
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
