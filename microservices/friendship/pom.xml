@@ -17,7 +17,7 @@
     </parent>
 
     <properties>
-        <start-class>ru.socialnet.team43.EnvironmentApplication</start-class>
+        <start-class>ru.socialnet.team43.FriendshipApplication</start-class>
     </properties>
 
     <dependencies>

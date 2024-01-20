@@ -11,7 +11,7 @@
 
 ==================================
 
-### Docker build and docker-compose:
+### Docker build and docker-compose general:
 
 1. Specify parameters in `application-docker.yaml`: 
 
@@ -70,3 +70,27 @@
 7. Create containers using docker compose:
 
        docker-compose -p="team43-socialnet-backend" -f .deploy/docker-compose.yaml up -d
+
+### Launching docker containers locally:
+
+1. Create a new network:
+
+       docker network create -d bridge team43-socialnet-backend_social-net
+   
+2. Create database container connected to the network:
+
+       docker run -d --name db --network team43-socialnet-backend_social-net -p 5432:5432 -v data:/var/lib/postgresql/data -e POSTGRES_USER=skillbox43 -e POSTGRES_DB=team43 -e POSTGRES_PASSWORD=skillbox43 postgres:16.0-alpine3.18
+   
+3. Create frontend container connected to the network:
+
+        docker run -d --name frontend --network team43-socialnet-backend_social-net -p 8099:80 -v **path**:/etc/nginx/conf.d/ alphateam35/frontend:local
+   
+    where **path** - path to file server.conf 
+
+4. Pull microservices' images:
+
+       docker-compose -f .deploy/docker-compose-local.yaml pull
+   
+5. Create microservices' containers using docker compose:
+
+       docker-compose -p="team43-socialnet-backend" -f .deploy/docker-compose-local.yaml up -d
