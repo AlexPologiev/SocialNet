@@ -1,7 +1,6 @@
 package ru.socialnet.team43.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,21 +17,11 @@ public class FriendController {
 
     private final FriendService service;
 
-    /**
-     * Эндпоинт получения количества друзей
-     * @param email эл/почта пользователя
-     * @return количество друзей
-     */
     @GetMapping("/count")
     public long getFriendCount(@RequestParam String email) {
         return service.getFriendsCount(email);
     }
 
-    /**
-     * Эендпоинт получения списка рекомендованных друзей
-     * @param email эл/почта пользователя
-     * @return список рекомендованных друзей
-     */
     @GetMapping("/recommendations")
     public ResponseEntity<List<FriendDto>> getRecommendations(@RequestParam String email) {
         return ResponseEntity.ok(service.getRecommendations(email));
@@ -66,5 +55,28 @@ public class FriendController {
         List<Long> result = service.searchFriendsByStatus(statusCode, email, page);
 
         return ResponseEntity.ok(result);
+    }
+
+    @PutMapping("/{id}/approve")
+    public ResponseEntity<Void> approveFriendRequest(@PathVariable Long id, @RequestParam String email){
+        service.approveFriendRequest(id, email);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteFriend(@PathVariable Long id, @RequestParam String email){
+       service.deleteFriend(id, email);
+       return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/request")
+    public ResponseEntity<Void> friendRequest(@PathVariable Long id, @RequestParam String email){
+        service.friendRequest(id, email);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<FriendDto> getFriendById(@PathVariable Long id, @RequestParam String email){
+        return service.getFriendsById(id, email);
     }
 }

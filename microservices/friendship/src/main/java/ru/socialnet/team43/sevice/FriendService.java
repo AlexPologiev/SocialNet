@@ -1,6 +1,7 @@
 package ru.socialnet.team43.sevice;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import ru.socialnet.team43.dto.FriendDto;
 import ru.socialnet.team43.dto.PersonDto;
 
@@ -18,4 +19,10 @@ public interface FriendService {
                                   String  city,
                                   String  email,
                                   Pageable page);
+
+    ResponseEntity<FriendDto> approveFriendRequest(Long id, String email);
+
+    ResponseEntity<FriendDto> friendRequest(Long id, String email);
+
+    ResponseEntity<FriendDto> getFriendsById(Long id, String email);
 }

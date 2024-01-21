@@ -42,5 +42,32 @@ public class FriendServiceImpl implements FriendService{
                                     city,
                                     email,
                                     page);
-            }
+    }
+
+    @Override
+    public ResponseEntity<FriendDto> approveFriendRequest(Long id, String email) {
+
+         client.approveFriendRequest(id, email);
+
+         return ResponseEntity.ok(new FriendDto(FriendshipStatus.FRIEND,
+                 id,
+                 FriendshipStatus.REQUEST_FROM,
+                 1));
+    }
+
+    @Override
+    public ResponseEntity<FriendDto> friendRequest(Long id, String email) {
+
+        client.friendRequest(id, email);
+
+        return ResponseEntity.ok(new FriendDto(FriendshipStatus.REQUEST_TO,
+                id,
+                FriendshipStatus.NONE,
+                1));
+    }
+
+    @Override
+    public ResponseEntity<FriendDto> getFriendsById(Long id, String email) {
+        return client.getFriendsById(id, email);
+    }
 }

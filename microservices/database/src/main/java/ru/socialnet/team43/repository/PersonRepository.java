@@ -95,4 +95,14 @@ public class PersonRepository implements UserInteraction {
         dest.setIsOnline(true);
         dest.setLastModifiedDate(LocalDateTime.now());
     }
+
+    public boolean isBlocked(Long id) {
+
+        return dslContext.selectFrom(Tables.PERSON)
+                .where(Tables.PERSON.ID.eq(id))
+                .fetchOptional()
+                .map(PersonRecord::getIsBlocked)
+                .orElse(true);
+    }
+
 }
