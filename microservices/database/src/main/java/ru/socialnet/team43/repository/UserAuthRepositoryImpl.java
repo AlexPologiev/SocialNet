@@ -107,7 +107,7 @@ public class UserAuthRepositoryImpl implements UserAuthRepository {
      */
     private Condition getAccountSearchCondition(AccountSearchDto accountSearchDto) {
         Condition condition =
-                Tables.PERSON.IS_DELETED.isDistinctFrom(accountSearchDto.getIsDeleted());
+                Tables.PERSON.IS_DELETED.eq(accountSearchDto.getIsDeleted());
 
         if (accountSearchDto.getAuthor() != null && !accountSearchDto.getAuthor().isEmpty()) {
             condition =
