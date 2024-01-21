@@ -1,34 +1,20 @@
 package ru.socialnet.team43.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ru.socialnet.team43.dto.FriendDto;
 import ru.socialnet.team43.dto.PersonDto;
-
 
 import java.util.List;
 
 @FeignClient(name = "databaseClient", dismiss404 = true, url = "${database.url}" + "/friends")
 public interface DatabaseClient {
 
-    /**
-     * Получение количества друзей
-     * @param email эл/почта пользователя
-     * @return количество друзей
-     */
     @GetMapping("/count")
     long getFriendsCount(@RequestParam String email);
 
-    /**
-     * Получение списка рекомендованных друзей
-     * @param email эл/почта пользователя
-     * @return список рекомендуемых друзей
-     */
     @GetMapping("/recommendations")
     ResponseEntity<List<FriendDto>> getRecommendations(@RequestParam String email);
 
@@ -46,4 +32,13 @@ public interface DatabaseClient {
     List<Long>  searchFriendsByStatus(@RequestParam String statusCode,
                                            @RequestParam String email,
                                            Pageable page);
+
+    @PutMapping("/{id}/approve")
+    ResponseEntity<Void> approveFriendRequest(@PathVariable Long id, @RequestParam String email);
+    @DeleteMapping("/{id}")
+    ResponseEntity<Void> deleteFriend(@PathVariable Long id, @RequestParam String email);
+    @PostMapping("/{id}/request")
+    ResponseEntity<Void> friendRequest(@PathVariable Long id, @RequestParam String email);
+    @GetMapping("/{id}")
+    ResponseEntity<FriendDto> getFriendsById(@PathVariable Long id, @RequestParam String email);
 }

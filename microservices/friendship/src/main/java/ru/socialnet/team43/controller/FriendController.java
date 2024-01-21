@@ -1,7 +1,8 @@
 package ru.socialnet.team43.controller;
 
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import ru.socialnet.team43.sevice.FriendService;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/friends")
@@ -56,6 +58,35 @@ public class FriendController {
                                                              Pageable page){
 
         return ResponseEntity.ok(friendService.searchFriendsByStatus(statusCode, email, page));
+    }
+
+    @PutMapping("/{id}/approve")
+    public ResponseEntity<FriendDto> approveFriendRequest(@PathVariable Long id, @RequestParam String email){
+
+        return friendService.approveFriendRequest(id, email);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteFriend(@PathVariable Long id, @RequestParam String email){
+
+        return client.deleteFriend(id, email);
+    }
+
+    @PostMapping("/{id}/request")
+    public ResponseEntity<FriendDto> friendRequest(@PathVariable Long id, @RequestParam String email){
+
+        return friendService.friendRequest(id, email);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<FriendDto> getFriendById(@PathVariable Long id, @RequestParam String email){
+
+        return friendService.getFriendsById(id, email);
+    }
+    @ExceptionHandler(FeignException.class)
+    private ResponseEntity<Void> handler(FeignException ex) {
+        log.warn("Error in the gateway {}", ex.getMessage());
+        return ResponseEntity.status(ex.status()).build();
     }
 
 }

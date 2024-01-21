@@ -3,7 +3,6 @@ package ru.socialnet.team43.web.controller;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -12,12 +11,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import ru.socialnet.team43.client.FriendClient;
 import ru.socialnet.team43.dto.FriendDto;
-import ru.socialnet.team43.dto.PersonDto;
-import ru.socialnet.team43.dto.enums.FriendshipStatus;
-import ru.socialnet.team43.dto.enums.StatusCode;
+import ru.socialnet.team43.dto.PersonDto;;
 import ru.socialnet.team43.util.ControllerUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -26,24 +22,15 @@ import java.util.List;
 @RequestMapping("/api/v1/friends")
 public class FriendController {
 
-    /** Клиент подключения */
     private final FriendClient friendClient;
-    /** Утилитный класс для обертки ответа */
+
     private final ControllerUtil util;
 
-    /**
-     * Эндпоинт получения количества друзей
-     * @return количество друзей
-     */
     @GetMapping("/count")
     public long getFriendCount(@AuthenticationPrincipal UserDetails userDetails) {
         return friendClient.getFriendsCount(userDetails.getUsername());
     }
 
-    /**
-     * Эендпоинт получения списка рекомендованных друзей
-     * @return список рекомендованных друзей
-     */
     @GetMapping("/recommendations")
     public ResponseEntity<List<FriendDto>> getRecommendations(@AuthenticationPrincipal UserDetails userDetails) {
         return util.createNewResponseEntity(friendClient.getRecommendations(userDetails.getUsername()));
@@ -85,6 +72,44 @@ public class FriendController {
 
         return ResponseEntity.ok(new PageImpl<>(inputResponseEntity.getBody(), page, inputResponseEntity.getBody().size()));
     }
+
+    @PostMapping("/{id}/request")
+    public ResponseEntity<FriendDto> friendRequest(@PathVariable Long id,
+                                                   @AuthenticationPrincipal UserDetails userDetails){
+        log.info("friendRequest with id: {} ", id);
+        String email = userDetails.getUsername();
+
+        ResponseEntity<FriendDto> inputResponseEntity = friendClient.friendRequest(id, email);
+        return util.createNewResponseEntity(inputResponseEntity);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteFriend(@PathVariable Long id,
+                                             @AuthenticationPrincipal UserDetails userDetails){
+        log.info("delete friend with id: {} ", id);
+        String email = userDetails.getUsername();
+
+        return friendClient.deleteFriend(id, email);
+    }
+
+    @PutMapping("/{id}/approve")
+    public ResponseEntity<FriendDto> approveFriendRequest(@PathVariable Long id,
+                                                          @AuthenticationPrincipal UserDetails userDetails){
+        log.info("approveFriendRequest with id: {} ", id);
+        String email = userDetails.getUsername();
+        ResponseEntity<FriendDto> inputResponseEntity = friendClient.approveFriendRequest(id, email);
+        return util.createNewResponseEntity(inputResponseEntity);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<FriendDto> getFriendById(@PathVariable Long id,
+                                                   @AuthenticationPrincipal UserDetails userDetails){
+        log.info("getFriendById with id: {} ", id);
+        String email = userDetails.getUsername();
+        ResponseEntity<FriendDto> inputResponseEntity = friendClient.getFriendsById(id, email);
+        return util.createNewResponseEntity(inputResponseEntity);
+    }
+
     @ExceptionHandler(FeignException.class)
     private ResponseEntity<Void> handler(FeignException ex) {
         log.warn("Error in the gateway {}", ex.getMessage());
@@ -100,7 +125,7 @@ public class FriendController {
                                       String email,
                                       Pageable page){
         log.info("getAllFriends");
-        log.info("""
+        log.debug("""
 
                          statusCode: {},
                          firstName: {},

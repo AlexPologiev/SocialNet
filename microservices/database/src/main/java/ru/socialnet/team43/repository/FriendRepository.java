@@ -1,18 +1,12 @@
 package ru.socialnet.team43.repository;
 
 import jooq.db.Tables;
-import jooq.db.tables.Friendship;
-import jooq.db.tables.Person;
-import jooq.db.tables.UserAuth;
 import jooq.db.tables.records.FriendshipRecord;
-import jooq.db.tables.records.PersonRecord;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.DatePart;
-import org.jooq.Result;
-import org.jooq.impl.DSL;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import ru.socialnet.team43.dto.FriendDto;
@@ -20,10 +14,8 @@ import ru.socialnet.team43.dto.PersonDto;
 import ru.socialnet.team43.dto.enums.FriendshipStatus;
 import ru.socialnet.team43.repository.mapper.PersonDtoPersonRecordMapping;
 
-import java.time.Year;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.LongStream;
 
 import static java.util.Optional.ofNullable;
 import static org.jooq.impl.DSL.*;
@@ -51,6 +43,7 @@ public class FriendRepository {
     public List<FriendDto> getRecommendations(String email) {
         return dslContext.selectFrom(Tables.FRIENDSHIP)
                 .where(Tables.FRIENDSHIP.FRIENDSHIP_STATUS.notEqual(FriendshipStatus.FRIEND.name()))
+                .and(Tables.FRIENDSHIP.FRIENDSHIP_STATUS.notEqual(FriendshipStatus.REQUEST_FROM.name()))
                 .and(Tables.FRIENDSHIP.SRC_PERSON_ID.eq(
                         dslContext.select(Tables.PERSON.ID)
                                 .from(Tables.PERSON)
@@ -151,4 +144,39 @@ public class FriendRepository {
         return condition;
     }
 
+    public int deleteFriendship(Long srcId, Long dscId){
+        return dslContext.delete(Tables.FRIENDSHIP)
+                .where(Tables.FRIENDSHIP.SRC_PERSON_ID.eq(srcId))
+                .and(Tables.FRIENDSHIP.DSC_PERSON_ID.eq(dscId))
+                .execute();
+    }
+
+    public int setStatus(Long srcId, String status){
+        return dslContext.update(Tables.FRIENDSHIP)
+                .set(Tables.FRIENDSHIP.FRIENDSHIP_STATUS,status)
+                .where(Tables.FRIENDSHIP.SRC_PERSON_ID.eq(srcId))
+                .execute();
+    }
+
+    public int save(Long srcId, Long dscId, String status){
+        return dslContext.insertInto(Tables.FRIENDSHIP)
+                .set(Tables.FRIENDSHIP.SRC_PERSON_ID, srcId)
+                .set(Tables.FRIENDSHIP.DSC_PERSON_ID, dscId)
+                .set(Tables.FRIENDSHIP.FRIENDSHIP_STATUS, status)
+                .execute();
+    }
+
+    public Optional<FriendDto> getOptionalFriendDtoById(Long dcsId, String email) {
+
+        Long srcId = personRepo.getPersonIdByEmail(email);
+
+        return dslContext.selectFrom(Tables.FRIENDSHIP)
+                .where(Tables.FRIENDSHIP.SRC_PERSON_ID.eq(srcId))
+                .and(Tables.FRIENDSHIP.DSC_PERSON_ID.eq(dcsId))
+                .fetchOptional()
+                .map(f -> new FriendDto(FriendshipStatus.valueOf(f.getFriendshipStatus()),
+                        dcsId,
+                        FriendshipStatus.NONE,
+                        random.nextInt(10) + 1));
+    }
 }
