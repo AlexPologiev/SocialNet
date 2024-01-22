@@ -70,4 +70,16 @@ public class FriendServiceImpl implements FriendService{
     public ResponseEntity<FriendDto> getFriendsById(Long id, String email) {
         return client.getFriendsById(id, email);
     }
+
+    @Override
+    public ResponseEntity<FriendDto> subscribe(Long id, String email) {
+
+        client.subscribe(id ,email);
+
+        return ResponseEntity.ok(new FriendDto(FriendshipStatus.WATCHING,
+                id,
+                FriendshipStatus.NONE,
+                1));
+
+    }
 }

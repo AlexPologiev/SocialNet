@@ -41,4 +41,7 @@ public interface DatabaseClient {
     ResponseEntity<Void> friendRequest(@PathVariable Long id, @RequestParam String email);
     @GetMapping("/{id}")
     ResponseEntity<FriendDto> getFriendsById(@PathVariable Long id, @RequestParam String email);
+
+    @PostMapping("/subscribe/{id}")
+    ResponseEntity<Void> subscribe(@PathVariable Long id, @RequestParam String email);
 }
