@@ -22,5 +22,6 @@
         <include file="table-post2tag_init.xml" relativeToChangelogFile="true"/>
         <include file="table-dialog_init.xml" relativeToChangelogFile="true"/>
         <include file="table-message_init.xml" relativeToChangelogFile="true"/>
+        <include file="table-comment_init.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
