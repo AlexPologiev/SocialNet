@@ -82,4 +82,26 @@ public class FriendServiceImpl implements FriendService{
                 1));
 
     }
+
+    @Override
+    public ResponseEntity<FriendDto> block(Long id, String email) {
+
+        client.block(id ,email);
+
+        return  ResponseEntity.ok(new FriendDto(FriendshipStatus.BLOCKED,
+                id,
+                FriendshipStatus.NONE,
+                1));
+    }
+
+    @Override
+    public ResponseEntity<FriendDto> unblock(Long id, String email) {
+
+        client.unblock(id ,email);
+
+        return  ResponseEntity.ok(new FriendDto(FriendshipStatus.NONE,
+                id,
+                FriendshipStatus.BLOCKED,
+                1));
+    }
 }

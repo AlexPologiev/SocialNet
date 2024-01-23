@@ -31,8 +31,6 @@ public interface FriendClient {
     ResponseEntity<List<FriendDto>> searchFriendsByStatus(@RequestParam String statusCode,
                                                           @RequestParam String email,
                                                           Pageable page);
-    @PutMapping("/block/{id}")
-    ResponseEntity<FriendDto> blockFriend(@PathVariable Long id, @RequestParam String email);
 
     @PutMapping("/{id}/approve")
     ResponseEntity<FriendDto> approveFriendRequest(@PathVariable Long id, @RequestParam String email);
@@ -46,4 +44,8 @@ public interface FriendClient {
     ResponseEntity<FriendDto> getFriendsById(@PathVariable Long id, @RequestParam String email);
     @PostMapping("/subscribe/{id}")
     ResponseEntity<FriendDto> subscribe(@PathVariable Long id, @RequestParam String email);
+    @PutMapping("/block/{id}")
+    ResponseEntity<FriendDto> block(@PathVariable Long id, @RequestParam String email);
+    @PutMapping("/unblock/{id}")
+    ResponseEntity<FriendDto> unblock(@PathVariable  Long id, @RequestParam String email);
 }

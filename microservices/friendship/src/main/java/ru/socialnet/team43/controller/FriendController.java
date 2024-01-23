@@ -89,6 +89,18 @@ public class FriendController {
 
         return friendService.subscribe(id, email);
     }
+
+    @PutMapping("/block/{id}")
+    public ResponseEntity<FriendDto> block(@PathVariable Long id, @RequestParam String email){
+
+        return friendService.block(id, email);
+    }
+
+    @PutMapping("/unblock/{id}")
+    public ResponseEntity<FriendDto> unblock(@PathVariable Long id, @RequestParam String email){
+
+        return friendService.unblock(id, email);
+    }
     @ExceptionHandler(FeignException.class)
     private ResponseEntity<Void> handler(FeignException ex) {
         log.warn("Error in the gateway {}", ex.getMessage());

@@ -14,6 +14,7 @@ import ru.socialnet.team43.dto.PersonDto;
 import ru.socialnet.team43.dto.enums.FriendshipStatus;
 import ru.socialnet.team43.repository.mapper.PersonDtoPersonRecordMapping;
 
+import javax.swing.text.TabExpander;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -209,5 +210,13 @@ public class FriendRepository {
                         dcsId,
                         FriendshipStatus.NONE,
                         random.nextInt(10) + 1));
+    }
+
+
+    public int delete(Long srcId, Long dscId) {
+        return dslContext.delete(Tables.FRIENDSHIP)
+        .where(Tables.FRIENDSHIP.SRC_PERSON_ID.eq(srcId))
+                .and(Tables.FRIENDSHIP.DSC_PERSON_ID.eq(dscId))
+                .execute();
     }
 }
