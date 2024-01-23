@@ -133,4 +133,18 @@ public class PostRepository {
                 .execute();
     }
 
+    public void incrementCommentsCount(PostRecord postRecord) {
+        context.update(Tables.POST)
+                .set(Tables.POST.COMMENTS_COUNT, Tables.POST.COMMENTS_COUNT.add(1))
+                .where(Tables.POST.ID.eq(postRecord.getId()))
+                .execute();
+    }
+
+    public void decrementCommentsCount(PostRecord postRecord) {
+        context.update(Tables.POST)
+                .set(Tables.POST.COMMENTS_COUNT, postRecord.getCommentsCount() - 1)
+                .where(Tables.POST.ID.eq(postRecord.getId()))
+                .execute();
+    }
+
 }
