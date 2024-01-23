@@ -85,6 +85,10 @@ deploy_project:
     - ssh -i $SERVER_SSH_KEY -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_HOST -p $SERVER_PORT "docker-compose -f /home/socialnet/docker_compose/docker-compose.yaml pull"
     - ssh -i $SERVER_SSH_KEY -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_HOST -p $SERVER_PORT "docker-compose -p=team43-socialnet-backend -f /home/socialnet/docker_compose/docker-compose.yaml up -d"
     - ssh -i $SERVER_SSH_KEY -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_HOST -p $SERVER_PORT "docker system prune -a -f"
+    - ssh -i $SERVER_SSH_KEY -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_HOST -p $SERVER_PORT "docker stop frontend"
+    - ssh -i $SERVER_SSH_KEY -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_HOST -p $SERVER_PORT "docker start frontend"
+    - echo "$CI_JOB_STAGE was successful"
+    - echo "deploy number $CI_PIPELINE_ID"
   only:
     - develop
     - master
