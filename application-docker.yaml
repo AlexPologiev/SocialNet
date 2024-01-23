@@ -11,7 +11,7 @@ environment:
   url: http://friendship:8082
 
 frontend:
-  url: http://frontend:8099
+  url: http://team43.servehttp.com:8099
 
 spring:
   datasource:
