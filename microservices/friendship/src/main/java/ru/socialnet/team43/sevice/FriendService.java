@@ -25,4 +25,6 @@ public interface FriendService {
     ResponseEntity<FriendDto> friendRequest(Long id, String email);
 
     ResponseEntity<FriendDto> getFriendsById(Long id, String email);
+
+    ResponseEntity<FriendDto> subscribe(Long id, String email);
 }

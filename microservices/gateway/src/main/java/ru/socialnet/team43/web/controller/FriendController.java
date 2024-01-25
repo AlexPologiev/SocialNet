@@ -110,6 +110,16 @@ public class FriendController {
         return util.createNewResponseEntity(inputResponseEntity);
     }
 
+    @PostMapping("/subscribe/{id}")
+    public ResponseEntity<FriendDto> subscribe(@PathVariable Long id,
+                                                   @AuthenticationPrincipal UserDetails userDetails){
+        log.info("subscribe with id: {} ", id);
+        String email = userDetails.getUsername();
+
+        ResponseEntity<FriendDto> inputResponseEntity = friendClient.subscribe(id, email);
+        return util.createNewResponseEntity(inputResponseEntity);
+    }
+
     @ExceptionHandler(FeignException.class)
     private ResponseEntity<Void> handler(FeignException ex) {
         log.warn("Error in the gateway {}", ex.getMessage());

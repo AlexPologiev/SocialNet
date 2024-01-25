@@ -41,29 +41,34 @@ public class FriendService {
 
     public List<Long> searchFriendsByStatus(String statusCode, String email, Pageable page) {
 
-        return  friendRepo.findFriendsIdsByStatus(statusCode, email, page);
+        return friendRepo.findFriendsIdsByStatus(statusCode, email, page);
     }
 
     public void approveFriendRequest(Long id, String email) {
         Long accountId = personRepo.getPersonIdByEmail(email);
-        friendRepo.setStatus(id, "FRIEND");
-        friendRepo.setStatus(accountId, "FRIEND");
+        String friendStatus = friendRepo.getStatus(accountId, id);
+
+        if (friendStatus.equals("REQUEST_FROM")) {
+            friendRepo.updateStatus(accountId, id, "FRIEND");
+        }
     }
 
     public void deleteFriend(Long id, String email) {
         Long accountId = personRepo.getPersonIdByEmail(email);
         friendRepo.deleteFriendship(id, accountId);
-        friendRepo.deleteFriendship(accountId, id);
     }
 
     public void friendRequest(Long id, String email) {
         Long accountId = personRepo.getPersonIdByEmail(email);
-        friendRepo.deleteFriendship(id, accountId);
-        friendRepo.deleteFriendship(accountId, id);
-        friendRepo.save(accountId, id, "REQUEST_TO");
-        friendRepo.save(id, accountId, "REQUEST_FROM");
-    }
+        String friendStatus = friendRepo.getStatus(accountId, id);
 
+        if (friendStatus.equals("REQUEST_FROM")) {
+            friendRepo.updateStatus(accountId, id, "FRIEND");
+        } else if (!friendStatus.equals("FRIEND")) {
+            friendRepo.deleteFriendship(id, accountId);
+            friendRepo.saveFriendship(accountId, id, "REQUEST_TO", "REQUEST_FROM");
+        }
+    }
 
     public ResponseEntity<FriendDto> getFriendsById(Long id, String email) {
 
@@ -71,5 +76,11 @@ public class FriendService {
 
         return optionalFriendDto.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
+    public void subscribe(Long id, String email) {
+        Long accountId = personRepo.getPersonIdByEmail(email);
+        friendRepo.deleteFriendship(id, accountId);
+        friendRepo.saveFriendship(accountId, id, "WATCHING", "SUBSCRIBED");
     }
 }

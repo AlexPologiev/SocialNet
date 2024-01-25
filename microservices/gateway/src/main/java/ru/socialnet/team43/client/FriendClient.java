@@ -44,4 +44,6 @@ public interface FriendClient {
 
     @GetMapping("/{id}")
     ResponseEntity<FriendDto> getFriendsById(@PathVariable Long id, @RequestParam String email);
+    @PostMapping("/subscribe/{id}")
+    ResponseEntity<FriendDto> subscribe(@PathVariable Long id, @RequestParam String email);
 }

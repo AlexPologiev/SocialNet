@@ -79,4 +79,10 @@ public class FriendController {
     public ResponseEntity<FriendDto> getFriendById(@PathVariable Long id, @RequestParam String email){
         return service.getFriendsById(id, email);
     }
+
+    @PostMapping("/subscribe/{id}")
+    public ResponseEntity<Void> subscribe(@PathVariable Long id, @RequestParam String email){
+         service.subscribe(id, email);
+        return ResponseEntity.ok().build();
+    }
 }

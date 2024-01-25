@@ -148,13 +148,8 @@ public class FriendRepository {
         return dslContext.delete(Tables.FRIENDSHIP)
                 .where(Tables.FRIENDSHIP.SRC_PERSON_ID.eq(srcId))
                 .and(Tables.FRIENDSHIP.DSC_PERSON_ID.eq(dscId))
-                .execute();
-    }
-
-    public int setStatus(Long srcId, String status){
-        return dslContext.update(Tables.FRIENDSHIP)
-                .set(Tables.FRIENDSHIP.FRIENDSHIP_STATUS,status)
-                .where(Tables.FRIENDSHIP.SRC_PERSON_ID.eq(srcId))
+                .or(Tables.FRIENDSHIP.SRC_PERSON_ID.eq(dscId)
+                        .and(Tables.FRIENDSHIP.DSC_PERSON_ID.eq(srcId)))
                 .execute();
     }
 
@@ -163,6 +158,42 @@ public class FriendRepository {
                 .set(Tables.FRIENDSHIP.SRC_PERSON_ID, srcId)
                 .set(Tables.FRIENDSHIP.DSC_PERSON_ID, dscId)
                 .set(Tables.FRIENDSHIP.FRIENDSHIP_STATUS, status)
+                .execute();
+    }
+    public int saveFriendship(Long srcId, Long dscId, String srcStatus, String dscStatus){
+        return dslContext.insertInto(Tables.FRIENDSHIP,
+                        Tables.FRIENDSHIP.SRC_PERSON_ID,
+                        Tables.FRIENDSHIP.DSC_PERSON_ID,
+                        Tables.FRIENDSHIP.FRIENDSHIP_STATUS)
+                .values(srcId, dscId, srcStatus)
+                .values(dscId, srcId, dscStatus)
+                .execute();
+    }
+
+    public int updateStatus(Long srcId, Long dscId, String status){
+        return dslContext.update(Tables.FRIENDSHIP)
+                .set(Tables.FRIENDSHIP.FRIENDSHIP_STATUS, status)
+                .where(Tables.FRIENDSHIP.SRC_PERSON_ID.eq(srcId))
+                .and(Tables.FRIENDSHIP.DSC_PERSON_ID.eq(dscId))
+                .or(Tables.FRIENDSHIP.SRC_PERSON_ID.eq(dscId)
+                        .and(Tables.FRIENDSHIP.DSC_PERSON_ID.eq(srcId)))
+                .execute();
+    }
+
+    public String getStatus(Long srcId, Long dscId){
+        return dslContext.selectFrom(Tables.FRIENDSHIP)
+                .where(Tables.FRIENDSHIP.SRC_PERSON_ID.eq(srcId))
+                .and(Tables.FRIENDSHIP.DSC_PERSON_ID.eq(dscId))
+                .fetchOptional()
+                .map(FriendshipRecord::getFriendshipStatus)
+                .orElse("NONE");
+    }
+
+    public int setStatusAsFriend(Long srcId, Long dscId){
+        return dslContext.update(Tables.FRIENDSHIP)
+                .set(Tables.FRIENDSHIP.FRIENDSHIP_STATUS, "FRIEND")
+                .where(Tables.FRIENDSHIP.SRC_PERSON_ID.eq(srcId))
+                .and(Tables.FRIENDSHIP.DSC_PERSON_ID.eq(dscId))
                 .execute();
     }
 
