@@ -9,10 +9,14 @@ import ru.socialnet.team43.dto.CommentDto;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
 import ru.socialnet.team43.dto.PostDto;
-import ru.socialnet.team43.dto.TagDto;
 import ru.socialnet.team43.dto.dialogs.DialogDto;
+import ru.socialnet.team43.dto.dialogs.MessageDto;
+import ru.socialnet.team43.dto.dialogs.MessageShortDto;
 import ru.socialnet.team43.dto.dialogs.UnreadCountDto;
+import ru.socialnet.team43.dto.TagDto;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -48,16 +52,6 @@ public interface CommunicationClient {
     @DeleteMapping("post/{id}")
     ResponseEntity<Long> deletePost(@PathVariable Long id);
 
-    @GetMapping("/tag")
-    ResponseEntity<List<TagDto>> getByName(@RequestParam String name);
-
-    @GetMapping("/dialogs")
-    ResponseEntity<Page<DialogDto>> getDialogs(@RequestParam String email, Pageable page);
-
-    @GetMapping("/dialogs/unread")
-    ResponseEntity<UnreadCountDto> getCountUnreadDialogs(@RequestParam String email);
-
-
     @GetMapping("post/{postId}/comment")
     ResponseEntity<Page<CommentDto>> getComments(@PathVariable Long postId,
                                                  @RequestParam(required = false, defaultValue = "false") Boolean isDeleted,
@@ -83,4 +77,27 @@ public interface CommunicationClient {
     ResponseEntity<Long> deleteComment(@PathVariable Long postId,
                                        @PathVariable Long commentId);
 
+
+    @GetMapping("/tag")
+    ResponseEntity<List<TagDto>> getByName(@RequestParam String name);
+
+    @GetMapping("/dialogs")
+    ResponseEntity<Page<DialogDto>> getDialogs(@RequestParam String email, Pageable page);
+
+    @GetMapping("/dialogs/unread")
+    ResponseEntity<UnreadCountDto> getCountUnreadDialogs(@RequestParam String email);
+
+    @GetMapping("/dialogs/recipientId")
+    ResponseEntity<DialogDto> getDialogByRecipientId(
+            @RequestParam Long id, @RequestParam String email);
+
+    @GetMapping("/dialogs/messages")
+    ResponseEntity<Page<MessageShortDto>> getMessagesByRecipientId(
+            @RequestParam Long recipientId, @RequestParam String email, Pageable page);
+
+    @PutMapping("/dialogs/{dialogId}")
+    boolean putDialog(@PathVariable Long dialogId, @RequestParam String email);
+
+    @PostMapping("/dialogs/messages/save")
+    boolean saveMessage(@RequestBody MessageDto messageDto);
 }

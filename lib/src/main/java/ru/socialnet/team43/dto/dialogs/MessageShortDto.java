@@ -10,6 +10,7 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MessageShortDto {
+    private Long id;
     private ZonedDateTime time;
     private Long conversationPartner1; // author
     private Long conversationPartner2; // recipient
