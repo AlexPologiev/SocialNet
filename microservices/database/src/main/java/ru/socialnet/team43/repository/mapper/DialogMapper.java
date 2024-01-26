@@ -5,6 +5,7 @@ import jooq.db.tables.records.MessageRecord;
 
 import org.mapstruct.Mapper;
 
+import org.mapstruct.Mapping;
 import ru.socialnet.team43.dto.dialogs.DialogDto;
 import ru.socialnet.team43.dto.dialogs.MessageDto;
 import ru.socialnet.team43.repository.MessageRepository;
@@ -16,6 +17,11 @@ import java.util.Objects;
 
 @Mapper(componentModel = "spring")
 public interface DialogMapper {
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(source = "conversationPartner1", target = "conversationPartner_1")
+    @Mapping(source = "conversationPartner2", target = "conversationPartner_2")
+    DialogRecord dialogDtoToDialogRecord(DialogDto dialogDto);
 
     default List<DialogDto> mapToList(
             List<DialogRecord> dialogRecords,
@@ -55,6 +61,7 @@ public interface DialogMapper {
         Integer unreadCount = messageRepo.unreadCountForDialog(dialogRecord.getId(), userId);
 
         DialogDto dialogDto = new DialogDto();
+        dialogDto.setId(dialogRecord.getId());
         if (Objects.equals(dialogRecord.getConversationPartner_1(), userId)) {
             dialogDto.setConversationPartner1(dialogRecord.getConversationPartner_2());
             dialogDto.setConversationPartner2(dialogRecord.getConversationPartner_1());

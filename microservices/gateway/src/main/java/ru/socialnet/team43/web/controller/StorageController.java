@@ -29,7 +29,7 @@ public class StorageController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<StorageDto> getStorage(@RequestBody MultipartFile file) {
-        log.info("/api/v1/storage: file {}", file.getOriginalFilename());
+        log.info("/api/v1/storage");
         if (file == null || file.getSize() >= MAX_IMAGE_SIZE) {
             log.warn(file == null
                     ? "MultipartFile is null"

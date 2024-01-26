@@ -10,12 +10,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import ru.socialnet.team43.dto.dialogs.DialogDto;
+import ru.socialnet.team43.dto.dialogs.MessageDto;
+import ru.socialnet.team43.dto.dialogs.MessageShortDto;
 import ru.socialnet.team43.repository.DialogRepository;
 import ru.socialnet.team43.repository.MessageRepository;
 import ru.socialnet.team43.repository.PersonRepository;
 import ru.socialnet.team43.repository.mapper.DialogMapper;
 import ru.socialnet.team43.repository.mapper.MessageMapper;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 @Slf4j
@@ -44,7 +48,9 @@ public class DialogServiceImpl implements DialogService {
         int total = resultsList.size();
 
         try {
-            int endIndex = (int) ((page.getOffset() + page.getPageSize()) > total
+            int endIndex =
+                    (int)
+                            ((page.getOffset() + page.getPageSize()) > total
                                     ? total
                                     : (page.getOffset() + page.getPageSize()));
             if (page.getOffset() > total) throw new NumberFormatException();
@@ -71,13 +77,66 @@ public class DialogServiceImpl implements DialogService {
         return messageRepo.allUnreadCountByUser(userId);
     }
 
+    @Override
+    public DialogDto getDialogByRecipientId(Long recipientId, String email) {
+        Long userId = personRepo.getPersonIdByEmail(email);
+        DialogDto dialogDto =
+                dialogMapper.dialogRecordToDialogDto(
+                        dialogRepo.getDialogByRecipientId(recipientId, userId),
+                        userId,
+                        messageMapper,
+                        messageRepo);
+
+        // Если диалог не найден, создать его.
+        if (dialogDto == null && !Objects.equals(userId, recipientId)) {
+            dialogDto = createDialog(userId, recipientId);
+        }
+        if (dialogDto != null) {
+            updateMessageStatuses(dialogDto.getId(), email);
+        }
+
+        return dialogDto;
+    }
+
+    @Override
+    public Page<MessageShortDto> getMessagesByRecipientId(
+            Long recipientId, String email, Pageable page) {
+        
+        DialogDto dialog = getDialogByRecipientId(recipientId, email);
+        
+        List<MessageShortDto> resultsList =
+                messageMapper.mapToShortList(
+                        messageRepo.getMessagesByDialogId(dialog.getId(), page));
+        Integer total = messageRepo.totalCountMessagesByDialogId(dialog.getId());
+
+        if (!resultsList.isEmpty()) {
+            return new PageImpl<>(resultsList, page, total);
+        } else {
+            return new PageImpl<>(Collections.emptyList());
+        }
+    }
+
+    @Override
+    public boolean saveMessage(MessageDto messageDto) {
+        return messageRepo.insertMessage(messageMapper.messageDtoToMessageRecord(messageDto));
+    }
+
+    @Override
+    public boolean updateMessageStatuses(Long dialogId, String email) {
+        Long userId = personRepo.getPersonIdByEmail(email);
+        return messageRepo.updateMessages(dialogId, userId);
+    }
+
     private void sortDialogs(List<DialogDto> dialogs, Sort sort) {
         Comparator<DialogDto> comparator1 = Comparator.comparing(DialogDto::getUnreadCount);
         Comparator<DialogDto> comparator2 =
                 Comparator.comparing(
                         dialog ->
-                                dialog.getLastMessage().isEmpty()
-                                        ? null
+                                (dialog.getLastMessage().isEmpty()
+                                                || dialog.getLastMessage().get(0) == null)
+                                        ? ZonedDateTime.of(
+                                                2000, 1, 1, 0, 0, 0,
+                                        0, ZoneId.systemDefault())
                                         : dialog.getLastMessage().get(0).getTime());
         Comparator<DialogDto> comparator3 =
                 Comparator.comparingInt(dialog -> Integer.compare(dialog.getUnreadCount(), 0));
@@ -98,5 +157,18 @@ public class DialogServiceImpl implements DialogService {
             // Default sorting
             dialogs.sort(comparator3.thenComparing(comparator2).reversed());
         }
+    }
+
+    private DialogDto createDialog(Long userId, Long recipientId) {
+        DialogDto dialogDto = DialogDto.builder()
+                .conversationPartner1(userId)
+                .conversationPartner2(recipientId)
+                .build();
+
+        return dialogMapper.dialogRecordToDialogDto(
+                dialogRepo.insertDialog(dialogMapper.dialogDtoToDialogRecord(dialogDto)),
+                userId,
+                messageMapper,
+                messageRepo);
     }
 }
