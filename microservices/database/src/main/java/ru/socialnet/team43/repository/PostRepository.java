@@ -21,7 +21,7 @@ import static org.jooq.impl.DSL.*;
 @AllArgsConstructor
 @Repository
 @Slf4j
-public class PostRepository {
+public class PostRepository implements PostIteraction {
 
     private final DSLContext context;
 

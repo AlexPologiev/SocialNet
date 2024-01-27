@@ -4,13 +4,15 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import ru.socialnet.team43.dto.CommentDto;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.*;
-
+import ru.socialnet.team43.dto.LikeDto;
 import ru.socialnet.team43.dto.PostDto;
 import ru.socialnet.team43.dto.dialogs.DialogDto;
 import ru.socialnet.team43.dto.dialogs.MessageDto;
@@ -51,6 +53,12 @@ public interface CommunicationClient {
 
     @DeleteMapping("post/{id}")
     ResponseEntity<Long> deletePost(@PathVariable Long id);
+
+    @PostMapping("/post/{id}/like")
+    ResponseEntity<LikeDto> likePost(@PathVariable Long id, @RequestBody LikeDto response, @RequestParam String email);
+
+    @DeleteMapping("/post/{id}/like")
+    ResponseEntity<Void> deletePostLike(@PathVariable Long id);
 
     @GetMapping("post/{postId}/comment")
     ResponseEntity<Page<CommentDto>> getComments(@PathVariable Long postId,
@@ -100,4 +108,9 @@ public interface CommunicationClient {
 
     @PostMapping("/dialogs/messages/save")
     boolean saveMessage(@RequestBody MessageDto messageDto);
+    @PostMapping("/post/{id}/comment/{commentId}/like")
+    ResponseEntity<LikeDto> likeComment(@PathVariable Long id, @PathVariable Long commentId, @RequestParam String email);
+
+    @DeleteMapping("/post/{id}/comment/{commentId}/like")
+    ResponseEntity<Void> deleteCommentLike(@PathVariable Long id, @PathVariable Long commentId);
 }
