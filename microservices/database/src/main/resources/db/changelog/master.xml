@@ -23,5 +23,7 @@
         <include file="table-dialog_init.xml" relativeToChangelogFile="true"/>
         <include file="table-message_init.xml" relativeToChangelogFile="true"/>
         <include file="table-comment_init.xml" relativeToChangelogFile="true"/>
+        <include file="table-likes_init.xml" relativeToChangelogFile="true"/>
+        <include file="alter_table_post_likes.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
