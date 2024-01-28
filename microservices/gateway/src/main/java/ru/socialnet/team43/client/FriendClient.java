@@ -1,10 +1,14 @@
 package ru.socialnet.team43.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.socialnet.team43.dto.FriendDto;
+import ru.socialnet.team43.dto.friends.FriendCountDto;
+import ru.socialnet.team43.dto.friends.FriendDto;
+import ru.socialnet.team43.dto.friends.FriendRecommendDto;
+import ru.socialnet.team43.dto.friends.FriendSearchResponseDto;
 import ru.socialnet.team43.dto.PersonDto;
 
 import java.util.List;
@@ -13,10 +17,10 @@ import java.util.List;
 public interface FriendClient {
 
     @GetMapping("/count")
-    long getFriendsCount(@RequestParam String email);
+    ResponseEntity<FriendCountDto> getFriendsCount(@RequestParam String email);
 
     @GetMapping("/recommendations")
-    ResponseEntity<List<FriendDto>> getRecommendations(@RequestParam String email);
+    ResponseEntity<List<FriendRecommendDto>> getRecommendations(@RequestParam String email);
 
     @GetMapping("")
     ResponseEntity<List<PersonDto>> searchFriends(@RequestParam String statusCode,
@@ -28,9 +32,9 @@ public interface FriendClient {
                                                   @RequestParam String email,
                                                   Pageable page);
     @GetMapping("/status")
-    ResponseEntity<List<FriendDto>> searchFriendsByStatus(@RequestParam String statusCode,
-                                                          @RequestParam String email,
-                                                          Pageable page);
+    ResponseEntity<Page<FriendSearchResponseDto>> searchFriendsByStatus(@RequestParam String statusCode,
+                                                                        @RequestParam String email,
+                                                                        Pageable page);
 
     @PutMapping("/{id}/approve")
     ResponseEntity<FriendDto> approveFriendRequest(@PathVariable Long id, @RequestParam String email);
