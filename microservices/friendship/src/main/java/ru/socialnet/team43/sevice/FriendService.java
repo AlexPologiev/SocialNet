@@ -27,4 +27,8 @@ public interface FriendService {
     ResponseEntity<FriendDto> getFriendsById(Long id, String email);
 
     ResponseEntity<FriendDto> subscribe(Long id, String email);
+
+    ResponseEntity<FriendDto> block(Long id, String email);
+
+    ResponseEntity<FriendDto> unblock(Long id, String email);
 }

@@ -46,10 +46,13 @@ public class FriendService {
 
     public void approveFriendRequest(Long id, String email) {
         Long accountId = personRepo.getPersonIdByEmail(email);
-        String friendStatus = friendRepo.getStatus(accountId, id);
+        String srcFriendStatus = friendRepo.getStatus(accountId, id);
+        String dscFriendStatus = friendRepo.getStatus(id, accountId);
 
-        if (friendStatus.equals("REQUEST_FROM")) {
-            friendRepo.updateStatus(accountId, id, "FRIEND");
+        if (!dscFriendStatus.equals("BLOCKED")){
+            if (srcFriendStatus.equals("REQUEST_FROM")) {
+                friendRepo.updateStatus(accountId, id, "FRIEND");
+            }
         }
     }
 
@@ -60,11 +63,13 @@ public class FriendService {
 
     public void friendRequest(Long id, String email) {
         Long accountId = personRepo.getPersonIdByEmail(email);
-        String friendStatus = friendRepo.getStatus(accountId, id);
+        String srcFriendStatus = friendRepo.getStatus(accountId, id);
+        String dscFriendStatus = friendRepo.getStatus(id, accountId);
 
-        if (friendStatus.equals("REQUEST_FROM")) {
+        if (srcFriendStatus.equals("REQUEST_FROM")) {
             friendRepo.updateStatus(accountId, id, "FRIEND");
-        } else if (!friendStatus.equals("FRIEND")) {
+        } else if ((!srcFriendStatus.equals("FRIEND"))
+                && (!dscFriendStatus.equals("BLOCKED"))) {
             friendRepo.deleteFriendship(id, accountId);
             friendRepo.saveFriendship(accountId, id, "REQUEST_TO", "REQUEST_FROM");
         }
@@ -80,7 +85,24 @@ public class FriendService {
 
     public void subscribe(Long id, String email) {
         Long accountId = personRepo.getPersonIdByEmail(email);
+        String friendStatus = friendRepo.getStatus(id, accountId);
+
+        if(!friendStatus.equals("BLOCKED")){
+            friendRepo.deleteFriendship(id, accountId);
+            friendRepo.saveFriendship(accountId, id, "WATCHING", "SUBSCRIBED");
+        }
+
+    }
+
+    public void block(Long id, String email) {
+        Long accountId = personRepo.getPersonIdByEmail(email);
         friendRepo.deleteFriendship(id, accountId);
-        friendRepo.saveFriendship(accountId, id, "WATCHING", "SUBSCRIBED");
+        friendRepo.save(accountId, id, "BLOCKED");
+
+    }
+
+    public void unblock(Long id, String email) {
+        Long accountId = personRepo.getPersonIdByEmail(email);
+        friendRepo.delete(accountId, id);
     }
 }

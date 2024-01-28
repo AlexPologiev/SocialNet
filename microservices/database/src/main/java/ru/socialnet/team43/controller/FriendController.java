@@ -82,7 +82,20 @@ public class FriendController {
 
     @PostMapping("/subscribe/{id}")
     public ResponseEntity<Void> subscribe(@PathVariable Long id, @RequestParam String email){
-         service.subscribe(id, email);
+        service.subscribe(id, email);
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/block/{id}")
+    public ResponseEntity<Void> block(@PathVariable Long id, @RequestParam String email){
+        service.block(id, email);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/unblock/{id}")
+    public ResponseEntity<Void> unblock(@PathVariable Long id, @RequestParam String email){
+        service.unblock(id, email);
+        return ResponseEntity.ok().build();
+    }
+
 }

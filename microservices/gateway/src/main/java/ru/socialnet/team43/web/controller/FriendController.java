@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.socialnet.team43.client.FriendClient;
 import ru.socialnet.team43.dto.FriendDto;
 import ru.socialnet.team43.dto.PersonDto;;
+import ru.socialnet.team43.dto.enums.FriendshipStatus;
 import ru.socialnet.team43.util.ControllerUtil;
 
 import java.util.List;
@@ -117,6 +118,27 @@ public class FriendController {
         String email = userDetails.getUsername();
 
         ResponseEntity<FriendDto> inputResponseEntity = friendClient.subscribe(id, email);
+        return util.createNewResponseEntity(inputResponseEntity);
+    }
+
+
+    @PutMapping("/block/{id}")
+    public ResponseEntity<FriendDto> block(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails){
+
+        log.info("block with id: {} ", id);
+        String email = userDetails.getUsername();
+
+        ResponseEntity<FriendDto> inputResponseEntity = friendClient.block(id, email);
+        return util.createNewResponseEntity(inputResponseEntity);
+    }
+
+    @PutMapping("/unblock/{id}")
+    public ResponseEntity<FriendDto> unblock(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails){
+
+        log.info("unblock with id: {} ", id);
+        String email = userDetails.getUsername();
+
+        ResponseEntity<FriendDto> inputResponseEntity = friendClient.unblock(id, email);
         return util.createNewResponseEntity(inputResponseEntity);
     }
 

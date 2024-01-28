@@ -44,4 +44,8 @@ public interface DatabaseClient {
 
     @PostMapping("/subscribe/{id}")
     ResponseEntity<Void> subscribe(@PathVariable Long id, @RequestParam String email);
+    @PutMapping("/block/{id}")
+    ResponseEntity<Void> block(@PathVariable Long id, @RequestParam String email);
+    @PutMapping("/unblock/{id}")
+    ResponseEntity<Void> unblock(@PathVariable Long id, @RequestParam String email);
 }
