@@ -13,9 +13,11 @@ public interface ProfileService {
             String city,
             String country,
             Boolean isDeleted,
+            String statusCode,
             Integer ageTo,
             Integer ageFrom,
             String ids,
+            String userName,
             Pageable pageable)
             throws Exception;
 }

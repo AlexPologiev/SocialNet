@@ -12,6 +12,7 @@ import ru.socialnet.team43.service.UserAuthService;
 import ru.socialnet.team43.util.ControllerUtil;
 
 import java.util.Optional;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -31,10 +32,10 @@ public class AccountController {
     @GetMapping("/{id}")
     public ResponseEntity<PersonDto> getAccountById(@PathVariable Long id) {
         Optional<PersonDto> accountInfo = userAuthService.getAccountById(id);
-        return accountInfo.map(ResponseEntity::ok)
+        return accountInfo
+                .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
-
 
     @PutMapping("/me")
     public ResponseEntity<PersonDto> updateAccount(@RequestBody PersonDto dto) {
@@ -52,17 +53,18 @@ public class AccountController {
 
     @GetMapping("/accountsSearch")
     public ResponseEntity<Page<PersonDto>> getAccountsSearchResult(
-            @RequestParam(value = "searchDto") String searchDtoStr, Pageable pageable) {
+            @RequestParam("userName") String userName,
+            @RequestParam(value = "searchDto") String searchDtoStr,
+            Pageable pageable) {
         try {
             AccountSearchDto accountSearchDto =
                     controllerUtil.stringToObject(searchDtoStr, AccountSearchDto.class);
             Page<PersonDto> personDtoPage =
-                    userAuthService.getAccountsSearchResult(accountSearchDto, pageable);
+                    userAuthService.getAccountsSearchResult(userName, accountSearchDto, pageable);
             return ResponseEntity.ok(personDtoPage);
         } catch (Exception ex) {
             log.error(AccountController.class.getCanonicalName(), ex);
             return ResponseEntity.badRequest().build();
         }
     }
-
 }

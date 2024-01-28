@@ -10,9 +10,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.socialnet.team43.dto.AccountSearchDto;
 import ru.socialnet.team43.dto.PersonDto;
 import ru.socialnet.team43.dto.RegDtoDb;
-import ru.socialnet.team43.dto.AccountSearchDto;
 import ru.socialnet.team43.dto.UserAuthDto;
 import ru.socialnet.team43.repository.PersonRepository;
 import ru.socialnet.team43.repository.UserAuthRepository;
@@ -71,7 +71,6 @@ public class UserAuthServiceImpl implements UserAuthService {
         return result;
     }
 
-
     @Override
     public void deleteUserAuthById(Long id) {
         userAuthRepo.deleteUserAuthById(id);
@@ -86,31 +85,29 @@ public class UserAuthServiceImpl implements UserAuthService {
 
     @Override
     public Optional<UserAuthDto> setNewPassword(String password, String email) {
-       Optional<UserAuthRecord> resultRecord = userAuthRepo.setNewPassword(password,email);
+        Optional<UserAuthRecord> resultRecord = userAuthRepo.setNewPassword(password, email);
         log.info("set new password for email: {}", email);
         return resultRecord.map(userAuthMapper::userRecordToDtoMapper);
     }
 
     @Override
-    public Page<PersonDto> getAccountsSearchResult(AccountSearchDto accountSearchDto, Pageable pageable)
-    {
+    public Page<PersonDto> getAccountsSearchResult(
+            String userName, AccountSearchDto accountSearchDto, Pageable pageable) {
         Page<PersonDto> searchResult;
 
-        SelectConditionStep<Record> selectConditionStep = userAuthRepo.getSearchSelectConditionStep(accountSearchDto);
+        SelectConditionStep<Record> selectConditionStep =
+                userAuthRepo.getSearchSelectConditionStep(userName, accountSearchDto);
 
         int resultsQty = userAuthRepo.getAccountSearchResultsQty(selectConditionStep);
 
-        if(0 != resultsQty)
-        {
-            List<PersonDto> resultsList = userAuthRepo.getAccountSearchResultsList(selectConditionStep, pageable);
+        if (0 != resultsQty) {
+            List<PersonDto> resultsList =
+                    userAuthRepo.getAccountSearchResultsList(selectConditionStep, pageable);
             searchResult = new PageImpl<>(resultsList, pageable, resultsQty);
-        }
-        else
-        {
+        } else {
             searchResult = new PageImpl<>(Collections.emptyList());
         }
 
         return searchResult;
     }
-
 }

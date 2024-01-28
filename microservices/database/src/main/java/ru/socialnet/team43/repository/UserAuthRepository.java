@@ -29,10 +29,12 @@ public interface UserAuthRepository {
      * получение объекта класса SelectConditionStep, использующегося для: - получения количества
      * результатов поиска профилей пользователей; - получения данных профилей пользователей.
      *
+     * @param userName аккаунт (email) пользователя, осуществляющего поиск
      * @param accountSearchDto объект, содержащий параметры поиска профилей пользователей
      * @return объект класса SelectConditionStep
      */
-    SelectConditionStep<Record> getSearchSelectConditionStep(AccountSearchDto accountSearchDto);
+    SelectConditionStep<Record> getSearchSelectConditionStep(
+            String userName, AccountSearchDto accountSearchDto);
 
     /**
      * получение количества результатов поиска профилей пользователей

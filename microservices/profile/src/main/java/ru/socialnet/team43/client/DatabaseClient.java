@@ -32,6 +32,7 @@ public interface DatabaseClient {
 
     @PutMapping("/account/me")
     ResponseEntity<PersonDto> updateMyProfile(@RequestBody PersonDto dto);
+
     @GetMapping("/account/{id}")
     ResponseEntity<PersonDto> getProfileById(@PathVariable Long id);
 
@@ -40,9 +41,11 @@ public interface DatabaseClient {
 
     @GetMapping("/account/accountsSearch")
     ResponseEntity<Page<PersonDto>> getAccountsSearchResult(
-            @RequestParam("searchDto") String searchDtoStr, Pageable pageableStr);
+            @RequestParam("userName")String userName,
+            @RequestParam("searchDto") String searchDtoStr,
+            Pageable pageableStr);
 
     @PutMapping("/auth/change-password")
-    ResponseEntity<UserAuthDto> setNewPassword(@RequestParam("password") String password,
-                        @RequestParam("email") String email);
+    ResponseEntity<UserAuthDto> setNewPassword(
+            @RequestParam("password") String password, @RequestParam("email") String email);
 }
