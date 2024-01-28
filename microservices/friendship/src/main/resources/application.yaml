@@ -21,3 +21,7 @@ management:
     distribution:
       percentiles-histogram:
         "[http.server.requests]": true
+
+rating:
+  max: 10
+  min: 1

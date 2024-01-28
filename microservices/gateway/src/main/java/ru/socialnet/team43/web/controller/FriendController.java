@@ -3,6 +3,7 @@ package ru.socialnet.team43.web.controller;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -10,9 +11,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import ru.socialnet.team43.client.FriendClient;
-import ru.socialnet.team43.dto.FriendDto;
+import ru.socialnet.team43.dto.friends.FriendCountDto;
+import ru.socialnet.team43.dto.friends.FriendDto;
+import ru.socialnet.team43.dto.friends.FriendRecommendDto;
+import ru.socialnet.team43.dto.friends.FriendSearchResponseDto;
 import ru.socialnet.team43.dto.PersonDto;;
-import ru.socialnet.team43.dto.enums.FriendshipStatus;
 import ru.socialnet.team43.util.ControllerUtil;
 
 import java.util.List;
@@ -28,12 +31,13 @@ public class FriendController {
     private final ControllerUtil util;
 
     @GetMapping("/count")
-    public long getFriendCount(@AuthenticationPrincipal UserDetails userDetails) {
-        return friendClient.getFriendsCount(userDetails.getUsername());
+    public ResponseEntity<FriendCountDto> getFriendCount(@AuthenticationPrincipal UserDetails userDetails) {
+        ResponseEntity<FriendCountDto> inputResponseEntity = friendClient.getFriendsCount(userDetails.getUsername());
+        return util.createNewResponseEntity(inputResponseEntity);
     }
 
     @GetMapping("/recommendations")
-    public ResponseEntity<List<FriendDto>> getRecommendations(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<List<FriendRecommendDto>> getRecommendations(@AuthenticationPrincipal UserDetails userDetails) {
         return util.createNewResponseEntity(friendClient.getRecommendations(userDetails.getUsername()));
 
     }
@@ -46,26 +50,24 @@ public class FriendController {
                                            @RequestParam(defaultValue = "") String country,
                                            @RequestParam(defaultValue = "") String city,
                                            @AuthenticationPrincipal UserDetails userDetails,
-                                           Pageable page){
+                                           Pageable page) {
 
-        if (userDetails == null){
+        if (userDetails == null) {
             log.info("userDetails is null.");
             return ResponseEntity.badRequest().build();
         }
         String email = userDetails.getUsername();
         logInfoSearchFriends(statusCode, firstName, ageFrom, ageTo, country, city, email, page);
 
-        if(firstName.equals("")
+        if (firstName.equals("")
                 && ageFrom.equals("0")
                 && ageTo.equals("99")
                 && country.equals("")
-                && city.equals("")){
-            ResponseEntity<List<FriendDto>> inputResponseEntity =
+                && city.equals("")) {
+
+            ResponseEntity<Page<FriendSearchResponseDto>> inputResponseEntity =
                     friendClient.searchFriendsByStatus(statusCode, email, page);
-            return ResponseEntity.ok(
-                    new PageImpl<>(inputResponseEntity.getBody(),
-                            page,
-                            inputResponseEntity.getBody().size()));
+            return util.createNewResponseEntity(inputResponseEntity);
         }
 
         ResponseEntity<List<PersonDto>> inputResponseEntity =
@@ -76,7 +78,7 @@ public class FriendController {
 
     @PostMapping("/{id}/request")
     public ResponseEntity<FriendDto> friendRequest(@PathVariable Long id,
-                                                   @AuthenticationPrincipal UserDetails userDetails){
+                                                   @AuthenticationPrincipal UserDetails userDetails) {
         log.info("friendRequest with id: {} ", id);
         String email = userDetails.getUsername();
 
@@ -86,7 +88,7 @@ public class FriendController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFriend(@PathVariable Long id,
-                                             @AuthenticationPrincipal UserDetails userDetails){
+                                             @AuthenticationPrincipal UserDetails userDetails) {
         log.info("delete friend with id: {} ", id);
         String email = userDetails.getUsername();
 
@@ -95,7 +97,7 @@ public class FriendController {
 
     @PutMapping("/{id}/approve")
     public ResponseEntity<FriendDto> approveFriendRequest(@PathVariable Long id,
-                                                          @AuthenticationPrincipal UserDetails userDetails){
+                                                          @AuthenticationPrincipal UserDetails userDetails) {
         log.info("approveFriendRequest with id: {} ", id);
         String email = userDetails.getUsername();
         ResponseEntity<FriendDto> inputResponseEntity = friendClient.approveFriendRequest(id, email);
@@ -104,7 +106,7 @@ public class FriendController {
 
     @GetMapping("/{id}")
     public ResponseEntity<FriendDto> getFriendById(@PathVariable Long id,
-                                                   @AuthenticationPrincipal UserDetails userDetails){
+                                                   @AuthenticationPrincipal UserDetails userDetails) {
         log.info("getFriendById with id: {} ", id);
         String email = userDetails.getUsername();
         ResponseEntity<FriendDto> inputResponseEntity = friendClient.getFriendsById(id, email);
@@ -113,7 +115,7 @@ public class FriendController {
 
     @PostMapping("/subscribe/{id}")
     public ResponseEntity<FriendDto> subscribe(@PathVariable Long id,
-                                                   @AuthenticationPrincipal UserDetails userDetails){
+                                               @AuthenticationPrincipal UserDetails userDetails) {
         log.info("subscribe with id: {} ", id);
         String email = userDetails.getUsername();
 
@@ -123,7 +125,7 @@ public class FriendController {
 
 
     @PutMapping("/block/{id}")
-    public ResponseEntity<FriendDto> block(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails){
+    public ResponseEntity<FriendDto> block(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
 
         log.info("block with id: {} ", id);
         String email = userDetails.getUsername();
@@ -133,7 +135,7 @@ public class FriendController {
     }
 
     @PutMapping("/unblock/{id}")
-    public ResponseEntity<FriendDto> unblock(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails){
+    public ResponseEntity<FriendDto> unblock(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
 
         log.info("unblock with id: {} ", id);
         String email = userDetails.getUsername();
@@ -155,18 +157,18 @@ public class FriendController {
                                       String country,
                                       String city,
                                       String email,
-                                      Pageable page){
+                                      Pageable page) {
         log.info("getAllFriends");
         log.debug("""
 
-                         statusCode: {},
-                         firstName: {},
-                         ageFrom: {},
-                         ageTo: {},
-                         country: {},
-                         city: {},
-                         email: {},
-                         page {}""",
+                        statusCode: {},
+                        firstName: {},
+                        ageFrom: {},
+                        ageTo: {},
+                        country: {},
+                        city: {},
+                        email: {},
+                        page {}""",
                 statusCode,
                 firstName,
                 ageFrom,

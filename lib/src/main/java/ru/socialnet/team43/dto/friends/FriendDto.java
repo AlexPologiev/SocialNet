@@ -1,4 +1,4 @@
-package ru.socialnet.team43.dto;
+package ru.socialnet.team43.dto.friends;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,9 +10,6 @@ import ru.socialnet.team43.dto.enums.StatusCode;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FriendDto {
-
     private FriendshipStatus statusCode;
     private Long friendId;
-    private FriendshipStatus previousStatusCode;
-    private Integer rating;
 }
