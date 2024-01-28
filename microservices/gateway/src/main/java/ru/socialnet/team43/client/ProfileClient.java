@@ -1,17 +1,21 @@
 package ru.socialnet.team43.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.MediaType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import ru.socialnet.team43.dto.*;
+import ru.socialnet.team43.dto.CaptchaDto;
+import ru.socialnet.team43.dto.CountDto;
+import ru.socialnet.team43.dto.PersonDto;
+import ru.socialnet.team43.dto.RegDto;
 import ru.socialnet.team43.dto.geo.CityDto;
 import ru.socialnet.team43.dto.geo.CountryDto;
-import ru.socialnet.team43.dto.notifications.*;
+import ru.socialnet.team43.dto.notifications.NotificationSettingDto;
+import ru.socialnet.team43.dto.notifications.NotificationUpdateDto;
+import ru.socialnet.team43.dto.notifications.NotificationsDto;
 import ru.socialnet.team43.dto.storage.StorageDto;
 
 import java.util.List;
@@ -29,8 +33,8 @@ public interface ProfileClient {
     ResponseEntity<Void> sendEmailRecovery(@RequestParam("email") String email);
 
     @PostMapping("/auth/password/recovery/{token}")
-    ResponseEntity<Void> resetForgotPassword(@PathVariable("token") String token,
-                                             @RequestParam("password") String password);
+    ResponseEntity<Void> resetForgotPassword(
+            @PathVariable("token") String token, @RequestParam("password") String password);
 
     @GetMapping("/account/me")
     ResponseEntity<PersonDto> getMyProfile(@RequestParam("email") String email);
@@ -69,8 +73,7 @@ public interface ProfileClient {
 
     @GetMapping("/notifications")
     ResponseEntity<Page<NotificationsDto>> getAll(
-            @RequestParam("email") String email,
-            Pageable pageable);
+            @RequestParam("email") String email, Pageable pageable);
 
     @GetMapping("/notifications/count")
     ResponseEntity<CountDto> getNotificationCount(@RequestParam("email") String email);
@@ -86,8 +89,10 @@ public interface ProfileClient {
             @RequestParam String city,
             @RequestParam String country,
             @RequestParam Boolean isDeleted,
+            @RequestParam String statusCode,
             @RequestParam Integer ageTo,
             @RequestParam Integer ageFrom,
             @RequestParam String ids,
+            @RequestParam String userName,
             Pageable pageable);
 }

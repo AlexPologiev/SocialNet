@@ -34,17 +34,27 @@ public class ProfileServiceImpl implements ProfileService {
             String city,
             String country,
             Boolean isDeleted,
+            String statusCode,
             Integer ageTo,
             Integer ageFrom,
             String ids,
+            String userName,
             Pageable pageable)
             throws Exception {
 
         ObjectMapper mapper = new ObjectMapper();
         ResponseEntity<Page<PersonDto>> response;
 
-        AccountSearchDto accountSearchDto =
+        AccountSearchDto.AccountSearchDtoBuilder accountSearchDtoBuilder =
+                AccountSearchDto.builder();
+
+        if (StringUtils.hasText(statusCode)) {
+            accountSearchDtoBuilder.statusCode(statusCode);
+        }
+
+        boolean isDtoGenerated =
                 generateSearchDtoFromSeparateFields(
+                        accountSearchDtoBuilder,
                         firstName.toLowerCase(),
                         lastName.toLowerCase(),
                         city.toLowerCase(),
@@ -54,14 +64,17 @@ public class ProfileServiceImpl implements ProfileService {
                         ageFrom,
                         ids);
 
-        if (accountSearchDto == null) {
-            accountSearchDto = generateSearchDtoFromSingleField(author.toLowerCase(), isDeleted);
+        if (!isDtoGenerated) {
+            generateSearchDtoFromSingleField(
+                    accountSearchDtoBuilder, author.toLowerCase(), isDeleted);
         }
+
+        AccountSearchDto accountSearchDto = accountSearchDtoBuilder.build();
 
         if (accountSearchDto != null) {
             response =
                     databaseClient.getAccountsSearchResult(
-                            mapper.writeValueAsString(accountSearchDto), pageable);
+                            userName, mapper.writeValueAsString(accountSearchDto), pageable);
         } else {
             response = ResponseEntity.ok(new PageImpl<>(Collections.emptyList()));
         }
@@ -69,7 +82,8 @@ public class ProfileServiceImpl implements ProfileService {
         return response;
     }
 
-    private AccountSearchDto generateSearchDtoFromSeparateFields(
+    private boolean generateSearchDtoFromSeparateFields(
+            AccountSearchDto.AccountSearchDtoBuilder dtoBuilder,
             String firstName,
             String lastName,
             String city,
@@ -79,7 +93,6 @@ public class ProfileServiceImpl implements ProfileService {
             Integer ageFrom,
             String ids) {
         boolean isDtoGenerated = false;
-        AccountSearchDto.AccountSearchDtoBuilder dtoBuilder = AccountSearchDto.builder();
 
         dtoBuilder.isDeleted(isDeleted);
 
@@ -123,20 +136,17 @@ public class ProfileServiceImpl implements ProfileService {
             }
         }
 
-        AccountSearchDto accountSearchDto = isDtoGenerated ? dtoBuilder.build() : null;
-
-        return accountSearchDto;
+        return isDtoGenerated;
     }
 
-    private AccountSearchDto generateSearchDtoFromSingleField(String author, Boolean isDeleted)
+    private void generateSearchDtoFromSingleField(
+            AccountSearchDto.AccountSearchDtoBuilder dtoBuilder, String author, Boolean isDeleted)
             throws Exception {
-
-        AccountSearchDto.AccountSearchDtoBuilder dtoBuilder = AccountSearchDto.builder();
 
         dtoBuilder.isDeleted(isDeleted);
 
         if (!StringUtils.hasText(author)) {
-            return dtoBuilder.build();
+            return;
         }
 
         String[] searchStringFragmentsArr = author.split("\\s+");
@@ -157,8 +167,6 @@ public class ProfileServiceImpl implements ProfileService {
             dtoBuilder.firstName(searchStringFragments);
             dtoBuilder.lastName(searchStringFragments);
         }
-
-        return dtoBuilder.build();
     }
 
     private void fillSearchedLocations(

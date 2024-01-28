@@ -86,29 +86,101 @@ public class AccountController {
             @RequestParam(defaultValue = "") String city,
             @RequestParam(defaultValue = "") String country,
             @RequestParam(defaultValue = "false") Boolean isDeleted,
+            @RequestParam(defaultValue = "") String statusCode,
             @RequestParam(defaultValue = "0") Integer ageTo,
             @RequestParam(defaultValue = "0") Integer ageFrom,
             @RequestParam(defaultValue = "") String ids,
-            Pageable pageable) {
+            Pageable pageable,
+            @AuthenticationPrincipal UserDetails userDetails) {
         log.info(
                 "/api/v1/account/search\n"
                         + "author: {}, firstName: {}, lastName: {}, city: {}, country: {}, "
-                        + "isDeleted: {}, ageTo: {}, ageFrom: {}, ids: {}",
+                        + "isDeleted: {}, statusCode: {}, ageTo: {}, ageFrom: {}, ids: {}",
                 author,
                 firstName,
                 lastName,
                 city,
                 country,
                 isDeleted,
+                statusCode,
                 ageTo,
                 ageFrom,
                 ids);
 
-        ResponseEntity<Page<PersonDto>> inputResponseEntity =
-                profileClient.searchAccounts(
-                        author, firstName, lastName, city, country, isDeleted, ageTo, ageFrom, ids,
-                        pageable);
+        if (userDetails != null) {
+            log.info(userDetails.getUsername());
 
-        return controllerUtil.createNewResponseEntity(inputResponseEntity);
+            ResponseEntity<Page<PersonDto>> inputResponseEntity =
+                    profileClient.searchAccounts(
+                            author,
+                            firstName,
+                            lastName,
+                            city,
+                            country,
+                            isDeleted,
+                            statusCode,
+                            ageTo,
+                            ageFrom,
+                            ids,
+                            userDetails.getUsername(),
+                            pageable);
+
+            return controllerUtil.createNewResponseEntity(inputResponseEntity);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
+    @GetMapping("/search/statusCode")
+    public ResponseEntity<Page<PersonDto>> searchAccountsByStatus(
+            @RequestParam(defaultValue = "") String author,
+            @RequestParam(defaultValue = "") String firstName,
+            @RequestParam(defaultValue = "") String lastName,
+            @RequestParam(defaultValue = "") String city,
+            @RequestParam(defaultValue = "") String country,
+            @RequestParam(defaultValue = "false") Boolean isDeleted,
+            @RequestParam(defaultValue = "") String statusCode,
+            @RequestParam(defaultValue = "0") Integer ageTo,
+            @RequestParam(defaultValue = "0") Integer ageFrom,
+            @RequestParam(defaultValue = "") String ids,
+            Pageable pageable,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        log.info(
+                "/api/v1/account/statusCode\n"
+                        + "author: {}, firstName: {}, lastName: {}, city: {}, country: {}, "
+                        + "isDeleted: {}, statusCode: {}, ageTo: {}, ageFrom: {}, ids: {}",
+                author,
+                firstName,
+                lastName,
+                city,
+                country,
+                isDeleted,
+                statusCode,
+                ageTo,
+                ageFrom,
+                ids);
+
+        if (userDetails != null) {
+            log.info(userDetails.getUsername());
+
+            ResponseEntity<Page<PersonDto>> inputResponseEntity =
+                    profileClient.searchAccounts(
+                            author,
+                            firstName,
+                            lastName,
+                            city,
+                            country,
+                            isDeleted,
+                            statusCode,
+                            ageTo,
+                            ageFrom,
+                            ids,
+                            userDetails.getUsername(),
+                            pageable);
+
+            return controllerUtil.createNewResponseEntity(inputResponseEntity);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 }

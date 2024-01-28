@@ -27,7 +27,7 @@ public class AccountController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PersonDto> getProfileById(@PathVariable Long id){
+    public ResponseEntity<PersonDto> getProfileById(@PathVariable Long id) {
         ResponseEntity<PersonDto> inputResponseEntity = databaseClient.getProfileById(id);
         return controllerUtil.createNewResponseEntity(inputResponseEntity);
     }
@@ -51,16 +51,28 @@ public class AccountController {
             @RequestParam String city,
             @RequestParam String country,
             @RequestParam Boolean isDeleted,
+            @RequestParam String statusCode,
             @RequestParam Integer ageTo,
             @RequestParam Integer ageFrom,
             @RequestParam String ids,
+            @RequestParam String userName,
             Pageable pageable) {
 
         try {
             ResponseEntity<Page<PersonDto>> inputResponseEntity =
                     profileService.proceedSearch(
-                            author, firstName, lastName, city, country, isDeleted, ageTo, ageFrom,
-                            ids, pageable);
+                            author,
+                            firstName,
+                            lastName,
+                            city,
+                            country,
+                            isDeleted,
+                            statusCode,
+                            ageTo,
+                            ageFrom,
+                            ids,
+                            userName,
+                            pageable);
             return controllerUtil.createNewResponseEntity(inputResponseEntity);
         } catch (Exception ex) {
             log.error(AccountController.class.getCanonicalName(), ex);
