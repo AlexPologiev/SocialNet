@@ -3,6 +3,7 @@ package ru.socialnet.team43.client;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import ru.socialnet.team43.dto.CommentDto;
@@ -37,8 +38,9 @@ public interface CommunicationClient {
                          @RequestParam Boolean withFriends,
                          @RequestParam Boolean isBlocked,
                          @RequestParam Boolean isDeleted,
-                         @RequestParam OffsetDateTime dateFrom,
-                         @RequestParam OffsetDateTime dateTo,
+                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime dateFrom,
+                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime dateTo,
+                         @RequestParam List<String> tags,
                          @RequestParam String sort,
                          Pageable pageable);
 
