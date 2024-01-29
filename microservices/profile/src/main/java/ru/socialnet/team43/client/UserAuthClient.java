@@ -19,9 +19,4 @@ public interface UserAuthClient {
 
         @PostMapping("/register/create")
         ResponseEntity<Void> createPerson(PersonDto personDto);
-
-
-
-
-
 }

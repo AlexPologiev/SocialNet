@@ -49,6 +49,7 @@ public class AuthController {
         log.debug(authRequest.getEmail());
 
         JwtResponse responseBody = securityService.authenticateUser(authRequest);
+        profileClient.updateIsOnlineForAccount(authRequest.getEmail(), true);
 
         return ResponseEntity.ok(responseBody);
     }
@@ -72,6 +73,7 @@ public class AuthController {
         log.debug(userDetails.getUsername());
 
         SimpleResponse responseBody = securityService.logout(userDetails.getUsername());
+        profileClient.updateIsOnlineForAccount(userDetails.getUsername(), false);
 
         return ResponseEntity.ok(responseBody);
     }

@@ -67,4 +67,10 @@ public class AccountController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @PutMapping("/online")
+    public boolean updateIsOnlineForAccount(
+            @RequestParam String email, @RequestParam boolean isOnline) {
+        return userAuthService.updateIsOnline(email, isOnline);
+    }
 }

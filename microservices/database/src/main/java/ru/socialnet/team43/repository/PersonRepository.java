@@ -35,7 +35,6 @@ public class PersonRepository implements UserInteraction, PersonIteraction {
                 .execute();
     }
 
-
     public Optional<PersonRecord> updatePerson(PersonRecord record, String email) {
 
         Long id = findUserIdByEmail(email);
@@ -55,6 +54,16 @@ public class PersonRepository implements UserInteraction, PersonIteraction {
                     .fetchOptional();
         }
         return Optional.empty();
+    }
+
+    public int updateIsOnline(String email, boolean isOnline) {
+        Long id = findUserIdByEmail(email);
+
+        return dslContext.update(Tables.PERSON)
+                .set(Tables.PERSON.IS_ONLINE, isOnline)
+                .set(Tables.PERSON.LAST_ONLINE_TIME, LocalDateTime.now())
+                .where(Tables.PERSON.USER_ID.eq(id))
+                .execute();
     }
 
     public Long findUserIdByEmail(String email) {

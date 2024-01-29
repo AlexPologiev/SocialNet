@@ -95,4 +95,7 @@ public interface ProfileClient {
             @RequestParam String ids,
             @RequestParam String userName,
             Pageable pageable);
+
+    @PutMapping("/account/online")
+    ResponseEntity<Void> updateIsOnlineForAccount(@RequestParam String email, @RequestParam boolean isOnline);
 }

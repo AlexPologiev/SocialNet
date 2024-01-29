@@ -45,6 +45,9 @@ public interface DatabaseClient {
             @RequestParam("searchDto") String searchDtoStr,
             Pageable pageableStr);
 
+    @PutMapping("/account/online")
+    boolean updateIsOnlineForAccount(@RequestParam String email, @RequestParam boolean isOnline);
+
     @PutMapping("/auth/change-password")
     ResponseEntity<UserAuthDto> setNewPassword(
             @RequestParam("password") String password, @RequestParam("email") String email);

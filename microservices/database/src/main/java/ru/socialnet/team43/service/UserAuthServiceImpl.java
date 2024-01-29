@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import ru.socialnet.team43.dto.AccountSearchDto;
 import ru.socialnet.team43.dto.PersonDto;
 import ru.socialnet.team43.dto.RegDtoDb;
+import ru.socialnet.team43.dto.AccountSearchDto;
 import ru.socialnet.team43.dto.UserAuthDto;
 import ru.socialnet.team43.repository.PersonRepository;
 import ru.socialnet.team43.repository.UserAuthRepository;
@@ -109,5 +110,11 @@ public class UserAuthServiceImpl implements UserAuthService {
         }
 
         return searchResult;
+    }
+
+    @Override
+    public boolean updateIsOnline(String email, boolean isOnline) {
+        int result = personRepo.updateIsOnline(email, isOnline);
+        return result == 1;
     }
 }
