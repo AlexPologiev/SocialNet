@@ -79,4 +79,10 @@ public class AccountController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @PutMapping("/online")
+    public ResponseEntity<Void> updateIsOnlineForAccount(String email, boolean isOnline) {
+        boolean result = databaseClient.updateIsOnlineForAccount(email, isOnline);
+        return result ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    }
 }

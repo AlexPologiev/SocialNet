@@ -61,5 +61,4 @@ public class AuthController {
         log.warn("Error in profile {}", ex.getMessage());
         return ResponseEntity.status(ex.status()).build();
     }
-
 }

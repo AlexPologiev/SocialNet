@@ -24,6 +24,7 @@ public interface UserAuthService {
 
     int deleteAccount(String email);
 
+
     void deleteUserAuthById(Long id);
 
     Optional<PersonDto> getAccountById(Long id);
@@ -32,4 +33,6 @@ public interface UserAuthService {
 
     Page<PersonDto> getAccountsSearchResult(
             String userName, AccountSearchDto accountSearchDto, Pageable pageable);
+
+    boolean updateIsOnline(String email, boolean isOnline);
 }
