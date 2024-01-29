@@ -19,5 +19,5 @@ public class NotificationDBDto {
     private Long personId;
     private Long entityId;
     private String contact;
-    private boolean isRead;
+    private Boolean isRead;
 }

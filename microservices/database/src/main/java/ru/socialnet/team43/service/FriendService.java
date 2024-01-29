@@ -9,8 +9,10 @@ import ru.socialnet.team43.dto.enums.FriendshipStatus;
 import ru.socialnet.team43.dto.friends.FriendDto;
 import ru.socialnet.team43.dto.PersonDto;
 import ru.socialnet.team43.dto.friends.FriendSearchResponseDto;
+import ru.socialnet.team43.dto.enums.NotificationType;
 import ru.socialnet.team43.repository.FriendRepository;
 import ru.socialnet.team43.repository.PersonRepository;
+import ru.socialnet.team43.service.notifications.NotificationDBService;
 
 import java.util.List;
 import java.util.Map;
@@ -24,6 +26,7 @@ public class FriendService {
 
     private final FriendRepository friendRepo;
     private final PersonRepository personRepo;
+    private final NotificationDBService notificationDBService;
 
     public int getFriendsCount(String email) {
         return friendRepo.getFriendsCount(email);
@@ -78,6 +81,8 @@ public class FriendService {
                 && (!dscFriendStatus.equals("BLOCKED"))) {
             friendRepo.deleteFriendship(id, accountId);
             friendRepo.saveFriendship(accountId, id, "REQUEST_TO", "REQUEST_FROM");
+
+            notificationDBService.addNewFriendEvent(id, accountId, NotificationType.FRIEND_REQUEST.getId());
         }
     }
 
