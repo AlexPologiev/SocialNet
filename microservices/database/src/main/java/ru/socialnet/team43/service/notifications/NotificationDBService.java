@@ -13,4 +13,8 @@ public interface NotificationDBService {
     CountDto getNotificationCount(String email);
 
     void setIsRead(String email);
+
+    void addNewEvent(Long entityId, int typeId);
+
+    void addNewFriendEvent(Long dstPersonId, Long srcPersonId, int typeId);
 }

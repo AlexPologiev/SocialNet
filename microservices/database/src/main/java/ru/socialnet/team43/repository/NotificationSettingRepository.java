@@ -83,4 +83,17 @@ public class NotificationSettingRepository {
         }
         return list;
     }
+
+    public String findEmailByPersonIdIfSendEmail(Long personId) {
+        return dsl
+                .select()
+                .from(Tables.NOTIFICATION_SETTING)
+                .join(Tables.PERSON)
+                .on(Tables.PERSON.USER_ID.eq(Tables.NOTIFICATION_SETTING.ID))
+                .join(Tables.USER_AUTH)
+                .on(Tables.USER_AUTH.ID.eq(Tables.NOTIFICATION_SETTING.ID))
+                .where(Tables.PERSON.ID.eq(personId)
+                        .and(Tables.NOTIFICATION_SETTING.ENABLE_SEND_EMAIL_MESSAGE.eq(true)))
+                .fetchOne(Tables.USER_AUTH.EMAIL);
+    }
 }

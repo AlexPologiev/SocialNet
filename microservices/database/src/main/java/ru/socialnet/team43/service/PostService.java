@@ -7,10 +7,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import ru.socialnet.team43.dto.PostDto;
+import ru.socialnet.team43.dto.enums.NotificationType;
 import ru.socialnet.team43.repository.PostRepository;
 import ru.socialnet.team43.repository.TagRepository;
 import ru.socialnet.team43.repository.Post2TagRepository;
 import ru.socialnet.team43.repository.mapper.PostDtoPostRecordMapper;
+import ru.socialnet.team43.service.notifications.NotificationDBService;
 
 import java.time.OffsetDateTime;
 import java.util.*;
@@ -24,6 +26,7 @@ public class PostService {
     private TagRepository tagRepository;
     private Post2TagRepository post2TagRepository;
     private PostDtoPostRecordMapper mapper;
+    private NotificationDBService notificationDBService;
 
     public Page<PostDto> getAll(List<Long> ids, List<Long> accountIds, List<Long> blockedIds,
                                 String author, String text, Boolean withFriends,
@@ -51,6 +54,8 @@ public class PostService {
         } else if (postId != 0L) {
             List<Long> tagsIds = getTagsIds(postDto);
             post2TagRepository.addNewRecords(postId, tagsIds);
+
+            notificationDBService.addNewEvent(postId, NotificationType.POST.getId());
             return postDto;
         }
         return null;
@@ -85,6 +90,8 @@ public class PostService {
                 List<Long> tagsIds = getTagsIds(postDto);
                 post2TagRepository.addNewRecords(postId, tagsIds);
                 timer.cancel();
+
+                notificationDBService.addNewEvent(postId, NotificationType.POST.getId());
             }
         }, date);
     }

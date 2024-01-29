@@ -2,20 +2,22 @@ package ru.socialnet.team43.repository;
 
 import jooq.db.Tables;
 import lombok.AllArgsConstructor;
-import org.jooq.DSLContext;
-import org.jooq.SortField;
-import org.jooq.TableField;
+import org.jooq.*;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import jooq.db.tables.records.PersonRecord;
+import jooq.db.tables.records.NotificationRecord;
+import jooq.db.tables.records.CommentRecord;
 import ru.socialnet.team43.dto.enums.NotificationType;
 import ru.socialnet.team43.dto.notifications.*;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.*;
 import java.lang.reflect.Field;
+import java.util.stream.Collectors;
 
 @Repository
 @AllArgsConstructor
@@ -59,6 +61,60 @@ public class NotificationRepository {
                         .and(Tables.NOTIFICATION.TYPE_ID.in(list))
                         .and(Tables.NOTIFICATION.IS_READ.eq(false)))
                 .returning()
+                .execute();
+    }
+
+    public List<Long> findAllPersonIdsUnequalPersonId(Long personId) {
+        return dsl
+                .selectFrom(Tables.PERSON)
+                .where(Tables.PERSON.ID.ne(personId)
+                        .and(Tables.PERSON.IS_BLOCKED.eq(false))
+                        .and(Tables.PERSON.IS_DELETED.eq(false)))
+                .stream()
+                .map(PersonRecord::getId)
+                .collect(Collectors.toList());
+    }
+
+    public Result<Record2<Long, OffsetDateTime>> findAuthorIdAndPublishDateByPostEntityId(Long entityId) {
+        return dsl
+                .select(Tables.POST.AUTHOR_ID, Tables.POST.PUBLISH_DATE)
+                .from(Tables.POST)
+                .where(Tables.POST.ID.eq(entityId))
+                .fetch();
+    }
+
+    public Result<Record2<Long, OffsetDateTime>> findPersonIdAndTimeByCommentEntityId(Long entityId) {
+        return dsl
+                .select(Tables.POST.AUTHOR_ID, Tables.COMMENT.TIME)
+                .from(Tables.COMMENT)
+                .join(Tables.POST)
+                .on(Tables.POST.ID.eq(Tables.COMMENT.POST_ID))
+                .where(Tables.COMMENT.ID.eq(entityId))
+                .fetch();
+    }
+
+    public Result<Record2<Long, OffsetDateTime>> findAuthorIdAndTimeByCommentEntityId(Long entityId) {
+        return dsl
+                .select(Tables.COMMENT.AUTHOR_ID, Tables.COMMENT.TIME)
+                .from(Tables.COMMENT)
+                .where(Tables.COMMENT.ID.eq(
+                        dsl
+                                .select()
+                                .from(Tables.COMMENT)
+                                .where(Tables.COMMENT.ID.eq(entityId))
+                                .fetchOne(Tables.COMMENT.PARENT_ID)))
+                .fetch();
+    }
+
+    public int[] addNewEvents(List<NotificationRecord> records) {
+        return dsl.batchInsert(records)
+                .execute();
+    }
+
+    public int addNewFriendEvent(NotificationRecord records) {
+        return dsl
+                .insertInto(Tables.NOTIFICATION)
+                .set(records)
                 .execute();
     }
 
@@ -140,12 +196,24 @@ public class NotificationRepository {
             case 3 -> setEventPostComment(entityId, personId);
             case 4 -> setEventCommentComment(entityId, personId);
             case 5 -> setEventMessage(entityId, personId);
+            case 6 -> setEventFriendship(entityId, personId);
+            case 7 -> setEventFriendBirthday(entityId, personId);
             default -> null;
         };
     }
 
     private EventNotificationDto setEventMessage(Long entityId, Long personId) {
-        return null;
+        return dsl
+                .selectFrom(Tables.MESSAGE)
+                .where(Tables.MESSAGE.ID.eq(entityId))
+                .fetchOptional()
+                .map(messageRecord -> EventNotificationDto.builder()
+                        .authorId(messageRecord.getAuthorId())
+                        .receiverId(personId)
+                        .notificationType(NotificationType.MESSAGE)
+                        .content(messageRecord.getMessageText())
+                        .sentTime(messageRecord.getTime().toLocalDateTime())
+                        .build()).orElse(null);
     }
 
     private EventNotificationDto setEventPostLike(Long entityId, Long personId) {
@@ -153,11 +221,35 @@ public class NotificationRepository {
     }
 
     private EventNotificationDto setEventPostComment(Long entityId, Long personId) {
-        return null;
+        return dsl
+                .selectFrom(Tables.COMMENT)
+                .where(Tables.COMMENT.ID.eq(entityId))
+                .fetchOptional()
+                .map(commentRecord -> EventNotificationDto.builder()
+                        .authorId(commentRecord.getAuthorId())
+                        .receiverId(personId)
+                        .notificationType(NotificationType.POST_COMMENT)
+                        .content(commentRecord.getCommentText())
+                        .sentTime(commentRecord.getTime().toLocalDateTime())
+                        .build()).orElse(null);
     }
 
     private EventNotificationDto setEventCommentComment(Long entityId, Long personId) {
-        return null;
+        return dsl
+                .selectFrom(Tables.COMMENT)
+                .where(Tables.COMMENT.ID.eq(entityId))
+                .fetchOptional()
+                .map(commentRecord -> EventNotificationDto.builder()
+                        .authorId(commentRecord.getAuthorId())
+                        .receiverId(personId)
+                        .notificationType(NotificationType.COMMENT_COMMENT)
+                        .content(
+                                dsl.selectFrom(Tables.COMMENT)
+                                        .where(Tables.COMMENT.ID.eq(commentRecord.getParentId()))
+                                        .fetchOptional()
+                                        .map(CommentRecord::getCommentText).orElse(null))
+                        .sentTime(commentRecord.getTime().toLocalDateTime())
+                        .build()).orElse(null);
     }
 
     private EventNotificationDto setEventPost(Long entityId, Long personId) {
@@ -171,6 +263,38 @@ public class NotificationRepository {
                         .notificationType(NotificationType.POST)
                         .content(postRecord.getPostText().replaceAll("<[^>]*>", ""))
                         .sentTime(postRecord.getTime().toLocalDateTime())
+                        .build()).orElse(null);
+    }
+
+    private EventNotificationDto setEventFriendship(Long dstPersonId, Long srcPersonId) {
+        return dsl
+                .selectFrom(Tables.NOTIFICATION)
+                .where(Tables.NOTIFICATION.ENTITY_ID.eq(dstPersonId)
+                        .and(Tables.NOTIFICATION.PERSON_ID.eq(srcPersonId))
+                        .and(Tables.NOTIFICATION.TYPE_ID.eq((long) NotificationType.FRIEND_REQUEST.getId())))
+                .fetchOptional()
+                .map(notificationRecord -> EventNotificationDto.builder()
+                        .authorId(notificationRecord.getEntityId())
+                        .receiverId(notificationRecord.getPersonId())
+                        .notificationType(NotificationType.FRIEND_REQUEST)
+                        .content(NotificationType.FRIEND_REQUEST.getName())
+                        .sentTime(notificationRecord.getSentTime())
+                        .build()).orElse(null);
+    }
+
+    private EventNotificationDto setEventFriendBirthday(Long dstPersonId, Long srcPersonId) {
+        return dsl
+                .selectFrom(Tables.NOTIFICATION)
+                .where(Tables.NOTIFICATION.ENTITY_ID.eq(dstPersonId)
+                        .and(Tables.NOTIFICATION.PERSON_ID.eq(srcPersonId))
+                        .and(Tables.NOTIFICATION.TYPE_ID.eq((long) NotificationType.FRIEND_BIRTHDAY.getId())))
+                .fetchOptional()
+                .map(notificationRecord -> EventNotificationDto.builder()
+                        .authorId(notificationRecord.getEntityId())
+                        .receiverId(notificationRecord.getPersonId())
+                        .notificationType(NotificationType.FRIEND_BIRTHDAY)
+                        .content(NotificationType.FRIEND_BIRTHDAY.getName())
+                        .sentTime(notificationRecord.getSentTime())
                         .build()).orElse(null);
     }
 }
