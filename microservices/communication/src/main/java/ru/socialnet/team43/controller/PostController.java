@@ -3,11 +3,11 @@ package ru.socialnet.team43.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.socialnet.team43.client.PostClient;
 import ru.socialnet.team43.dto.PostDto;
-import ru.socialnet.team43.service.PostService;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -18,7 +18,6 @@ import java.util.List;
 @RequestMapping("/api/v1/post")
 public class PostController {
 
-    private PostService postService;
     private PostClient postClient;
 
     @GetMapping
@@ -30,13 +29,12 @@ public class PostController {
                                                 @RequestParam(required = false, defaultValue = "true") Boolean withFriends,
                                                 @RequestParam(required = false) Boolean isBlocked,
                                                 @RequestParam(required = false, defaultValue = "false")  Boolean isDeleted,
-                                                @RequestParam(required = false) OffsetDateTime dateFrom,
-                                                @RequestParam(required = false) OffsetDateTime dateTo,
+                                                @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime dateFrom,
+                                                @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime dateTo,
+                                                @RequestParam(required = false) List<String> tags,
                                                 @RequestParam(required = false, defaultValue = "time,desc") String sort,
-                                                @RequestParam(required = false, defaultValue = "0") int page,
-                                                @RequestParam(required = false, defaultValue = "5") int size,
                                                 Pageable pageable) {
-        return ResponseEntity.ok().body(postService.getAll(ids, accountIds, blockedIds, author, text, withFriends, isBlocked, isDeleted, dateFrom, dateTo, sort, page, size, pageable));
+        return ResponseEntity.ok().body(postClient.getAll(ids, accountIds, blockedIds, author, text, withFriends, isBlocked, isDeleted, dateFrom, dateTo, tags, sort, pageable));
     }
 
     @GetMapping("/{id}")

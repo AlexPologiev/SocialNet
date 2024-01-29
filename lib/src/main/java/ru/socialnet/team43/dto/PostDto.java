@@ -30,7 +30,7 @@ public class PostDto {
     private Integer likeAmount;
     private Boolean myLike;
     private OffsetDateTime publishDate;
-    private List<String> imagesPaths;
+    private String imagePath;
     private List<TagDto> tags;
 
 }

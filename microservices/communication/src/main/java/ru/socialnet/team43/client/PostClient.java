@@ -3,6 +3,7 @@ package ru.socialnet.team43.client;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.socialnet.team43.dto.CommentDto;
@@ -15,7 +16,7 @@ import java.util.List;
 public interface PostClient {
 
     @GetMapping
-    List<PostDto> getAll(@RequestParam List<Long> ids,
+    Page<PostDto> getAll(@RequestParam List<Long> ids,
                          @RequestParam List<Long> accountIds,
                          @RequestParam List<Long> blockedIds,
                          @RequestParam String author,
@@ -23,9 +24,11 @@ public interface PostClient {
                          @RequestParam Boolean withFriends,
                          @RequestParam Boolean isBlocked,
                          @RequestParam Boolean isDeleted,
-                         @RequestParam OffsetDateTime dateFrom,
-                         @RequestParam OffsetDateTime dateTo,
-                         @RequestParam String sort);
+                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime dateFrom,
+                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime dateTo,
+                         @RequestParam List<String> tags,
+                         @RequestParam String sort,
+                         Pageable pageable);
 
     @GetMapping("/{id}")
     ResponseEntity<PostDto> getPostById(@PathVariable Long id);

@@ -7,6 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.OrderField;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import ru.socialnet.team43.dto.PostDto;
 import ru.socialnet.team43.dto.enums.PostType;
@@ -25,24 +28,43 @@ public class PostRepository implements PostIteraction {
 
     private final DSLContext context;
 
-    public List<PostDto> getAll(List<Long> ids, List<Long> accountsId,
+    public Page<PostDto> getAll(List<Long> ids, List<Long> accountsId,
                                 List<Long> blockedIds, String author,
                                 String text, Boolean withFriends,
                                 Boolean isBlocked, Boolean isDeleted,
                                 OffsetDateTime dateFrom, OffsetDateTime dateTo,
-                                String sort) {
-        return context.select(asterisk()).from(Tables.POST)
+                                List<String> tags, String sort, Pageable pageable) {
+        List<PostDto> posts = context.select(asterisk()).from(Tables.POST)
                 .where(getAllPostCondition(ids, accountsId, blockedIds, author,
-                        text, withFriends, isBlocked, isDeleted, dateFrom, dateTo))
+                        text, withFriends, isBlocked, isDeleted, dateFrom, dateTo, tags))
                 .orderBy((OrderField<?>) sorted(sort))
+                .limit(pageable.getPageSize())
+                .offset(pageable.getOffset())
                 .fetchInto(PostDto.class);
+
+        long postsCount = getPostsCount(ids, accountsId, blockedIds, author, text, withFriends,
+                isBlocked, isDeleted, dateFrom, dateTo, tags);
+
+        return new PageImpl<>(posts, pageable, postsCount);
+    }
+
+    private int getPostsCount(List<Long> ids, List<Long> accountsId,
+                               List<Long> blockedIds, String author,
+                               String text, Boolean withFriends,
+                               Boolean isBlocked, Boolean isDeleted,
+                               OffsetDateTime dateFrom, OffsetDateTime dateTo, List<String> tags) {
+        return Optional.ofNullable(context.selectCount().from(Tables.POST)
+                .where(getAllPostCondition(ids, accountsId, blockedIds, author, text, withFriends,
+                        isBlocked, isDeleted, dateFrom, dateTo, tags))
+                .fetchOne(count())).orElse(0);
     }
 
     public Condition getAllPostCondition(List<Long> ids, List<Long> accountIds,
                                          List<Long> blockedIds, String author,
                                          String text, Boolean withFriends,
                                          Boolean isBlocked, Boolean isDeleted,
-                                         OffsetDateTime dateFrom, OffsetDateTime dateTo) {
+                                         OffsetDateTime dateFrom, OffsetDateTime dateTo,
+                                         List<String> tags) {
 
         Condition condition = Tables.POST.IS_DELETED.eq(isDeleted);
 
@@ -70,12 +92,22 @@ public class PostRepository implements PostIteraction {
         if (dateTo != null) {
             condition = condition.and(Tables.POST.TIME.lessOrEqual(dateTo));
         }
+        if (tags != null) {
+            condition = condition.and(Tables.POST.ID.in(postsIdsByTags(tags)));
+        }
         return condition;
     }
 
     public List<Long> authorsIdsByFullName(String author) {
         return context.select(Tables.PERSON.ID).from(Tables.PERSON)
                 .where(concat(Tables.PERSON.FIRST_NAME, Tables.PERSON.LAST_NAME).like("%" + author + "%"))
+                .fetchInto(Long.class);
+    }
+
+    public List<Long> postsIdsByTags(List<String> tags) {
+        return context.select(Tables.POST2TAG.POST_ID).from(Tables.POST2TAG)
+                .where(Tables.POST2TAG.TAG_ID.in(context.select(Tables.TAG.ID).from(Tables.TAG)
+                        .where(Tables.TAG.NAME.in(tags))))
                 .fetchInto(Long.class);
     }
 

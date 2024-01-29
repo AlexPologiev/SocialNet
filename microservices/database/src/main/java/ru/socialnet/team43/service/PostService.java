@@ -2,6 +2,8 @@ package ru.socialnet.team43.service;
 
 import jooq.db.tables.records.PostRecord;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import ru.socialnet.team43.dto.PostDto;
@@ -23,12 +25,12 @@ public class PostService {
     private Post2TagRepository post2TagRepository;
     private PostDtoPostRecordMapper mapper;
 
-    public List<PostDto> getAll(List<Long> ids, List<Long> accountIds, List<Long> blockedIds,
+    public Page<PostDto> getAll(List<Long> ids, List<Long> accountIds, List<Long> blockedIds,
                                 String author, String text, Boolean withFriends,
                                 Boolean isBlocked, Boolean isDeleted, OffsetDateTime dateFrom,
-                                OffsetDateTime dateTo, String sort) {
+                                OffsetDateTime dateTo, List<String> tags, String sort, Pageable pageable) {
         return postRepository.getAll(ids, accountIds, blockedIds, author, text, withFriends, isBlocked, isDeleted
-                ,dateFrom, dateTo, sort);
+                ,dateFrom, dateTo, tags, sort, pageable);
     }
 
     public ResponseEntity<PostDto> getPostById(Long id) {

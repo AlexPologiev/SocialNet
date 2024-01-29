@@ -3,6 +3,7 @@ package ru.socialnet.team43.web.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -36,11 +37,12 @@ public class PostController {
                                                 @RequestParam(defaultValue = "true") Boolean withFriends,
                                                 @RequestParam(required = false) Boolean isBlocked,
                                                 @RequestParam(defaultValue = "false") Boolean isDeleted,
-                                                @RequestParam(required = false) OffsetDateTime dateFrom,
-                                                @RequestParam(required = false) OffsetDateTime dateTo,
+                                                @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime dateFrom,
+                                                @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime dateTo,
+                                                @RequestParam(required = false) List<String> tags,
                                                 @RequestParam(defaultValue = "time,desc") String sort,
                                                 Pageable pageable) {
-        ResponseEntity<Page<PostDto>> responseEntity = ResponseEntity.ok().body(communicationClient.getAll(ids, accountIds, blockedIds, author, text, withFriends, isBlocked, isDeleted, dateFrom, dateTo, sort, pageable));
+        ResponseEntity<Page<PostDto>> responseEntity = ResponseEntity.ok().body(communicationClient.getAll(ids, accountIds, blockedIds, author, text, withFriends, isBlocked, isDeleted, dateFrom, dateTo, tags, sort, pageable));
         return controllerUtil.createNewResponseEntity(responseEntity);
     }
 
